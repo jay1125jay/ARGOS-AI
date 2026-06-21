@@ -8,24 +8,29 @@ APP = os.path.join(ROOT, "app")
 
 TRADES = os.path.join(ROOT, "data", "trades", "paper_trades.csv")
 REPORT = os.path.join(ROOT, "data", "reports", "report.csv")
+MARKET = os.path.join(ROOT, "data", "market", "market_status.json")
 
 
 def read_csv(path):
     if not os.path.exists(path):
         return []
-
     with open(path, "r", encoding="utf-8") as f:
         return list(csv.DictReader(f))
 
 
+def read_json(path):
+    if not os.path.exists(path):
+        return {}
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 class Handler(BaseHTTPRequestHandler):
-
     def do_GET(self):
-
         if self.path == "/api/status":
-
             trades = read_csv(TRADES)
             reports = read_csv(REPORT)
+            market = read_json(MARKET)
 
             latest_report = {
                 "total_trades": 0,
@@ -37,7 +42,6 @@ class Handler(BaseHTTPRequestHandler):
 
             if reports:
                 r = reports[-1]
-
                 latest_report = {
                     "total_trades": r["total_trades"],
                     "wins": r["wins"],
@@ -48,7 +52,8 @@ class Handler(BaseHTTPRequestHandler):
 
             body = json.dumps({
                 "report": latest_report,
-                "trades": trades[-50:]
+                "trades": trades[-50:],
+                "market": market
             }).encode("utf-8")
 
             self.send_response(200)
@@ -59,10 +64,7 @@ class Handler(BaseHTTPRequestHandler):
 
         file_name = "index.html"
 
-        if self.path.endswith(".css"):
-            file_name = self.path[1:]
-
-        elif self.path.endswith(".js"):
+        if self.path.endswith(".css") or self.path.endswith(".js"):
             file_name = self.path[1:]
 
         file_path = os.path.join(APP, file_name)
@@ -75,14 +77,11 @@ class Handler(BaseHTTPRequestHandler):
         with open(file_path, "rb") as f:
             data = f.read()
 
+        content_type = "text/html"
         if file_name.endswith(".css"):
             content_type = "text/css"
-
         elif file_name.endswith(".js"):
             content_type = "application/javascript"
-
-        else:
-            content_type = "text/html"
 
         self.send_response(200)
         self.send_header("Content-Type", content_type)

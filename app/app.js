@@ -1,5 +1,5 @@
 async function loadData() {
-  const res = await fetch("/api/status");
+  const res = await fetch("http://localhost:8000/api/status");
   const data = await res.json();
 
   document.getElementById("total").textContent = data.report.total_trades;
@@ -7,6 +7,27 @@ async function loadData() {
   document.getElementById("losses").textContent = data.report.losses;
   document.getElementById("winRate").textContent = data.report.win_rate + "%";
   document.getElementById("pnl").textContent = data.report.total_pnl;
+
+  document.getElementById("marketUpdated").textContent = data.market.updated_at || "-";
+
+  const marketRows = document.getElementById("marketRows");
+  marketRows.innerHTML = "";
+
+  const results = data.market.results || [];
+
+  results.forEach(r => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${r.symbol}</td>
+      <td>${r.price}</td>
+      <td>${r.change_pct}</td>
+      <td>${r.rsi}</td>
+      <td>${r.signal_score}</td>
+      <td>${r.risk_score}</td>
+      <td>${r.action}</td>
+    `;
+    marketRows.appendChild(row);
+  });
 
   const tbody = document.getElementById("trades");
   tbody.innerHTML = "";
