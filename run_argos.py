@@ -4,6 +4,10 @@ import os
 import urllib.request
 from datetime import datetime
 
+from engines.portfolio_engine import calculate_portfolio
+from engines.position_manager import open_position, check_exit, load_positions
+from engines.risk_engine import check_risk
+
 BASE_DIR = r"C:\ARGOS_AI"
 
 TRADES_FILE = os.path.join(BASE_DIR, "data", "trades", "paper_trades.csv")
@@ -28,25 +32,20 @@ def ensure_files():
 
     if not os.path.exists(TRADES_FILE):
         with open(TRADES_FILE, "w", newline="", encoding="utf-8") as f:
-            writer = csv.writer(f)
-            writer.writerow(["time", "symbol", "action", "entry", "exit", "pnl", "result"])
+            csv.writer(f).writerow(["time", "symbol", "action", "entry", "exit", "pnl", "result"])
 
     if not os.path.exists(REPORT_FILE):
         with open(REPORT_FILE, "w", newline="", encoding="utf-8") as f:
-            writer = csv.writer(f)
-            writer.writerow(["time", "total_trades", "wins", "losses", "win_rate", "total_pnl"])
+            csv.writer(f).writerow(["time", "total_trades", "wins", "losses", "win_rate", "total_pnl"])
 
 
 def fetch_klines(symbol):
     url = f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=5m&limit=50"
-
     with urllib.request.urlopen(url, timeout=10) as response:
         data = json.loads(response.read().decode("utf-8"))
 
     closes = [float(candle[4]) for candle in data]
-    volumes = [float(candle[5]) for candle in data]
-
-    return closes, volumes
+    return closes
 
 
 def calc_rsi(closes, period=14):
@@ -72,18 +71,15 @@ def calc_rsi(closes, period=14):
         return 100.0
 
     rs = avg_gain / avg_loss
-    rsi = 100 - (100 / (1 + rs))
-
-    return round(rsi, 2)
+    return round(100 - (100 / (1 + rs)), 2)
 
 
 def analyze_symbol(symbol):
-    closes, volumes = fetch_klines(symbol)
+    closes = fetch_klines(symbol)
 
-    last_price = closes[-1]
+    price = closes[-1]
     prev_price = closes[-2]
-    change_pct = round(((last_price - prev_price) / prev_price) * 100, 4)
-
+    change_pct = round(((price - prev_price) / prev_price) * 100, 4)
     rsi = calc_rsi(closes)
 
     signal_score = 50
@@ -128,7 +124,7 @@ def analyze_symbol(symbol):
 
     return {
         "symbol": symbol,
-        "price": last_price,
+        "price": price,
         "change_pct": change_pct,
         "rsi": rsi,
         "signal_score": signal_score,
@@ -172,38 +168,9 @@ def scan_market():
     return results, best
 
 
-def paper_trade(signal):
-    action = signal["action"]
-
-    if action == "WAIT":
-        return None
-
-    entry = float(signal["price"])
-
-    if action == "LONG":
-        exit_price = round(entry * 1.003, 6)
-        pnl = round(exit_price - entry, 6)
-    else:
-        exit_price = round(entry * 0.997, 6)
-        pnl = round(entry - exit_price, 6)
-
-    result = "WIN" if pnl > 0 else "LOSS"
-
-    return {
-        "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "symbol": signal["symbol"],
-        "action": action,
-        "entry": entry,
-        "exit": exit_price,
-        "pnl": pnl,
-        "result": result,
-    }
-
-
 def save_trade(trade):
     with open(TRADES_FILE, "a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow([
+        csv.writer(f).writerow([
             trade["time"],
             trade["symbol"],
             trade["action"],
@@ -212,6 +179,27 @@ def save_trade(trade):
             trade["pnl"],
             trade["result"],
         ])
+
+
+def get_latest_report():
+    default_report = {
+        "total_trades": 0,
+        "wins": 0,
+        "losses": 0,
+        "win_rate": 0,
+        "total_pnl": 0,
+    }
+
+    if not os.path.exists(REPORT_FILE):
+        return default_report
+
+    with open(REPORT_FILE, "r", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+
+    if not rows:
+        return default_report
+
+    return rows[-1]
 
 
 def update_report():
@@ -225,8 +213,7 @@ def update_report():
     win_rate = round((wins / total) * 100, 2) if total else 0
 
     with open(REPORT_FILE, "a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow([
+        csv.writer(f).writerow([
             datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             total,
             wins,
@@ -236,6 +223,22 @@ def update_report():
         ])
 
     return total, wins, losses, win_rate, total_pnl
+
+
+def get_exit_signal(results):
+    positions_data = load_positions()
+    open_positions = positions_data.get("positions", [])
+
+    if not open_positions:
+        return None
+
+    position_symbol = open_positions[0]["symbol"]
+
+    for signal in results:
+        if signal["symbol"] == position_symbol:
+            return signal
+
+    return None
 
 
 def main():
@@ -262,17 +265,49 @@ def main():
     print(f"BEST_SIGNAL_SCORE={best['signal_score']}")
     print(f"BEST_RISK_SCORE={best['risk_score']}")
 
-    trade = paper_trade(best)
+    latest_report = get_latest_report()
 
-    if trade:
-        save_trade(trade)
-        print("PAPER_TRADE=EXECUTED")
-        print(f"PNL={trade['pnl']}")
-        print(f"RESULT={trade['result']}")
+    exit_signal = get_exit_signal(results)
+    exit_trade = check_exit(exit_signal) if exit_signal else None
+
+    if exit_trade:
+        save_trade(exit_trade)
+        print("POSITION_EXIT=EXECUTED")
+        print(f"EXIT_SYMBOL={exit_trade['symbol']}")
+        print(f"EXIT_REASON={exit_trade.get('exit_reason')}")
+        print(f"PNL={exit_trade['pnl']}")
+        print(f"RESULT={exit_trade['result']}")
+
     else:
-        print("PAPER_TRADE=NO_ORDER")
+        risk_result = check_risk(best, latest_report)
+
+        print(f"RISK_ALLOWED={risk_result['allowed']}")
+
+        if risk_result["reasons"]:
+            print("RISK_REASONS=" + ",".join(risk_result["reasons"]))
+
+        if risk_result["allowed"]:
+            position = open_position(best)
+
+            if position:
+                print("POSITION_ENTRY=EXECUTED")
+                print(f"SYMBOL={position['symbol']}")
+                print(f"ACTION={position['action']}")
+                print(f"ENTRY={position['entry']}")
+                print(f"TP={position['tp']}")
+                print(f"SL={position['sl']}")
+            else:
+                print("POSITION_ENTRY=BLOCKED_OR_HOLDING")
+        else:
+            print("POSITION_ENTRY=RISK_BLOCKED")
 
     total, wins, losses, win_rate, total_pnl = update_report()
+
+    portfolio = calculate_portfolio({
+        "total_pnl": total_pnl,
+        "total_trades": total,
+        "win_rate": win_rate,
+    })
 
     print("-" * 50)
     print(f"TOTAL_TRADES={total}")
@@ -280,6 +315,7 @@ def main():
     print(f"LOSSES={losses}")
     print(f"WIN_RATE={win_rate}%")
     print(f"TOTAL_PNL={total_pnl}")
+    print(f"CURRENT_BALANCE={portfolio['current_balance']}")
 
 
 if __name__ == "__main__":

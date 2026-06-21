@@ -3,17 +3,21 @@ import json
 import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
+from engines.portfolio_engine import calculate_portfolio
+
 ROOT = r"C:\ARGOS_AI"
 APP = os.path.join(ROOT, "app")
 
 TRADES = os.path.join(ROOT, "data", "trades", "paper_trades.csv")
 REPORT = os.path.join(ROOT, "data", "reports", "report.csv")
 MARKET = os.path.join(ROOT, "data", "market", "market_status.json")
+POSITIONS = os.path.join(ROOT, "data", "open_positions.json")
 
 
 def read_csv(path):
     if not os.path.exists(path):
         return []
+
     with open(path, "r", encoding="utf-8") as f:
         return list(csv.DictReader(f))
 
@@ -21,16 +25,21 @@ def read_csv(path):
 def read_json(path):
     if not os.path.exists(path):
         return {}
+
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 class Handler(BaseHTTPRequestHandler):
+
     def do_GET(self):
+
         if self.path == "/api/status":
+
             trades = read_csv(TRADES)
             reports = read_csv(REPORT)
             market = read_json(MARKET)
+            positions = read_json(POSITIONS)
 
             latest_report = {
                 "total_trades": 0,
@@ -50,10 +59,14 @@ class Handler(BaseHTTPRequestHandler):
                     "total_pnl": r["total_pnl"]
                 }
 
+            portfolio = calculate_portfolio(latest_report)
+
             body = json.dumps({
                 "report": latest_report,
+                "portfolio": portfolio,
                 "trades": trades[-50:],
-                "market": market
+                "market": market,
+                "positions": positions
             }).encode("utf-8")
 
             self.send_response(200)
@@ -78,8 +91,10 @@ class Handler(BaseHTTPRequestHandler):
             data = f.read()
 
         content_type = "text/html"
+
         if file_name.endswith(".css"):
             content_type = "text/css"
+
         elif file_name.endswith(".js"):
             content_type = "application/javascript"
 

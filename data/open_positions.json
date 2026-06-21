@@ -1,0 +1,13 @@
+{
+  "positions": [
+    {
+      "opened_at": "2026-06-21 21:16:03",
+      "symbol": "BTCUSDT",
+      "action": "SHORT",
+      "entry": 64061.11,
+      "tp": 63868.92667,
+      "sl": 64189.23222,
+      "status": "OPEN"
+    }
+  ]
+}
