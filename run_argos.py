@@ -43,9 +43,7 @@ def fetch_klines(symbol):
     url = f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=5m&limit=50"
     with urllib.request.urlopen(url, timeout=10) as response:
         data = json.loads(response.read().decode("utf-8"))
-
-    closes = [float(candle[4]) for candle in data]
-    return closes
+    return [float(candle[4]) for candle in data]
 
 
 def calc_rsi(closes, period=14):
@@ -202,7 +200,7 @@ def get_latest_report():
     return rows[-1]
 
 
-def update_report():
+def calculate_report():
     with open(TRADES_FILE, "r", encoding="utf-8") as f:
         trades = list(csv.DictReader(f))
 
@@ -212,6 +210,10 @@ def update_report():
     total_pnl = round(sum(float(t["pnl"]) for t in trades), 6) if trades else 0
     win_rate = round((wins / total) * 100, 2) if total else 0
 
+    return total, wins, losses, win_rate, total_pnl
+
+
+def save_report(total, wins, losses, win_rate, total_pnl):
     with open(REPORT_FILE, "a", newline="", encoding="utf-8") as f:
         csv.writer(f).writerow([
             datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -221,8 +223,6 @@ def update_report():
             win_rate,
             total_pnl,
         ])
-
-    return total, wins, losses, win_rate, total_pnl
 
 
 def get_exit_signal(results):
@@ -243,6 +243,8 @@ def get_exit_signal(results):
 
 def main():
     ensure_files()
+
+    trade_changed = False
 
     print("ARGOS AI")
     print("MODE=PAPER_ONLY")
@@ -272,6 +274,7 @@ def main():
 
     if exit_trade:
         save_trade(exit_trade)
+        trade_changed = True
         print("POSITION_EXIT=EXECUTED")
         print(f"EXIT_SYMBOL={exit_trade['symbol']}")
         print(f"EXIT_REASON={exit_trade.get('exit_reason')}")
@@ -290,6 +293,7 @@ def main():
             position = open_position(best)
 
             if position:
+                trade_changed = True
                 print("POSITION_ENTRY=EXECUTED")
                 print(f"SYMBOL={position['symbol']}")
                 print(f"ACTION={position['action']}")
@@ -301,7 +305,10 @@ def main():
         else:
             print("POSITION_ENTRY=RISK_BLOCKED")
 
-    total, wins, losses, win_rate, total_pnl = update_report()
+    total, wins, losses, win_rate, total_pnl = calculate_report()
+
+    if trade_changed:
+        save_report(total, wins, losses, win_rate, total_pnl)
 
     portfolio = calculate_portfolio({
         "total_pnl": total_pnl,
