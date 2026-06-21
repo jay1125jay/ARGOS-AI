@@ -48,12 +48,7 @@ def calc_atr_pct(highs, lows, closes, period=14):
         low = lows[i]
         prev_close = closes[i - 1]
 
-        tr = max(
-            high - low,
-            abs(high - prev_close),
-            abs(low - prev_close)
-        )
-
+        tr = max(high - low, abs(high - prev_close), abs(low - prev_close))
         trs.append(tr)
 
     atr = sum(trs) / period
@@ -128,11 +123,32 @@ def build_signal(symbol, candles):
 
     risk_score = max(0, min(100, risk_score))
 
+    price_above_ema9 = price > ema9
+    price_below_ema9 = price < ema9
+
+    long_ready = (
+        trend == "UP"
+        and signal_score >= 75
+        and rsi >= 55
+        and vol_ratio >= 1.2
+        and atr_pct >= 0.05
+        and price_above_ema9
+    )
+
+    short_ready = (
+        trend == "DOWN"
+        and signal_score <= 25
+        and rsi <= 45
+        and vol_ratio >= 1.2
+        and atr_pct >= 0.05
+        and price_below_ema9
+    )
+
     if risk_score >= 70:
         action = "WAIT"
-    elif signal_score >= 70 and trend == "UP":
+    elif long_ready:
         action = "LONG"
-    elif signal_score <= 30 and trend == "DOWN":
+    elif short_ready:
         action = "SHORT"
     else:
         action = "WAIT"
