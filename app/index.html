@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ARGOS AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>ARGOS AI</h1>
+  <p class="mode">MODE: PAPER_ONLY</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>System</h2>
+      <p>REAL_ORDER: FALSE</p>
+      <p>API_ORDER: FALSE</p>
+      <p>AUTO_PAPER: TRUE</p>
+    </div>
+
+    <div class="card">
+      <h2>Report</h2>
+      <p>Total Trades: <span id="total">0</span></p>
+      <p>Wins: <span id="wins">0</span></p>
+      <p>Losses: <span id="losses">0</span></p>
+      <p>Win Rate: <span id="winRate">0%</span></p>
+      <p>Total PnL: <span id="pnl">0</span></p>
+    </div>
+
+    <div class="card wide">
+      <h2>Last Trades</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Symbol</th>
+            <th>Action</th>
+            <th>Entry</th>
+            <th>Exit</th>
+            <th>PnL</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody id="trades"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
