@@ -1,19 +1,45 @@
 async function loadData() {
-  const res = await fetch("http://localhost:8000/api/status");
+  const res = await fetch("/api/status");
   const data = await res.json();
 
-  document.getElementById("total").textContent = data.report.total_trades;
-  document.getElementById("wins").textContent = data.report.wins;
-  document.getElementById("losses").textContent = data.report.losses;
-  document.getElementById("winRate").textContent = data.report.win_rate + "%";
-  document.getElementById("pnl").textContent = data.report.total_pnl;
+  const portfolio = data.portfolio || {};
+  const report = data.report || {};
+  const positionsData = data.positions || { positions: [] };
+  const positions = positionsData.positions || [];
 
-  document.getElementById("marketUpdated").textContent = data.market.updated_at || "-";
+  document.getElementById("startBalance").textContent = portfolio.start_balance ?? 0;
+  document.getElementById("currentBalance").textContent = portfolio.current_balance ?? 0;
+  document.getElementById("totalReturn").textContent = (portfolio.total_return_pct ?? 0) + "%";
+  document.getElementById("openPositions").textContent = positions.length;
+
+  const position = positions[0];
+
+  if (position) {
+    document.getElementById("posSymbol").textContent = position.symbol;
+    document.getElementById("posAction").textContent = position.action;
+    document.getElementById("posEntry").textContent = position.entry;
+    document.getElementById("posTp").textContent = position.tp;
+    document.getElementById("posSl").textContent = position.sl;
+  } else {
+    document.getElementById("posSymbol").textContent = "NONE";
+    document.getElementById("posAction").textContent = "-";
+    document.getElementById("posEntry").textContent = "-";
+    document.getElementById("posTp").textContent = "-";
+    document.getElementById("posSl").textContent = "-";
+  }
+
+  document.getElementById("total").textContent = report.total_trades ?? 0;
+  document.getElementById("wins").textContent = report.wins ?? 0;
+  document.getElementById("losses").textContent = report.losses ?? 0;
+  document.getElementById("winRate").textContent = (report.win_rate ?? 0) + "%";
+  document.getElementById("pnl").textContent = report.total_pnl ?? 0;
+
+  document.getElementById("marketUpdated").textContent = data.market?.updated_at || "-";
 
   const marketRows = document.getElementById("marketRows");
   marketRows.innerHTML = "";
 
-  const results = data.market.results || [];
+  const results = data.market?.results || [];
 
   results.forEach(r => {
     const row = document.createElement("tr");
@@ -22,6 +48,11 @@ async function loadData() {
       <td>${r.price}</td>
       <td>${r.change_pct}</td>
       <td>${r.rsi}</td>
+      <td>${r.ema9 ?? "-"}</td>
+      <td>${r.ema21 ?? "-"}</td>
+      <td>${r.trend ?? "-"}</td>
+      <td>${r.volume_ratio ?? "-"}</td>
+      <td>${r.atr_pct ?? "-"}</td>
       <td>${r.signal_score}</td>
       <td>${r.risk_score}</td>
       <td>${r.action}</td>
@@ -32,7 +63,7 @@ async function loadData() {
   const tbody = document.getElementById("trades");
   tbody.innerHTML = "";
 
-  data.trades.slice(-10).reverse().forEach(t => {
+  (data.trades || []).slice(-10).reverse().forEach(t => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${t.time}</td>
