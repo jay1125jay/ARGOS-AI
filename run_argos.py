@@ -7,6 +7,7 @@ from datetime import datetime
 from engines.portfolio_engine import calculate_portfolio
 from engines.position_manager import open_position, check_exit, load_positions
 from engines.risk_engine import check_risk
+from engines.technical_engine import build_signal
 
 BASE_DIR = r"C:\ARGOS_AI"
 
@@ -16,149 +17,40 @@ MARKET_FILE = os.path.join(BASE_DIR, "data", "market", "market_status.json")
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "XRPUSDT", "BNBUSDT"]
 
-MODE = "PAPER_ONLY"
-REAL_ORDER = False
-API_ORDER = False
-
-SIGNAL_LONG_SCORE = 65
-SIGNAL_SHORT_SCORE = 35
-RISK_BLOCK_SCORE = 70
-
 
 def ensure_files():
     os.makedirs(os.path.dirname(TRADES_FILE), exist_ok=True)
     os.makedirs(os.path.dirname(REPORT_FILE), exist_ok=True)
     os.makedirs(os.path.dirname(MARKET_FILE), exist_ok=True)
 
-    if not os.path.exists(TRADES_FILE):
-        with open(TRADES_FILE, "w", newline="", encoding="utf-8") as f:
-            csv.writer(f).writerow(["time", "symbol", "action", "entry", "exit", "pnl", "result"])
-
-    if not os.path.exists(REPORT_FILE):
-        with open(REPORT_FILE, "w", newline="", encoding="utf-8") as f:
-            csv.writer(f).writerow(["time", "total_trades", "wins", "losses", "win_rate", "total_pnl"])
-
-
-def fetch_klines(symbol):
-    url = f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=5m&limit=50"
-    with urllib.request.urlopen(url, timeout=10) as response:
-        data = json.loads(response.read().decode("utf-8"))
-    return [float(candle[4]) for candle in data]
-
-
-def calc_rsi(closes, period=14):
-    if len(closes) < period + 1:
-        return 50.0
-
-    gains = []
-    losses = []
-
-    for i in range(-period, 0):
-        change = closes[i] - closes[i - 1]
-        if change >= 0:
-            gains.append(change)
-            losses.append(0)
-        else:
-            gains.append(0)
-            losses.append(abs(change))
-
-    avg_gain = sum(gains) / period
-    avg_loss = sum(losses) / period
-
-    if avg_loss == 0:
-        return 100.0
-
-    rs = avg_gain / avg_loss
-    return round(100 - (100 / (1 + rs)), 2)
-
 
 def analyze_symbol(symbol):
-    closes = fetch_klines(symbol)
-
-    price = closes[-1]
-    prev_price = closes[-2]
-    change_pct = round(((price - prev_price) / prev_price) * 100, 4)
-    rsi = calc_rsi(closes)
-
-    signal_score = 50
-
-    if change_pct > 0:
-        signal_score += 10
-    if change_pct > 0.3:
-        signal_score += 15
-    if rsi > 55:
-        signal_score += 10
-    if rsi > 65:
-        signal_score += 15
-
-    if change_pct < 0:
-        signal_score -= 10
-    if change_pct < -0.3:
-        signal_score -= 15
-    if rsi < 45:
-        signal_score -= 10
-    if rsi < 35:
-        signal_score -= 15
-
-    signal_score = max(0, min(100, signal_score))
-
-    risk_score = 20
-
-    if abs(change_pct) > 0.8:
-        risk_score += 30
-    if rsi > 75 or rsi < 25:
-        risk_score += 30
-
-    risk_score = max(0, min(100, risk_score))
-
-    if risk_score >= RISK_BLOCK_SCORE:
-        action = "WAIT"
-    elif signal_score >= SIGNAL_LONG_SCORE:
-        action = "LONG"
-    elif signal_score <= SIGNAL_SHORT_SCORE:
-        action = "SHORT"
-    else:
-        action = "WAIT"
-
-    return {
-        "symbol": symbol,
-        "price": price,
-        "change_pct": change_pct,
-        "rsi": rsi,
-        "signal_score": signal_score,
-        "risk_score": risk_score,
-        "action": action,
-    }
+    url = f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=5m&limit=100"
+    with urllib.request.urlopen(url, timeout=10) as response:
+        candles = json.loads(response.read().decode("utf-8"))
+    return build_signal(symbol, candles)
 
 
 def scan_market():
     results = []
-
     for symbol in SYMBOLS:
         try:
             results.append(analyze_symbol(symbol))
         except Exception as e:
             results.append({
-                "symbol": symbol,
-                "price": 0,
-                "change_pct": 0,
-                "rsi": 50,
-                "signal_score": 0,
-                "risk_score": 100,
-                "action": "WAIT",
-                "error": str(e),
+                "symbol": symbol, "price": 0, "change_pct": 0, "rsi": 50,
+                "ema9": 0, "ema21": 0, "trend": "ERROR",
+                "volume_ratio": 0, "atr_pct": 0,
+                "signal_score": 0, "risk_score": 100,
+                "action": "WAIT", "error": str(e),
             })
 
-    best = sorted(
-        results,
-        key=lambda x: abs(x["signal_score"] - 50) - x["risk_score"],
-        reverse=True
-    )[0]
+    best = sorted(results, key=lambda x: abs(x["signal_score"] - 50) - x["risk_score"], reverse=True)[0]
 
     with open(MARKET_FILE, "w", encoding="utf-8") as f:
         json.dump({
             "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "mode": MODE,
+            "mode": "PAPER_ONLY",
             "results": results,
             "best": best,
         }, f, indent=2)
@@ -169,38 +61,28 @@ def scan_market():
 def save_trade(trade):
     with open(TRADES_FILE, "a", newline="", encoding="utf-8") as f:
         csv.writer(f).writerow([
-            trade["time"],
-            trade["symbol"],
-            trade["action"],
-            trade["entry"],
-            trade["exit"],
-            trade["pnl"],
-            trade["result"],
+            trade["time"], trade["symbol"], trade["action"],
+            trade["entry"], trade["exit"], trade["pnl"], trade["result"]
         ])
 
 
 def get_latest_report():
-    default_report = {
-        "total_trades": 0,
-        "wins": 0,
-        "losses": 0,
-        "win_rate": 0,
-        "total_pnl": 0,
-    }
-
     if not os.path.exists(REPORT_FILE):
-        return default_report
+        return {"total_trades": 0, "wins": 0, "losses": 0, "win_rate": 0, "total_pnl": 0}
 
     with open(REPORT_FILE, "r", encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
 
     if not rows:
-        return default_report
+        return {"total_trades": 0, "wins": 0, "losses": 0, "win_rate": 0, "total_pnl": 0}
 
     return rows[-1]
 
 
 def calculate_report():
+    if not os.path.exists(TRADES_FILE):
+        return 0, 0, 0, 0, 0
+
     with open(TRADES_FILE, "r", encoding="utf-8") as f:
         trades = list(csv.DictReader(f))
 
@@ -209,7 +91,6 @@ def calculate_report():
     losses = sum(1 for t in trades if t["result"] == "LOSS")
     total_pnl = round(sum(float(t["pnl"]) for t in trades), 6) if trades else 0
     win_rate = round((wins / total) * 100, 2) if total else 0
-
     return total, wins, losses, win_rate, total_pnl
 
 
@@ -217,11 +98,7 @@ def save_report(total, wins, losses, win_rate, total_pnl):
     with open(REPORT_FILE, "a", newline="", encoding="utf-8") as f:
         csv.writer(f).writerow([
             datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            total,
-            wins,
-            losses,
-            win_rate,
-            total_pnl,
+            total, wins, losses, win_rate, total_pnl
         ])
 
 
@@ -232,10 +109,10 @@ def get_exit_signal(results):
     if not open_positions:
         return None
 
-    position_symbol = open_positions[0]["symbol"]
+    symbol = open_positions[0]["symbol"]
 
     for signal in results:
-        if signal["symbol"] == position_symbol:
+        if signal["symbol"] == symbol:
             return signal
 
     return None
@@ -243,7 +120,6 @@ def get_exit_signal(results):
 
 def main():
     ensure_files()
-
     trade_changed = False
 
     print("ARGOS AI")
@@ -257,8 +133,9 @@ def main():
     for r in results:
         print(
             f"{r['symbol']} PRICE={r['price']} CHANGE={r['change_pct']}% "
-            f"RSI={r['rsi']} SIGNAL={r['signal_score']} "
-            f"RISK={r['risk_score']} ACTION={r['action']}"
+            f"RSI={r['rsi']} EMA9={r['ema9']} EMA21={r['ema21']} "
+            f"TREND={r['trend']} VOL={r['volume_ratio']} ATR={r['atr_pct']} "
+            f"SIGNAL={r['signal_score']} RISK={r['risk_score']} ACTION={r['action']}"
         )
 
     print("-" * 50)
@@ -280,10 +157,8 @@ def main():
         print(f"EXIT_REASON={exit_trade.get('exit_reason')}")
         print(f"PNL={exit_trade['pnl']}")
         print(f"RESULT={exit_trade['result']}")
-
     else:
         risk_result = check_risk(best, latest_report)
-
         print(f"RISK_ALLOWED={risk_result['allowed']}")
 
         if risk_result["reasons"]:
