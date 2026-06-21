@@ -20,12 +20,20 @@ async function loadData() {
     document.getElementById("posEntry").textContent = position.entry;
     document.getElementById("posTp").textContent = position.tp;
     document.getElementById("posSl").textContent = position.sl;
+    document.getElementById("posCurrent").textContent = position.current_price;
+    document.getElementById("posPnl").textContent = position.unrealized_pnl;
+    document.getElementById("posTpDist").textContent = position.tp_distance_pct + "%";
+    document.getElementById("posSlDist").textContent = position.sl_distance_pct + "%";
   } else {
     document.getElementById("posSymbol").textContent = "NONE";
     document.getElementById("posAction").textContent = "-";
     document.getElementById("posEntry").textContent = "-";
     document.getElementById("posTp").textContent = "-";
     document.getElementById("posSl").textContent = "-";
+    document.getElementById("posCurrent").textContent = "-";
+    document.getElementById("posPnl").textContent = "-";
+    document.getElementById("posTpDist").textContent = "-";
+    document.getElementById("posSlDist").textContent = "-";
   }
 
   document.getElementById("total").textContent = report.total_trades ?? 0;

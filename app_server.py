@@ -30,6 +30,54 @@ def read_json(path):
         return json.load(f)
 
 
+def enrich_positions(positions, market):
+    results = market.get("results", [])
+    position_list = positions.get("positions", [])
+
+    for position in position_list:
+        symbol = position.get("symbol")
+        action = position.get("action")
+        entry = float(position.get("entry", 0))
+        tp = float(position.get("tp", 0))
+        sl = float(position.get("sl", 0))
+
+        current = None
+
+        for item in results:
+            if item.get("symbol") == symbol:
+                current = item
+                break
+
+        if not current:
+            position["current_price"] = "-"
+            position["unrealized_pnl"] = "-"
+            position["tp_distance_pct"] = "-"
+            position["sl_distance_pct"] = "-"
+            continue
+
+        price = float(current.get("price", 0))
+
+        if action == "LONG":
+            pnl = price - entry
+            tp_distance = ((tp - price) / price) * 100
+            sl_distance = ((price - sl) / price) * 100
+        elif action == "SHORT":
+            pnl = entry - price
+            tp_distance = ((price - tp) / price) * 100
+            sl_distance = ((sl - price) / price) * 100
+        else:
+            pnl = 0
+            tp_distance = 0
+            sl_distance = 0
+
+        position["current_price"] = round(price, 6)
+        position["unrealized_pnl"] = round(pnl, 6)
+        position["tp_distance_pct"] = round(tp_distance, 4)
+        position["sl_distance_pct"] = round(sl_distance, 4)
+
+    return positions
+
+
 class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -60,6 +108,7 @@ class Handler(BaseHTTPRequestHandler):
                 }
 
             portfolio = calculate_portfolio(latest_report)
+            positions = enrich_positions(positions, market)
 
             body = json.dumps({
                 "report": latest_report,
