@@ -2,6 +2,7 @@ import csv
 import json
 import os
 import urllib.request
+from engines.technical_engine import build_signal
 from datetime import datetime
 
 from engines.portfolio_engine import calculate_portfolio
@@ -73,62 +74,13 @@ def calc_rsi(closes, period=14):
 
 
 def analyze_symbol(symbol):
-    closes = fetch_klines(symbol)
 
-    price = closes[-1]
-    prev_price = closes[-2]
-    change_pct = round(((price - prev_price) / prev_price) * 100, 4)
-    rsi = calc_rsi(closes)
+    url = f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=5m&limit=100"
 
-    signal_score = 50
+    with urllib.request.urlopen(url, timeout=10) as response:
+        candles = json.loads(response.read().decode("utf-8"))
 
-    if change_pct > 0:
-        signal_score += 10
-    if change_pct > 0.3:
-        signal_score += 15
-    if rsi > 55:
-        signal_score += 10
-    if rsi > 65:
-        signal_score += 15
-
-    if change_pct < 0:
-        signal_score -= 10
-    if change_pct < -0.3:
-        signal_score -= 15
-    if rsi < 45:
-        signal_score -= 10
-    if rsi < 35:
-        signal_score -= 15
-
-    signal_score = max(0, min(100, signal_score))
-
-    risk_score = 20
-
-    if abs(change_pct) > 0.8:
-        risk_score += 30
-    if rsi > 75 or rsi < 25:
-        risk_score += 30
-
-    risk_score = max(0, min(100, risk_score))
-
-    if risk_score >= RISK_BLOCK_SCORE:
-        action = "WAIT"
-    elif signal_score >= SIGNAL_LONG_SCORE:
-        action = "LONG"
-    elif signal_score <= SIGNAL_SHORT_SCORE:
-        action = "SHORT"
-    else:
-        action = "WAIT"
-
-    return {
-        "symbol": symbol,
-        "price": price,
-        "change_pct": change_pct,
-        "rsi": rsi,
-        "signal_score": signal_score,
-        "risk_score": risk_score,
-        "action": action,
-    }
+    return build_signal(symbol, candles)
 
 
 def scan_market():
