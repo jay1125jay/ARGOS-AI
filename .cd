@@ -1,0 +1,109 @@
+import os
+import csv
+import subprocess
+from datetime import datetime
+
+ROOT = r"C:\ARGOS_AI"
+RUN_FILE = os.path.join(ROOT, "run_argos.py")
+LOG_DIR = os.path.join(ROOT, "logs")
+DATA_DIR = os.path.join(ROOT, "data")
+
+REPORT_FILES = [
+    os.path.join(ROOT, "report.csv"),
+    os.path.join(DATA_DIR, "report.csv"),
+    os.path.join(DATA_DIR, "paper_trades.csv"),
+]
+
+os.makedirs(LOG_DIR, exist_ok=True)
+
+def now_text():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+def save_log(name, text):
+    path = os.path.join(LOG_DIR, name)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(text)
+    return path
+
+def check_csv(path):
+    if not os.path.exists(path):
+        return "MISSING"
+
+    try:
+        with open(path, "r", encoding="utf-8-sig", newline="") as f:
+            rows = list(csv.reader(f))
+        if not rows:
+            return "EMPTY"
+        if len(rows[0]) < 2:
+            return "BAD_HEADER"
+        return "OK"
+    except Exception as e:
+        return "BROKEN: " + str(e)
+
+def main():
+    print("ARGOS LOOP ENGINE")
+    print("MODE=PAPER_ONLY")
+    print("REAL_ORDER=FALSE")
+    print("API_ORDER=FALSE")
+    print("-" * 60)
+
+    if not os.path.exists(RUN_FILE):
+        print("FAIL: run_argos.py not found")
+        return
+
+    result = subprocess.run(
+        ["py", RUN_FILE],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace"
+    )
+
+    output = ""
+    output += "[TIME] " + now_text() + "\n"
+    output += "[STDOUT]\n" + result.stdout + "\n"
+    output += "[STDERR]\n" + result.stderr + "\n"
+
+    log_name = "argos_loop_" + datetime.now().strftime("%Y%m%d_%H%M%S") + ".log"
+    log_path = save_log(log_name, output)
+
+    print(result.stdout)
+
+    if result.stderr.strip():
+        print("[STDERR]")
+        print(result.stderr)
+
+    failed = False
+
+    if result.returncode != 0:
+        failed = True
+        print("FAIL: run_argos.py returned error code:", result.returncode)
+
+    bad_words = ["Traceback", "ValueError", "TypeError", "KeyError", "IndexError", "ModuleNotFoundError"]
+    for word in bad_words:
+        if word in output:
+            failed = True
+            print("FAIL DETECTED:", word)
+
+    print("-" * 60)
+    print("CSV CHECK")
+
+    for path in REPORT_FILES:
+        status = check_csv(path)
+        print(status, path)
+        if status.startswith("BROKEN") or status in ["EMPTY", "BAD_HEADER"]:
+            failed = True
+
+    print("-" * 60)
+    print("LOG:", log_path)
+
+    if failed:
+        print("RESULT=FAIL")
+        print("NEXT: copy this screen and send it")
+    else:
+        print("RESULT=PASS")
+        print("NEXT: run again later for live paper data")
+
+if __name__ == "__main__":
+    main()

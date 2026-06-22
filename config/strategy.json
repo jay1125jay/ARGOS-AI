@@ -1,0 +1,10 @@
+{
+  "strategy_version": "V4.0_BASE",
+  "timeframe": "5m",
+  "symbols": ["BTCUSDT", "ETHUSDT", "SOLUSDT", "XRPUSDT", "BNBUSDT"],
+  "indicators": ["RSI", "EMA9", "EMA21", "ATR", "VOLUME"],
+  "tp_pct": 0.003,
+  "sl_pct": 0.002,
+  "cooldown_minutes": 5,
+  "paper_only": true
+}

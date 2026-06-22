@@ -7,8 +7,6 @@ from engines.portfolio_engine import calculate_portfolio
 from engines.position_manager import open_position, check_all_exits, load_positions
 from engines.risk_engine import check_risk
 from engines.technical_engine import build_signal
-from engines.config_loader import get_strategy_version
-from engines.decision_logger import log_decision
 from engines.report_engine import (
     ensure_report_files,
     save_trade,
@@ -122,7 +120,6 @@ def main():
     print(f"BEST_RISK_SCORE={best['risk_score']}")
 
     latest_report = get_latest_report()
-    strategy_version = get_strategy_version()
 
     closed_trades = check_all_exits(results)
 
@@ -131,7 +128,6 @@ def main():
         trade_changed = True
 
         print("POSITION_EXIT=EXECUTED")
-        log_decision(trade['symbol'], trade['action'], 0, 0, 'POSITION_EXIT_' + str(trade.get('exit_reason')), strategy_version)
         print(f"EXIT_SYMBOL={trade['symbol']}")
         print(f"EXIT_REASON={trade.get('exit_reason')}")
         print(f"PNL={trade['pnl']}")
@@ -143,8 +139,11 @@ def main():
 
         risk_result = check_risk(signal, latest_report)
 
-        print(f"ENTRY_CHECK {signal['symbol']} ACTION={signal['action']} RISK_ALLOWED={risk_result['allowed']}")
-        log_decision(signal['symbol'], signal['action'], signal['signal_score'], signal['risk_score'], 'ENTRY_CHECK', strategy_version)
+        print(
+            f"ENTRY_CHECK {signal['symbol']} "
+            f"ACTION={signal['action']} "
+            f"RISK_ALLOWED={risk_result['allowed']}"
+        )
 
         if not risk_result["allowed"]:
             if risk_result["reasons"]:
@@ -157,7 +156,6 @@ def main():
             trade_changed = True
 
             print("POSITION_ENTRY=EXECUTED")
-            log_decision(position['symbol'], position['action'], signal['signal_score'], signal['risk_score'], 'POSITION_ENTRY_EXECUTED', strategy_version)
             print(f"SYMBOL={position['symbol']}")
             print(f"ACTION={position['action']}")
             print(f"ENTRY={position['entry']}")
@@ -165,7 +163,6 @@ def main():
             print(f"SL={position['sl']}")
         else:
             print(f"POSITION_ENTRY=BLOCKED {signal['symbol']}")
-            log_decision(signal['symbol'], signal['action'], signal['signal_score'], signal['risk_score'], 'POSITION_ENTRY_BLOCKED', strategy_version)
 
     report = calculate_report()
 
