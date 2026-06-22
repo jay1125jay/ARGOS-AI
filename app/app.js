@@ -13,30 +13,6 @@ async function loadData() {
   document.getElementById("totalReturn").textContent = (portfolio.total_return_pct ?? 0) + "%";
   document.getElementById("openPositions").textContent = positions.length;
 
-  const position = positions[0];
-
-  if (position) {
-    document.getElementById("posSymbol").textContent = position.symbol;
-    document.getElementById("posAction").textContent = position.action;
-    document.getElementById("posEntry").textContent = position.entry;
-    document.getElementById("posTp").textContent = position.tp;
-    document.getElementById("posSl").textContent = position.sl;
-    document.getElementById("posCurrent").textContent = position.current_price;
-    document.getElementById("posPnl").textContent = position.unrealized_pnl;
-    document.getElementById("posTpDist").textContent = position.tp_distance_pct + "%";
-    document.getElementById("posSlDist").textContent = position.sl_distance_pct + "%";
-  } else {
-    document.getElementById("posSymbol").textContent = "NONE";
-    document.getElementById("posAction").textContent = "-";
-    document.getElementById("posEntry").textContent = "-";
-    document.getElementById("posTp").textContent = "-";
-    document.getElementById("posSl").textContent = "-";
-    document.getElementById("posCurrent").textContent = "-";
-    document.getElementById("posPnl").textContent = "-";
-    document.getElementById("posTpDist").textContent = "-";
-    document.getElementById("posSlDist").textContent = "-";
-  }
-
   document.getElementById("total").textContent = report.total_trades ?? 0;
   document.getElementById("wins").textContent = report.wins ?? 0;
   document.getElementById("losses").textContent = report.losses ?? 0;
@@ -48,6 +24,33 @@ async function loadData() {
   document.getElementById("shortWinRate").textContent = (analytics.short_win_rate ?? 0) + "%";
   document.getElementById("avgWin").textContent = analytics.avg_win ?? 0;
   document.getElementById("avgLoss").textContent = analytics.avg_loss ?? 0;
+
+  const positionRows = document.getElementById("positionRows");
+  positionRows.innerHTML = "";
+
+  if (positions.length === 0) {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td colspan="9">NO OPEN POSITIONS</td>
+    `;
+    positionRows.appendChild(row);
+  } else {
+    positions.forEach(p => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${p.symbol}</td>
+        <td>${p.action}</td>
+        <td>${p.entry}</td>
+        <td>${p.tp}</td>
+        <td>${p.sl}</td>
+        <td>${p.current_price}</td>
+        <td>${p.unrealized_pnl}</td>
+        <td>${p.tp_distance_pct}%</td>
+        <td>${p.sl_distance_pct}%</td>
+      `;
+      positionRows.appendChild(row);
+    });
+  }
 
   document.getElementById("marketUpdated").textContent = data.market?.updated_at || "-";
 

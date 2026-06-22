@@ -108,6 +108,9 @@ def check_exit_for_signal(current_signal):
     symbol = current_signal["symbol"]
     price = float(current_signal["price"])
 
+    if price <= 0:
+        return None
+
     remaining = []
     closed_trade = None
 

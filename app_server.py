@@ -31,6 +31,17 @@ def read_json(path):
         return json.load(f)
 
 
+def calculate_unrealized_pnl(action, entry, price, position_size):
+    if action == "LONG":
+        pnl_pct = (price - entry) / entry
+    elif action == "SHORT":
+        pnl_pct = (entry - price) / entry
+    else:
+        pnl_pct = 0
+
+    return round(position_size * pnl_pct, 6)
+
+
 def enrich_positions(positions, market):
     results = market.get("results", [])
     position_list = positions.get("positions", [])
@@ -41,6 +52,7 @@ def enrich_positions(positions, market):
         entry = float(position.get("entry", 0))
         tp = float(position.get("tp", 0))
         sl = float(position.get("sl", 0))
+        position_size = float(position.get("position_size", 1000.0))
 
         current = None
 
@@ -59,20 +71,22 @@ def enrich_positions(positions, market):
         price = float(current.get("price", 0))
 
         if action == "LONG":
-            pnl = price - entry
             tp_distance = ((tp - price) / price) * 100
             sl_distance = ((price - sl) / price) * 100
         elif action == "SHORT":
-            pnl = entry - price
             tp_distance = ((price - tp) / price) * 100
             sl_distance = ((sl - price) / price) * 100
         else:
-            pnl = 0
             tp_distance = 0
             sl_distance = 0
 
         position["current_price"] = round(price, 6)
-        position["unrealized_pnl"] = round(pnl, 6)
+        position["unrealized_pnl"] = calculate_unrealized_pnl(
+            action,
+            entry,
+            price,
+            position_size
+        )
         position["tp_distance_pct"] = round(tp_distance, 4)
         position["sl_distance_pct"] = round(sl_distance, 4)
 
@@ -157,4 +171,3 @@ class Handler(BaseHTTPRequestHandler):
 
 
 HTTPServer(("0.0.0.0", 8000), Handler).serve_forever()
-

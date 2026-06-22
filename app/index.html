@@ -26,19 +26,6 @@
     </div>
 
     <div class="card">
-      <h2>Open Position</h2>
-      <p>Symbol: <span id="posSymbol">NONE</span></p>
-      <p>Action: <span id="posAction">-</span></p>
-      <p>Entry: <span id="posEntry">-</span></p>
-      <p>TP: <span id="posTp">-</span></p>
-      <p>SL: <span id="posSl">-</span></p>
-      <p>Current: <span id="posCurrent">-</span></p>
-      <p>Unrealized PnL: <span id="posPnl">-</span></p>
-      <p>TP Distance: <span id="posTpDist">-</span></p>
-      <p>SL Distance: <span id="posSlDist">-</span></p>
-    </div>
-
-    <div class="card">
       <h2>Report</h2>
       <p>Total Trades: <span id="total">0</span></p>
       <p>Wins: <span id="wins">0</span></p>
@@ -54,6 +41,26 @@
       <p>SHORT Win Rate: <span id="shortWinRate">0%</span></p>
       <p>Avg Win: <span id="avgWin">0</span></p>
       <p>Avg Loss: <span id="avgLoss">0</span></p>
+    </div>
+
+    <div class="card wide">
+      <h2>Open Positions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Action</th>
+            <th>Entry</th>
+            <th>TP</th>
+            <th>SL</th>
+            <th>Current</th>
+            <th>Unrealized PnL</th>
+            <th>TP Dist</th>
+            <th>SL Dist</th>
+          </tr>
+        </thead>
+        <tbody id="positionRows"></tbody>
+      </table>
     </div>
 
     <div class="card wide">
