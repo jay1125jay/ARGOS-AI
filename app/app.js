@@ -5,6 +5,8 @@ async function loadData() {
   const portfolio = data.portfolio || {};
   const report = data.report || {};
   const analytics = data.analytics || {};
+  const news = data.news || {};
+  const macro = data.macro || {};
   const positionsData = data.positions || { positions: [] };
   const positions = positionsData.positions || [];
 
@@ -24,6 +26,15 @@ async function loadData() {
   document.getElementById("shortWinRate").textContent = (analytics.short_win_rate ?? 0) + "%";
   document.getElementById("avgWin").textContent = analytics.avg_win ?? 0;
   document.getElementById("avgLoss").textContent = analytics.avg_loss ?? 0;
+
+  document.getElementById("newsMode").textContent = news.mode ?? "-";
+  document.getElementById("newsSentiment").textContent = news.market_sentiment ?? "-";
+  document.getElementById("newsRisk").textContent = news.risk_level ?? "-";
+
+  document.getElementById("macroMode").textContent = macro.mode ?? "-";
+  document.getElementById("macroRegime").textContent = macro.market_regime ?? "-";
+  document.getElementById("macroDxy").textContent = macro.dxy_status ?? "-";
+  document.getElementById("macroRate").textContent = macro.rate_risk ?? "-";  
 
   const positionRows = document.getElementById("positionRows");
   positionRows.innerHTML = "";
