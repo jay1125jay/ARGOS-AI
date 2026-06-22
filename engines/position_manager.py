@@ -5,6 +5,7 @@ from datetime import datetime
 BASE_DIR = r"C:\ARGOS_AI"
 POSITIONS_FILE = os.path.join(BASE_DIR, "data", "open_positions.json")
 
+MAX_POSITIONS = 3
 POSITION_SIZE = 1000.0
 
 TP_PCT = 0.003
@@ -31,32 +32,49 @@ def save_positions(data):
         json.dump(data, f, indent=2)
 
 
-def has_open_position():
+def has_symbol_position(symbol):
     data = load_positions()
-    return len(data.get("positions", [])) > 0
+    positions = data.get("positions", [])
+
+    return any(p.get("symbol") == symbol for p in positions)
+
+
+def can_open_position(symbol):
+    data = load_positions()
+    positions = data.get("positions", [])
+
+    if len(positions) >= MAX_POSITIONS:
+        return False
+
+    if has_symbol_position(symbol):
+        return False
+
+    return True
 
 
 def open_position(signal):
-    data = load_positions()
+    symbol = signal["symbol"]
+    action = signal["action"]
 
-    if has_open_position():
+    if action not in ["LONG", "SHORT"]:
         return None
 
+    if not can_open_position(symbol):
+        return None
+
+    data = load_positions()
     entry = float(signal["price"])
-    action = signal["action"]
 
     if action == "LONG":
         tp = round(entry * (1 + TP_PCT), 6)
         sl = round(entry * (1 - SL_PCT), 6)
-    elif action == "SHORT":
+    else:
         tp = round(entry * (1 - TP_PCT), 6)
         sl = round(entry * (1 + SL_PCT), 6)
-    else:
-        return None
 
     position = {
         "opened_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "symbol": signal["symbol"],
+        "symbol": symbol,
         "action": action,
         "entry": entry,
         "tp": tp,
@@ -77,61 +95,73 @@ def calculate_pnl(action, entry, exit_price, position_size):
     else:
         pnl_pct = (entry - exit_price) / entry
 
-    pnl = position_size * pnl_pct
-
-    return round(pnl, 6)
+    return round(position_size * pnl_pct, 6)
 
 
-def check_exit(current_signal):
+def check_exit_for_signal(current_signal):
     data = load_positions()
     positions = data.get("positions", [])
 
     if not positions:
         return None
 
-    position = positions[0]
+    symbol = current_signal["symbol"]
     price = float(current_signal["price"])
-    action = position["action"]
 
-    exit_reason = None
+    remaining = []
+    closed_trade = None
 
-    if action == "LONG":
-        if price >= float(position["tp"]):
-            exit_reason = "TP"
-        elif price <= float(position["sl"]):
-            exit_reason = "SL"
+    for position in positions:
+        if position["symbol"] != symbol:
+            remaining.append(position)
+            continue
 
-    if action == "SHORT":
-        if price <= float(position["tp"]):
-            exit_reason = "TP"
-        elif price >= float(position["sl"]):
-            exit_reason = "SL"
+        action = position["action"]
+        exit_reason = None
 
-    if not exit_reason:
-        return None
+        if action == "LONG":
+            if price >= float(position["tp"]):
+                exit_reason = "TP"
+            elif price <= float(position["sl"]):
+                exit_reason = "SL"
 
-    entry = float(position["entry"])
-    position_size = float(position.get("position_size", POSITION_SIZE))
+        elif action == "SHORT":
+            if price <= float(position["tp"]):
+                exit_reason = "TP"
+            elif price >= float(position["sl"]):
+                exit_reason = "SL"
 
-    pnl = calculate_pnl(
-        action,
-        entry,
-        price,
-        position_size
-    )
+        if not exit_reason:
+            remaining.append(position)
+            continue
 
-    closed = {
-        "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "symbol": position["symbol"],
-        "action": action,
-        "entry": entry,
-        "exit": price,
-        "pnl": pnl,
-        "result": "WIN" if pnl > 0 else "LOSS",
-        "exit_reason": exit_reason
-    }
+        entry = float(position["entry"])
+        position_size = float(position.get("position_size", POSITION_SIZE))
+        pnl = calculate_pnl(action, entry, price, position_size)
 
-    data["positions"] = []
+        closed_trade = {
+            "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "symbol": position["symbol"],
+            "action": action,
+            "entry": entry,
+            "exit": price,
+            "pnl": pnl,
+            "result": "WIN" if pnl > 0 else "LOSS",
+            "exit_reason": exit_reason
+        }
+
+    data["positions"] = remaining
     save_positions(data)
+
+    return closed_trade
+
+
+def check_all_exits(signals):
+    closed = []
+
+    for signal in signals:
+        trade = check_exit_for_signal(signal)
+        if trade:
+            closed.append(trade)
 
     return closed
