@@ -8,13 +8,19 @@ async function loadData() {
   const news = data.news || {};
   const macro = data.macro || {};
   const ai = data.ai || {};
+  const backtest = data.backtest || {};
   const positionsData = data.positions || { positions: [] };
   const positions = positionsData.positions || [];
+  const health = data.health || {};
 
   document.getElementById("startBalance").textContent = portfolio.start_balance ?? 0;
   document.getElementById("currentBalance").textContent = portfolio.current_balance ?? 0;
   document.getElementById("totalReturn").textContent = (portfolio.total_return_pct ?? 0) + "%";
   document.getElementById("openPositions").textContent = positions.length;
+
+  document.getElementById("healthStatus").textContent = health.status ?? "-";
+  document.getElementById("healthFilesOk").textContent = health.files_ok ?? 0;
+  document.getElementById("healthFilesTotal").textContent = health.files_total ?? 0;
 
   document.getElementById("total").textContent = report.total_trades ?? 0;
   document.getElementById("wins").textContent = report.wins ?? 0;
@@ -32,16 +38,46 @@ async function loadData() {
   document.getElementById("newsSentiment").textContent = news.market_sentiment ?? "-";
   document.getElementById("newsRisk").textContent = news.risk_level ?? "-";
 
+  const newsRows = document.getElementById("newsRows");
+  newsRows.innerHTML = "";
+
+  (news.headlines || []).slice(0, 10).forEach(h => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${h.title}</td>
+    `;
+    newsRows.appendChild(row);
+  });
+
   document.getElementById("macroMode").textContent = macro.mode ?? "-";
   document.getElementById("macroRegime").textContent = macro.market_regime ?? "-";
   document.getElementById("macroDxy").textContent = macro.dxy_status ?? "-";
   document.getElementById("macroRate").textContent = macro.rate_risk ?? "-";
+
+  const macroRows = document.getElementById("macroRows");
+  macroRows.innerHTML = "";
+
+  (macro.events || []).slice(0, 10).forEach(e => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${e.title}</td>
+    `;
+    macroRows.appendChild(row);
+  });
   
   document.getElementById("aiMode").textContent = ai.mode ?? "-";
   document.getElementById("aiBias").textContent = ai.ai_bias ?? "-";
   document.getElementById("aiConfidence").textContent = ai.confidence ?? "-";
   document.getElementById("aiPermission").textContent = ai.trade_permission ?? "-";
   document.getElementById("aiReason").textContent = ai.reason ?? "-";
+
+  const strategy = (backtest.strategies || [])[0] || {};
+
+  document.getElementById("backtestMode").textContent = backtest.mode ?? "-";
+  document.getElementById("backtestStrategy").textContent = strategy.name ?? "-";
+  document.getElementById("backtestTrades").textContent = strategy.total_trades ?? 0;
+  document.getElementById("backtestWinRate").textContent = (strategy.win_rate ?? 0) + "%";
+  document.getElementById("backtestPnl").textContent = strategy.total_pnl ?? 0;
 
   const positionRows = document.getElementById("positionRows");
   positionRows.innerHTML = "";

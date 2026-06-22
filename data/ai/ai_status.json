@@ -1,7 +1,7 @@
 {
-  "mode": "PLACEHOLDER",
-  "ai_bias": "NEUTRAL",
-  "confidence": 50,
-  "trade_permission": "ALLOW",
-  "reason": "NO_AI_MODEL"
+  "mode": "AI_V1",
+  "ai_bias": "BEARISH",
+  "confidence": 10,
+  "trade_permission": "BLOCK",
+  "reason": "NEWS=NEGATIVE,MACRO=RISK_OFF"
 }

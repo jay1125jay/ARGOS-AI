@@ -20,6 +20,13 @@
     </div>
 
     <div class="card">
+      <h2>Health</h2>
+      <p>Status: <span id="healthStatus">-</span></p>
+      <p>Files OK: <span id="healthFilesOk">0</span></p>
+      <p>Files Total: <span id="healthFilesTotal">0</span></p>
+    </div>
+
+    <div class="card">
       <h2>Portfolio</h2>
       <p>Start Balance: <span id="startBalance">0</span></p>
       <p>Current Balance: <span id="currentBalance">0</span></p>
@@ -52,12 +59,36 @@
       <p>Risk Level: <span id="newsRisk">-</span></p>
     </div>
 
+    <div class="card wide">
+      <h2>Latest News Headlines</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+          </tr>
+        </thead>
+        <tbody id="newsRows"></tbody>
+      </table>
+    </div>
+
     <div class="card">
       <h2>Macro Status</h2>
       <p>Mode: <span id="macroMode">-</span></p>
       <p>Regime: <span id="macroRegime">-</span></p>
       <p>DXY: <span id="macroDxy">-</span></p>
       <p>Rate Risk: <span id="macroRate">-</span></p>
+    </div>
+
+    <div class="card wide">
+      <h2>Latest Macro Events</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+          </tr>
+        </thead>
+        <tbody id="macroRows"></tbody>
+      </table>
     </div>
 
     <div class="card">
@@ -67,6 +98,15 @@
       <p>Confidence: <span id="aiConfidence">-</span></p>
       <p>Permission: <span id="aiPermission">-</span></p>
       <p>Reason: <span id="aiReason">-</span></p>
+    </div>
+
+    <div class="card">
+      <h2>Backtest Center</h2>
+      <p>Mode: <span id="backtestMode">-</span></p>
+      <p>Strategy: <span id="backtestStrategy">-</span></p>
+      <p>Trades: <span id="backtestTrades">0</span></p>
+      <p>Win Rate: <span id="backtestWinRate">0%</span></p>
+      <p>Total PnL: <span id="backtestPnl">0</span></p>
     </div>
 
     <div class="card wide">

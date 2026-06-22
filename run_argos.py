@@ -10,6 +10,7 @@ from engines.technical_engine import build_signal
 from engines.config_loader import get_strategy_version
 from engines.decision_logger import log_decision
 from engines.cooldown_engine import set_cooldown, is_cooldown_active
+from engines.ai_engine import load_ai_status
 from engines.report_engine import (
     ensure_report_files,
     save_trade,
@@ -124,6 +125,7 @@ def main():
 
     latest_report = get_latest_report()
     strategy_version = get_strategy_version()
+    ai_status = load_ai_status()
 
     closed_trades = check_all_exits(results)
 
@@ -141,6 +143,11 @@ def main():
 
     for signal in results:
         if signal["action"] not in ["LONG", "SHORT"]:
+            continue
+
+        if ai_status.get('trade_permission') == 'BLOCK':
+            print(f"POSITION_ENTRY=AI_BLOCKED {signal['symbol']}")
+            log_decision(signal['symbol'], signal['action'], signal['signal_score'], signal['risk_score'], 'AI_BLOCKED_' + ai_status.get('ai_bias', 'UNKNOWN'), strategy_version)
             continue
 
         if is_cooldown_active(signal['symbol']):
@@ -204,4 +211,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
 

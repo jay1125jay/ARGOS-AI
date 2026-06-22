@@ -1,7 +1,88 @@
 {
-  "mode": "PLACEHOLDER",
-  "updated_at": "",
-  "market_sentiment": "NEUTRAL",
-  "risk_level": "NORMAL",
-  "headlines": []
+  "mode": "LIVE_RSS",
+  "updated_at": "2026-06-23 00:06:37",
+  "market_sentiment": "NEGATIVE",
+  "risk_level": "HIGH",
+  "headlines": [
+    {
+      "title": "Better Crypto for the Next Bull Run: Bitcoin vs. Ethereum - Yahoo Finance",
+      "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPZU5aYkVfU2tvcU1Kajlja3BmUmw5ejdrTl82aUZhZDJyRGhlX0ZYQVpMVWt1QjBCVmhtLUJubDh3SHdFOEZFS2F6dGl1ejV2WVpBZDNGcXdXYjZ0TmNub0JZVWJTWER5NTJfbHdXZnBTeXVySEtlYWlLSVFNT2wzZUU1aDlXNzlmYTE1Wk92UjllaWxiNFQ4?oc=5"
+    },
+    {
+      "title": "Better Crypto for the Next Bull Run: Bitcoin vs. Ethereum - The Motley Fool",
+      "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOWHlKdlZQNU9EaXdwblRYaE9xYk9tdDctaV9RSm5ZbTY1RzdpZVBLM1ZuRTByQXZHMUJ0cHhWUnhfbVZJSExfS05zTEp5NHoycmdUVy1RbmhLWXlfT0p3b2E3U2l1U2x0VjhzQWcybmtFa2NKTXE2RkxhZUsxeVFkcmtLVDRfOEJyTXJRWUlBeXd4bi1GVkpTNA?oc=5"
+    },
+    {
+      "title": "From Bitcoin to Stocks: QuantRate Launches Free AI Trading Bot to Help Retail Investors Execute Stock and Crypto Trading Strategies - markets.businessinsider.com",
+      "link": "https://news.google.com/rss/articles/CBMimAJBVV95cUxQOVNvYTBtTldlaWZYa1FxbElZU0szX1VodDdUN1BQb1pnSi1kSTVTVnJEMzNpMkRxbHFhM19pYzlTTl9xdmhxM2I4TmxNUGQxTm9ORUx1TUZYaDhJaV9hSlBYQUpQc3p3VndRZEZHdHFLaXN4TmRPOGlLbVk4R0FpYXIzZFdpcGdPU25yVVVRN0ZDTlFCLUY4NzRicDBjb1RVMTRoVjVmR2RYdER6dmcwQmRLR1dZZzBTZ3U5WTZwNVhlQU4xTzVGaUh3RVBFN05hZ3RSWnppVmlQdER0Z0ZpY0JQSFhBRWVqd2N6TlZGMWwwaE1OdjViZGhhTHhhSkVncFdOQ2RxZExQazZteUk1QzVqWUtsdEZS?oc=5"
+    },
+    {
+      "title": "Bitcoin ETF outflow pain eases just as another headwind gathers strength - CoinDesk",
+      "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQNS1vY1Nya2dKWThaLUIyeVVBV3RjeXNEcUV0MjB5cnlyeGlBV21RSUlmQnZCQUYwa3dHSmpKTjl0R3ViRndYMXlTeXB2ZEhaUGFEa243REFtVlduYTVvbGl6VS1kU0w3TllmZzhUNVR6bGlabnkzSXp2blA3V0JqcjFNNG1VWWlvRllrQ1pheFV0emdyMDUwZDVnZW1GWFdLT21WNXhjbkRLZk41cjhReGVRcjU?oc=5"
+    },
+    {
+      "title": "Crypto Market Overview: Bitcoin, Zcash and Bittensor rebound, but are these gains sustainable? - FXStreet",
+      "link": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxPbERTOEd0VW5YcGp3VHlNem56eDI0MUs0TDRyN2FLN2phbl9xY2Y1RXFRRHBUZExqbW1tejhXay1qMXY3M3I2QWZPZFgxMVNkOHFiVW05NUxuYlU1SlVCTW5fY0VyNHp6Sjd0ekdoMWdBSXBMdlRGQUVCU0VyclRtY3pxUU8zaFpNNnE3Rmx6eWQwLWl1U25aTWlnTUtqcXVlRzIzTTBZX0hodUVMQlRWeDVUNi1KdzQ3Z3VNSEJQV3FobFB2Mkc4TXFrTG1YbUdYbVpFYjEta3pnaGtnUEoyY28xaC0?oc=5"
+    },
+    {
+      "title": "Better Crypto for the Next Bull Run: Bitcoin vs. Ethereum - Yahoo Finance",
+      "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPZU5aYkVfU2tvcU1Kajlja3BmUmw5ejdrTl82aUZhZDJyRGhlX0ZYQVpMVWt1QjBCVmhtLUJubDh3SHdFOEZFS2F6dGl1ejV2WVpBZDNGcXdXYjZ0TmNub0JZVWJTWER5NTJfbHdXZnBTeXVySEtlYWlLSVFNT2wzZUU1aDlXNzlmYTE1Wk92UjllaWxiNFQ4?oc=5"
+    },
+    {
+      "title": "Better Crypto for the Next Bull Run: Bitcoin vs. Ethereum - The Motley Fool",
+      "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOWHlKdlZQNU9EaXdwblRYaE9xYk9tdDctaV9RSm5ZbTY1RzdpZVBLM1ZuRTByQXZHMUJ0cHhWUnhfbVZJSExfS05zTEp5NHoycmdUVy1RbmhLWXlfT0p3b2E3U2l1U2x0VjhzQWcybmtFa2NKTXE2RkxhZUsxeVFkcmtLVDRfOEJyTXJRWUlBeXd4bi1GVkpTNA?oc=5"
+    },
+    {
+      "title": "Ethereum news: Bitmine (BMNR) buys $92 million ETH as Tom Lee reaffirms 'crypto spring' call - CoinDesk",
+      "link": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQbTJKTmpnOWxIRjhOQmROampDbEhJaDltQlpIaEZvVnNyaEt5VTQ4U0hxNWlUcW1UTlJldWVCSlJhcERxN1BWTk5CLTFXNUNyelZqYmV2Q1VsUndhX0JWSzZPWHYwUzY4ckxyV3ozX01rdUZnQ3g5WmYzZV9TZGZYUTVVa0V6SHp0ak5YVXFIelFlNFhHZHhwWWx5WHl4U1dFUFN1NHJRNnR5aS12aXlIam1lWFBucjk3Uko3akhIRVRxYXpfSm5TVmV6QQ?oc=5"
+    },
+    {
+      "title": "Crypto Today: Bitcoin, Ethereum, XRP rise slightly as US-Iran peace talks make progress - FXStreet",
+      "link": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxPSkI1dVFGS3Q1QzdtcmRqSXdhMkVNRkU1cWc0U0N0VU4wWmhSTjlRRzNIczBJNDNXZ0FuN052MzhlWlY1UGNQQWtoeVFVdUZiZUU1Qk1hUEZpbWNQa3l3b1QzbWgyU1JQQ196TGlJZm0yOURJaDREUlVTc2w5RklRRGpwNlcwMHdGQU03SXJvS295S3h3YjNxSFZtbzZpWGR5aU9lTTJvbWEwY0RabWJlVXVFUEhuT3JkWGdsZXRuZnpBd09UeWtxaDNCWFR4Y2NXTUZqRHhlWHdWSDhP?oc=5"
+    },
+    {
+      "title": "Crypto market hits extreme fear; capital shifts from Bitcoin and Ethereum to XRP, Solana, and Hyperliquid. - Pluang",
+      "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNb0kxU25OTUktRUpVTHZZbUFTLVYzOVM0NUtxMks2UU9CZFhpTlBYRFNGeWc3R0cxYUhBWWZtMDBmTE5VQkR5MDNHcnJ0eFUxV0x6bklzcmtDVks4Q1I1NUNScVlfQzZRSFozdHpoem5sOUFYMXFvWDhnZDRScklXYl85bWV1TGQxLUNROVFscWxyWk1wTWZpUWp3SQ?oc=5"
+    },
+    {
+      "title": "Binance founder Changpeng Zhao on crypto winters, his stint in jail, and his future - Yahoo Finance",
+      "link": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxNNndMV21hQjNudTQ5ZGJkVkJvcnFHNlVLM255bVNtY2poMnZoaUlzODd2U0E3SFZIemM5Q0RfY3ZOUW5zaHpRQTg0WFRTSkFLaDJEUElNMEFnWmg2UkxxdXBjQWlKN19oRldEOW1nWGhIWE9heTZTSlRHdlpLWHJlM21JZ0gyT2VickNMWVZncUJRNi1Hb2x0UEkyU3Jha3R5eHZ4UHNoaTZEYU1HSF9uN0NhYkR3QW9UNG9aWEhSY3p3X0RzdUNoeUZYSE5yRkFvZG1RRQ?oc=5"
+    },
+    {
+      "title": "Crypto News: Japanese Pension Fund Plans First Crypto Allocation \u2014 1% Move Signals Shifting Institutional Attitudes in Japan - Binance",
+      "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1qNDB4VWcwcEM1ZTBOTUFSdnlFazg5Y0F4NzBsdXA2bDdpZy1SakFpNkM1cUNaX2dCenZNZTM5T0hiZG1LTEJkV0xKSE5jTzRuNlFWSlBFM3pvOUlPc3IzTmhzNU0?oc=5"
+    },
+    {
+      "title": "Binance.US Hires Woden Strategies for Crypto Lobbying - Legis1",
+      "link": "https://news.google.com/rss/articles/CBMieEFVX3lxTE1TcGo0bnRzSmN2ejJZa19qRkpwQ202VF9sdFg5UjdtZnVWTWRQTjlrR0hnSHlxT21aeUFuNGZxY3JhaFBSUlhVcGZ2ZW9FRGNXNldwRUZpMm9hdElwNzJqRFlzaTV1N1RfRHdrQTNfaDJHZlBOR2JRVQ?oc=5"
+    },
+    {
+      "title": "Binance set to lose permission to operate in EU, sources say - Reuters",
+      "link": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQdGE2UlVKWF90dTFvY0w1eDFlTEJMVFBYRnBULXB2d0NfajdKVllRS2dOLURKTVQ4M0RTOUFXTVFtaXU3R3ZXX2tMMXJLa0p1MlpQWVoybHY2VkVfZkItVHVIZnRzajF1N3lUVE83MWdwMFRGbWt4SGlzWXFibmZ0ZmQwWFRyYkEyRF9Kem5MZE85WXVvQ2VJbHotRy1BanZ4amFSdUE4ZnZzRHZsODJxT0JjaGRvQ0VJTnhQQTN0OTlsT0Q3SFE?oc=5"
+    },
+    {
+      "title": "Binance Founder on the future of crypto, life after prison - Yahoo Finance",
+      "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQLUtTTmo3bHhDMU9fUXNITlJ0dElLd0dDVUpmZ0ZUZ2ZvTUhfOVktZmI4UWFtaGVLTkwwYThjaTBMLWRwakpoN0hFNlhqNHg3Mi10LVBDUnRLazJzNlBFT3NHXzBtZWZzTmxXNlJYWHFwQnNHRFQxSjVvMTVxMHg0S05RQmw4c25n?oc=5"
+    },
+    {
+      "title": "Weekly Wrap: Bitcoin Slumps As Fed Turns Hawkish On Interest Rates - Yahoo Finance",
+      "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPcG0ybEF1YmFtalVLeWdqTUZPUENzakN4S3cxb0lxazQ3UHEwWDlwbzgycEpYTndzVExaTEVoQjVNal9IQnpGVnRCZnpHcXhSQUZFdTY0bXc3WU5MTWg3bjlHWW9US2RNNE0xVkl3eVFtWFFMdlltSjFWaG55NU4tWlJnWXVXNUo1QngxNE1wLThibzkycnpEZkNfVQ?oc=5"
+    },
+    {
+      "title": "Bitcoin ETF outflow pain eases just as another headwind gathers strength - CoinDesk",
+      "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQNS1vY1Nya2dKWThaLUIyeVVBV3RjeXNEcUV0MjB5cnlyeGlBV21RSUlmQnZCQUYwa3dHSmpKTjl0R3ViRndYMXlTeXB2ZEhaUGFEa243REFtVlduYTVvbGl6VS1kU0w3TllmZzhUNVR6bGlabnkzSXp2blA3V0JqcjFNNG1VWWlvRllrQ1pheFV0emdyMDUwZDVnZW1GWFdLT21WNXhjbkRLZk41cjhReGVRcjU?oc=5"
+    },
+    {
+      "title": "Gold, silver and bitcoin fall as traders up Fed rate hike bets - CNBC",
+      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNRnhXZlNwU2VVYzlTY2RITnh1N1NTUzMxUmlicEdweF9CcUwtYzVVUnItLTNyUU10cm5wYzloMXZkZjZQaDZ2WjF4R09Eb0tyVHN5X1NQUUhWdHRfSW5IWjNqRzhBTXFOVHdTM2ZURDF0aFNSRDVSSXI5bVU4QWt6NFZ0XzV4SmFUMUFEa1JDb3g4Y0ZWcWR0SGNTYVJETmIzRUNwMWV30gGrAUFVX3lxTE0yRVFwQnFheVNZbXo4OEM0S2xtQUg1b0tyR0Z3TkdQTjlRM0xHYlhaVHZzZFV3cXZDQ19vSXFmUnA2cWROZ1NhMGZEa1lBQ2hjY3lDYXVJVW1UckpFV3lUelFYVzVKa1R4VUdUa3hzbVJFY0dHLTdURnhKUE9vZjB4SkFmZWw2M1ZTX0lsUjdVYXE3YzZNd3UzYXpoTzhncy1xQ0VVX1RWcjhWZw?oc=5"
+    },
+    {
+      "title": "Bitcoin Price Slides After Fed Holds Interest Rates Steady, Rate Hike Odds Rise - CoinMarketCap",
+      "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNVXlrOGJQQ2I4WnJWeThMMXdxTGFNZGNsUHZwXzNEVU1Ib0Q1bklSb0w2cC0zcjZyaU9LeGtPeWRXTUxMWW03dkRjZjhuRTY2UVdEMGk3SHZhNmROcUNDSml6Zm1zRHlpX2d5Z1FmWUNoWXIxS1hROFB4V1RiZHpKOVZfNkRVYm5JTGtlMDUzR3VqRnFuQUJ3?oc=5"
+    },
+    {
+      "title": "The Dollar, Gold, and Bitcoin Are Taking Warsh\u2019s Fed Shift Seriously. Stocks Don\u2019t Care. - Barron's",
+      "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQQ29MZUMtY3hhTElYR3puMzFjbE8zRmJmVFI1QTJiUDE0cnlZaFZ1VHp3MFBWd0kyRjdYZDlIcXNHUDZ2N2EzZ3FNREtzZ0ZCbnhod2lXQ0hCRV94SGRHUVpWSHFDajVLcDVZUVRuT2hURHV0S2VhQXVwV2FlaTQ4V3hHc2NUcUFxQko3TA?oc=5"
+    }
+  ]
 }

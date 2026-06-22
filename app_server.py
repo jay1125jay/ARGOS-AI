@@ -5,6 +5,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from engines.portfolio_engine import calculate_portfolio
 from engines.analytics_engine import analyze_trades
+from engines.health_engine import get_health
 
 ROOT = r"C:\ARGOS_AI"
 APP = os.path.join(ROOT, "app")
@@ -18,6 +19,7 @@ MACRO = os.path.join(ROOT, "data", "macro", "macro_status.json")
 SYSTEM_LOG = os.path.join(ROOT, "data", "logs", "system_log.csv")
 DECISION_LOG = os.path.join(ROOT, "data", "logs", "decision_log.csv")
 AI = os.path.join(ROOT, "data", "ai", "ai_status.json")
+BACKTEST = os.path.join(ROOT, "data", "backtest", "backtest_status.json")
 
 
 def read_csv(path):
@@ -113,6 +115,7 @@ class Handler(BaseHTTPRequestHandler):
             system_logs = read_csv(SYSTEM_LOG)
             decision_logs = read_csv(DECISION_LOG)
             ai = read_json(AI)
+            backtest = read_json(BACKTEST)
 
             latest_report = {
                 "total_trades": 0,
@@ -135,6 +138,7 @@ class Handler(BaseHTTPRequestHandler):
             portfolio = calculate_portfolio(latest_report)
             positions = enrich_positions(positions, market)
             analytics = analyze_trades()
+            health = get_health()
 
             body = json.dumps({
                 "report": latest_report,
@@ -143,11 +147,13 @@ class Handler(BaseHTTPRequestHandler):
                 "market": market,
                 "positions": positions,
                 "analytics": analytics,
+                "health": health,
                 "news": news,
                 "macro": macro,
                 "system_logs": system_logs[-20:],
                 "decision_logs": decision_logs[-50:],
-                "ai": ai
+                "ai": ai,
+                "backtest": backtest
             }).encode("utf-8")
 
             self.send_response(200)
@@ -186,4 +192,7 @@ class Handler(BaseHTTPRequestHandler):
 
 
 HTTPServer(("0.0.0.0", 8000), Handler).serve_forever()
+
+
+
 
