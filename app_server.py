@@ -13,6 +13,10 @@ TRADES = os.path.join(ROOT, "data", "trades", "paper_trades.csv")
 REPORT = os.path.join(ROOT, "data", "reports", "report.csv")
 MARKET = os.path.join(ROOT, "data", "market", "market_status.json")
 POSITIONS = os.path.join(ROOT, "data", "open_positions.json")
+NEWS = os.path.join(ROOT, "data", "news", "news_status.json")
+MACRO = os.path.join(ROOT, "data", "macro", "macro_status.json")
+SYSTEM_LOG = os.path.join(ROOT, "data", "logs", "system_log.csv")
+DECISION_LOG = os.path.join(ROOT, "data", "logs", "decision_log.csv")
 
 
 def read_csv(path):
@@ -103,6 +107,10 @@ class Handler(BaseHTTPRequestHandler):
             reports = read_csv(REPORT)
             market = read_json(MARKET)
             positions = read_json(POSITIONS)
+            news = read_json(NEWS)
+            macro = read_json(MACRO)
+            system_logs = read_csv(SYSTEM_LOG)
+            decision_logs = read_csv(DECISION_LOG)
 
             latest_report = {
                 "total_trades": 0,
@@ -132,7 +140,11 @@ class Handler(BaseHTTPRequestHandler):
                 "trades": trades[-50:],
                 "market": market,
                 "positions": positions,
-                "analytics": analytics
+                "analytics": analytics,
+                "news": news,
+                "macro": macro,
+                "system_logs": system_logs[-20:],
+                "decision_logs": decision_logs[-50:]
             }).encode("utf-8")
 
             self.send_response(200)
