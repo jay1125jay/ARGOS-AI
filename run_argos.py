@@ -9,6 +9,7 @@ from engines.risk_engine import check_risk
 from engines.technical_engine import build_signal
 from engines.config_loader import get_strategy_version
 from engines.decision_logger import log_decision
+from engines.cooldown_engine import set_cooldown, is_cooldown_active
 from engines.report_engine import (
     ensure_report_files,
     save_trade,
@@ -136,9 +137,15 @@ def main():
         print(f"EXIT_REASON={trade.get('exit_reason')}")
         print(f"PNL={trade['pnl']}")
         print(f"RESULT={trade['result']}")
+        set_cooldown(trade['symbol'], 5)
 
     for signal in results:
         if signal["action"] not in ["LONG", "SHORT"]:
+            continue
+
+        if is_cooldown_active(signal['symbol']):
+            print(f"POSITION_ENTRY=COOLDOWN_BLOCKED {signal['symbol']}")
+            log_decision(signal['symbol'], signal['action'], signal['signal_score'], signal['risk_score'], 'COOLDOWN_BLOCKED', strategy_version)
             continue
 
         risk_result = check_risk(signal, latest_report)
@@ -197,3 +204,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
