@@ -9,136 +9,173 @@ async function loadData() {
   const macro = data.macro || {};
   const ai = data.ai || {};
   const backtest = data.backtest || {};
+  const health = data.health || {};
   const positionsData = data.positions || { positions: [] };
   const positions = positionsData.positions || [];
-  const health = data.health || {};
+  const results = data.market?.results || [];
 
-  document.getElementById("startBalance").textContent = portfolio.start_balance ?? 0;
-  document.getElementById("currentBalance").textContent = portfolio.current_balance ?? 0;
-  document.getElementById("totalReturn").textContent = (portfolio.total_return_pct ?? 0) + "%";
-  document.getElementById("openPositions").textContent = positions.length;
+  setText("startBalance", portfolio.start_balance ?? 0);
+  setText("currentBalance", portfolio.current_balance ?? 0);
+  setText("totalReturn", (portfolio.total_return_pct ?? 0) + "%");
+  setText("openPositions", positions.length);
 
-  document.getElementById("healthStatus").textContent = health.status ?? "-";
-  document.getElementById("healthFilesOk").textContent = health.files_ok ?? 0;
-  document.getElementById("healthFilesTotal").textContent = health.files_total ?? 0;
+  setText("healthStatus", health.status ?? "-");
+  setText("healthFilesOk", health.files_ok ?? 0);
+  setText("healthFilesTotal", health.files_total ?? 0);
 
-  document.getElementById("total").textContent = report.total_trades ?? 0;
-  document.getElementById("wins").textContent = report.wins ?? 0;
-  document.getElementById("losses").textContent = report.losses ?? 0;
-  document.getElementById("winRate").textContent = (report.win_rate ?? 0) + "%";
-  document.getElementById("pnl").textContent = report.total_pnl ?? 0;
+  setText("total", report.total_trades ?? 0);
+  setText("wins", report.wins ?? 0);
+  setText("losses", report.losses ?? 0);
+  setText("winRate", (report.win_rate ?? 0) + "%");
+  setText("pnl", report.total_pnl ?? 0);
 
-  document.getElementById("profitFactor").textContent = analytics.profit_factor ?? 0;
-  document.getElementById("avgWin").textContent = analytics.avg_win ?? 0;
-  document.getElementById("avgLoss").textContent = analytics.avg_loss ?? 0;
+  setText("profitFactor", analytics.profit_factor ?? 0);
+  setText("avgWin", analytics.avg_win ?? 0);
+  setText("avgLoss", analytics.avg_loss ?? 0);
 
-  document.getElementById("newsMode").textContent = news.mode ?? "-";
-  document.getElementById("newsSentiment").textContent = news.market_sentiment ?? "-";
-  document.getElementById("newsRisk").textContent = news.risk_level ?? "-";
+  setText("newsMode", news.mode ?? "-");
+  setText("newsSentiment", news.market_sentiment ?? "-");
+  setText("newsRisk", news.risk_level ?? "-");
 
-  const newsRows = document.getElementById("newsRows");
-  newsRows.innerHTML = "";
+  setText("macroMode", macro.mode ?? "-");
+  setText("macroRegime", macro.market_regime ?? "-");
+  setText("macroDxy", macro.dxy_status ?? "-");
+  setText("macroRate", macro.rate_risk ?? "-");
 
-  (news.headlines || []).slice(0, 10).forEach(h => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${h.title}</td>
-    `;
-    newsRows.appendChild(row);
-  });
+  setText("aiMode", ai.mode ?? "-");
+  setText("aiBias", ai.ai_bias ?? "-");
+  setText("aiConfidence", ai.confidence ?? "-");
+  setText("aiPermission", ai.trade_permission ?? "-");
+  setText("aiReason", ai.reason ?? "-");
 
-  document.getElementById("macroMode").textContent = macro.mode ?? "-";
-  document.getElementById("macroRegime").textContent = macro.market_regime ?? "-";
-  document.getElementById("macroDxy").textContent = macro.dxy_status ?? "-";
-  document.getElementById("macroRate").textContent = macro.rate_risk ?? "-";
-
-  const macroRows = document.getElementById("macroRows");
-  macroRows.innerHTML = "";
-
-  (macro.events || []).slice(0, 10).forEach(e => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${e.title}</td>
-    `;
-    macroRows.appendChild(row);
-  });
-  
-  document.getElementById("aiMode").textContent = ai.mode ?? "-";
-  document.getElementById("aiBias").textContent = ai.ai_bias ?? "-";
-  document.getElementById("aiConfidence").textContent = ai.confidence ?? "-";
-  document.getElementById("aiPermission").textContent = ai.trade_permission ?? "-";
-  document.getElementById("aiReason").textContent = ai.reason ?? "-";
-
-  document.getElementById("heroAiBias").textContent = ai.ai_bias ?? "-";
-  document.getElementById("heroConfidence").textContent = ai.confidence ?? "-";
-  document.getElementById("heroPermission").textContent = ai.trade_permission ?? "-";
-  document.getElementById("heroRiskMode").textContent = ai.risk_mode ?? "-";
+  setText("heroAiBias", ai.ai_bias ?? "-");
+  setText("heroConfidence", ai.confidence ?? "-");
+  setText("heroPermission", ai.trade_permission ?? "-");
+  setText("heroRiskMode", ai.risk_mode ?? "-");
 
   const strategy = (backtest.strategies || [])[0] || {};
+  setText("backtestMode", backtest.mode ?? "-");
+  setText("backtestStrategy", strategy.name ?? "-");
+  setText("backtestTrades", strategy.total_trades ?? 0);
+  setText("backtestWinRate", (strategy.win_rate ?? 0) + "%");
+  setText("backtestPnl", strategy.total_pnl ?? 0);
 
-  document.getElementById("backtestMode").textContent = backtest.mode ?? "-";
-  document.getElementById("backtestStrategy").textContent = strategy.name ?? "-";
-  document.getElementById("backtestTrades").textContent = strategy.total_trades ?? 0;
-  document.getElementById("backtestWinRate").textContent = (strategy.win_rate ?? 0) + "%";
-  document.getElementById("backtestPnl").textContent = strategy.total_pnl ?? 0;
+  setText("marketUpdated", data.market?.updated_at || "-");
 
-  const positionRows = document.getElementById("positionRows");
-  positionRows.innerHTML = "";
+  renderRadar(results);
+  renderMarketTable(results);
+  renderPositions(positions);
+  renderNews(news.headlines || []);
+  renderMacro(macro.events || []);
+  renderSymbolPerformance(analytics.symbols || {});
+  renderDecisionLogs(data.decision_logs || []);
+  renderSystemLogs(data.system_logs || []);
+  renderTrades(data.trades || []);
+}
 
-  if (positions.length === 0) {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td colspan="9">NO OPEN POSITIONS</td>
-    `;
-    positionRows.appendChild(row);
-  } else {
-    positions.forEach(p => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${p.symbol}</td>
-        <td>${p.action}</td>
-        <td>${p.entry}</td>
-        <td>${p.tp}</td>
-        <td>${p.sl}</td>
-        <td>${p.current_price}</td>
-        <td>${p.unrealized_pnl}</td>
-        <td>${p.tp_distance_pct}%</td>
-        <td>${p.sl_distance_pct}%</td>
-      `;
-      positionRows.appendChild(row);
-    });
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.textContent = value;
   }
+}
 
-  document.getElementById("marketUpdated").textContent = data.market?.updated_at || "-";
+function renderRadar(results) {
+  const box = document.getElementById("radarGrid");
+  if (!box) return;
 
-  const marketRows = document.getElementById("marketRows");
-  marketRows.innerHTML = "";
+  box.innerHTML = "";
 
-  const results = data.market?.results || [];
+  results.forEach(r => {
+    const item = document.createElement("div");
+    item.className = "radar-item";
+
+    item.innerHTML = `
+      <div class="radar-symbol">${r.symbol}</div>
+      <div class="radar-action">${r.action}</div>
+      <div class="radar-score">Signal ${r.signal_score}</div>
+    `;
+
+    box.appendChild(item);
+  });
+}
+
+function renderMarketTable(results) {
+  const rows = document.getElementById("marketRows");
+  if (!rows) return;
+
+  rows.innerHTML = "";
 
   results.forEach(r => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${r.symbol}</td>
       <td>${r.price}</td>
-      <td>${r.change_pct}</td>
-      <td>${r.rsi}</td>
-      <td>${r.ema9 ?? "-"}</td>
-      <td>${r.ema21 ?? "-"}</td>
-      <td>${r.trend ?? "-"}</td>
-      <td>${r.volume_ratio ?? "-"}</td>
-      <td>${r.atr_pct ?? "-"}</td>
-      <td>${r.signal_score}</td>
-      <td>${r.risk_score}</td>
       <td>${r.action}</td>
     `;
-    marketRows.appendChild(row);
+    rows.appendChild(row);
   });
+}
 
-    const symbolRows = document.getElementById("symbolRows");
-  symbolRows.innerHTML = "";
+function renderPositions(positions) {
+  const rows = document.getElementById("positionRows");
+  if (!rows) return;
 
-  const symbols = analytics.symbols || {};
+  rows.innerHTML = "";
+
+  if (positions.length === 0) {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td colspan="7">NO OPEN POSITIONS</td>`;
+    rows.appendChild(row);
+    return;
+  }
+
+  positions.forEach(p => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${p.symbol}</td>
+      <td>${p.action}</td>
+      <td>${p.entry}</td>
+      <td>${p.current_price}</td>
+      <td>${p.unrealized_pnl}</td>
+      <td>${p.tp_distance_pct}%</td>
+      <td>${p.sl_distance_pct}%</td>
+    `;
+    rows.appendChild(row);
+  });
+}
+
+function renderNews(headlines) {
+  const rows = document.getElementById("newsRows");
+  if (!rows) return;
+
+  rows.innerHTML = "";
+
+  headlines.slice(0, 5).forEach(h => {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${h.title}</td>`;
+    rows.appendChild(row);
+  });
+}
+
+function renderMacro(events) {
+  const rows = document.getElementById("macroRows");
+  if (!rows) return;
+
+  rows.innerHTML = "";
+
+  events.slice(0, 5).forEach(e => {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${e.title}</td>`;
+    rows.appendChild(row);
+  });
+}
+
+function renderSymbolPerformance(symbols) {
+  const rows = document.getElementById("symbolRows");
+  if (!rows) return;
+
+  rows.innerHTML = "";
 
   Object.keys(symbols).forEach(symbol => {
     const s = symbols[symbol];
@@ -151,30 +188,35 @@ async function loadData() {
       <td>${s.win_rate}%</td>
       <td>${s.pnl}</td>
     `;
-    symbolRows.appendChild(row);
+    rows.appendChild(row);
   });
+}
 
-  const decisionRows = document.getElementById("decisionRows");
-  decisionRows.innerHTML = "";
+function renderDecisionLogs(logs) {
+  const rows = document.getElementById("decisionRows");
+  if (!rows) return;
 
-  (data.decision_logs || []).slice(-10).reverse().forEach(d => {
+  rows.innerHTML = "";
+
+  logs.slice(-8).reverse().forEach(d => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${d.time}</td>
       <td>${d.symbol}</td>
       <td>${d.action}</td>
-      <td>${d.signal_score}</td>
-      <td>${d.risk_score}</td>
       <td>${d.reason}</td>
-      <td>${d.strategy_version}</td>
     `;
-    decisionRows.appendChild(row);
+    rows.appendChild(row);
   });
+}
 
-  const systemRows = document.getElementById("systemRows");
-  systemRows.innerHTML = "";
+function renderSystemLogs(logs) {
+  const rows = document.getElementById("systemRows");
+  if (!rows) return;
 
-  (data.system_logs || []).slice(-10).reverse().forEach(s => {
+  rows.innerHTML = "";
+
+  logs.slice(-5).reverse().forEach(s => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${s.time}</td>
@@ -182,13 +224,17 @@ async function loadData() {
       <td>${s.module}</td>
       <td>${s.message}</td>
     `;
-    systemRows.appendChild(row);
+    rows.appendChild(row);
   });
+}
 
-  const tbody = document.getElementById("trades");
-  tbody.innerHTML = "";
+function renderTrades(trades) {
+  const rows = document.getElementById("trades");
+  if (!rows) return;
 
-  (data.trades || []).slice(-10).reverse().forEach(t => {
+  rows.innerHTML = "";
+
+  trades.slice(-8).reverse().forEach(t => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${t.time}</td>
@@ -199,8 +245,19 @@ async function loadData() {
       <td>${t.pnl}</td>
       <td>${t.result}</td>
     `;
-    tbody.appendChild(row);
+    rows.appendChild(row);
   });
+}
+
+function scrollToSection(id) {
+  const target = document.getElementById(id);
+
+  if (target) {
+    target.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
 }
 
 loadData();

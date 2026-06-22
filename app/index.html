@@ -2,244 +2,244 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>ARGOS AI</title>
+  <title>ARGOS AI Terminal</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <h1>ARGOS AI CONTROL CENTER</h1>
-  <p class="mode">MODE: PAPER_ONLY</p>
+  <div class="terminal">
 
-<div class="hero">
-  <div>
-    <p class="eyebrow">ARGOS COMMAND CENTER</p>
-    <h1>AI Market Control Tower</h1>
-    <p class="subtitle">News · Macro · Market Regime · AI Risk Gate</p>
-  </div>
+    <header class="topbar">
+      <div class="brand-box">
+        <div class="brand">ARGOS AI</div>
+        <div class="mode">PAPER ONLY · AI FUTURES COMMAND TERMINAL</div>
+      </div>
 
-  <div class="hero-status">
-    <div><span>AI</span><strong id="heroAiBias">-</strong></div>
-    <div><span>Confidence</span><strong id="heroConfidence">-</strong></div>
-    <div><span>Trade</span><strong id="heroPermission">-</strong></div>
-    <div><span>Risk</span><strong id="heroRiskMode">-</strong></div>
-  </div>
-</div>
+      <div class="top-center">
+        <span>BTCUSDT</span>
+        <strong id="mainSymbol">ARGOS</strong>
+      </div>
 
-<div class="command-bar">
-  <button>SCAN</button>
-  <button>REPORT</button>
-  <button>NEWS</button>
-  <button>AI</button>
-  <button>SETTINGS</button>
-</div>
+      <div class="top-metrics">
+        <div><span>AI</span><strong id="heroAiBias">-</strong></div>
+        <div><span>CONF</span><strong id="heroConfidence">-</strong></div>
+        <div><span>TRADE</span><strong id="heroPermission">-</strong></div>
+        <div><span>RISK</span><strong id="heroRiskMode">-</strong></div>
+      </div>
+    </header>
 
-  <div class="grid">
+    <nav class="toolbar">
+      <button onclick="loadData()">SCAN</button>
+      <button onclick="scrollToSection('positionsSection')">POSITIONS</button>
+      <button onclick="scrollToSection('tradesSection')">TRADES</button>
+      <button onclick="scrollToSection('logsSection')">LOGS</button>
+    </nav>
 
-<div class="kpi-grid wide">
-  <div class="kpi-card">
-    <span>Balance</span>
-    <strong id="currentBalance">0</strong>
-    <small>Start <b id="startBalance">0</b></small>
-  </div>
+    <section class="ticker-strip">
+      <div><span>Balance</span><strong id="currentBalance">0</strong></div>
+      <div><span>PnL</span><strong id="pnl">0</strong></div>
+      <div><span>Win Rate</span><strong id="winRate">0%</strong></div>
+      <div><span>Positions</span><strong id="openPositions">0</strong></div>
+      <div><span>Profit Factor</span><strong id="profitFactor">0</strong></div>
+      <div><span>Health</span><strong id="healthStatus">-</strong></div>
+    </section>
 
-  <div class="kpi-card">
-    <span>Total PnL</span>
-    <strong id="pnl">0</strong>
-    <small>Return <b id="totalReturn">0%</b></small>
-  </div>
+    <main class="exchange-layout">
 
-  <div class="kpi-card">
-    <span>Win Rate</span>
-    <strong id="winRate">0%</strong>
-    <small><b id="wins">0</b>W / <b id="losses">0</b>L</small>
-  </div>
+      <aside class="left-panel">
+        <section class="panel">
+          <div class="panel-title">Market Watch</div>
+          <div id="radarGrid" class="market-list"></div>
+        </section>
 
-  <div class="kpi-card">
-    <span>Open Positions</span>
-    <strong id="openPositions">0</strong>
-    <small>Total Trades <b id="total">0</b></small>
-  </div>
+        <section class="panel orderbook">
+          <div class="panel-title">Market Table</div>
+          <p class="updated">Updated: <span id="marketUpdated">-</span></p>
+          <table>
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Price</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="marketRows"></tbody>
+          </table>
+        </section>
+      </aside>
 
-  <div class="kpi-card">
-    <span>Profit Factor</span>
-    <strong id="profitFactor">0</strong>
-    <small>Avg W <b id="avgWin">0</b> / Avg L <b id="avgLoss">0</b></small>
-  </div>
+      <section class="center-panel">
 
-  <div class="kpi-card">
-    <span>Health</span>
-    <strong id="healthStatus">-</strong>
-    <small><b id="healthFilesOk">0</b> / <b id="healthFilesTotal">0</b> files</small>
-  </div>
-</div> 
+        <section class="chart-panel">
+          <div class="chart-header">
+            <div>
+              <span class="label">MAIN SIGNAL</span>
+              <h1>ARGOS MARKET</h1>
+            </div>
 
-    <div class="card">
-      <h2>News Status</h2>
-      <p>Mode: <span id="newsMode">-</span></p>
-      <p>Sentiment: <span id="newsSentiment">-</span></p>
-      <p>Risk Level: <span id="newsRisk">-</span></p>
-    </div>
+            <div class="signal-box">
+              <span>AI Permission</span>
+              <strong id="aiPermission">-</strong>
+            </div>
+          </div>
 
-    <div class="card wide">
-      <h2>Latest News Headlines</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-          </tr>
-        </thead>
-        <tbody id="newsRows"></tbody>
-      </table>
-    </div>
+          <div class="chart-placeholder">
+            <div class="chart-grid"></div>
+            <div class="chart-line"></div>
+            <div class="chart-text">
+              <strong>CHART AREA</strong>
+              <span>TradingView-style chart zone</span>
+            </div>
+          </div>
+        </section>
 
-    <div class="card">
-      <h2>Macro Status</h2>
-      <p>Mode: <span id="macroMode">-</span></p>
-      <p>Regime: <span id="macroRegime">-</span></p>
-      <p>DXY: <span id="macroDxy">-</span></p>
-      <p>Rate Risk: <span id="macroRate">-</span></p>
-    </div>
+        <section class="quick-stats">
+          <div><span>Start</span><strong id="startBalance">0</strong></div>
+          <div><span>Return</span><strong id="totalReturn">0%</strong></div>
+          <div><span>Wins</span><strong id="wins">0</strong></div>
+          <div><span>Losses</span><strong id="losses">0</strong></div>
+          <div><span>Total Trades</span><strong id="total">0</strong></div>
+          <div><span>Avg W/L</span><strong><b id="avgWin">0</b> / <b id="avgLoss">0</b></strong></div>
+        </section>
 
-    <div class="card wide">
-      <h2>Latest Macro Events</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-          </tr>
-        </thead>
-        <tbody id="macroRows"></tbody>
-      </table>
-    </div>
+        <section class="panel" id="positionsSection">
+          <div class="panel-title">Open Positions</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Action</th>
+                <th>Entry</th>
+                <th>Current</th>
+                <th>Unrealized</th>
+                <th>TP Dist</th>
+                <th>SL Dist</th>
+              </tr>
+            </thead>
+            <tbody id="positionRows"></tbody>
+          </table>
+        </section>
 
-    <div class="card">
-      <h2>AI Decision</h2>
-      <p>Mode: <span id="aiMode">-</span></p>
-      <p>Bias: <span id="aiBias">-</span></p>
-      <p>Confidence: <span id="aiConfidence">-</span></p>
-      <p>Permission: <span id="aiPermission">-</span></p>
-      <p>Reason: <span id="aiReason">-</span></p>
-    </div>
+      </section>
 
-    <div class="card">
-      <h2>Backtest Center</h2>
-      <p>Mode: <span id="backtestMode">-</span></p>
-      <p>Strategy: <span id="backtestStrategy">-</span></p>
-      <p>Trades: <span id="backtestTrades">0</span></p>
-      <p>Win Rate: <span id="backtestWinRate">0%</span></p>
-      <p>Total PnL: <span id="backtestPnl">0</span></p>
-    </div>
+      <aside class="right-panel">
 
-    <div class="card wide">
-      <h2>Open Positions</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Symbol</th>
-            <th>Action</th>
-            <th>Entry</th>
-            <th>TP</th>
-            <th>SL</th>
-            <th>Current</th>
-            <th>Unrealized PnL</th>
-            <th>TP Dist</th>
-            <th>SL Dist</th>
-          </tr>
-        </thead>
-        <tbody id="positionRows"></tbody>
-      </table>
-    </div>
+        <section class="panel" id="aiSection">
+          <div class="panel-title">AI Decision</div>
+          <div class="info-line"><span>Mode</span><strong id="aiMode">-</strong></div>
+          <div class="info-line"><span>Bias</span><strong id="aiBias">-</strong></div>
+          <div class="info-line"><span>Confidence</span><strong id="aiConfidence">-</strong></div>
+          <div class="reason" id="aiReason">-</div>
+        </section>
 
-    <div class="card wide">
-      <h2>Market Status</h2>
-      <p>Updated: <span id="marketUpdated">-</span></p>
-      <table>
-        <thead>
-          <tr>
-            <th>Symbol</th>
-            <th>Price</th>
-            <th>Change %</th>
-            <th>RSI</th>
-            <th>EMA9</th>
-            <th>EMA21</th>
-            <th>Trend</th>
-            <th>VOL</th>
-            <th>ATR</th>
-            <th>Signal</th>
-            <th>Risk</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="marketRows"></tbody>
-      </table>
-    </div>
+        <section class="panel">
+          <div class="panel-title">News Risk</div>
+          <div class="info-line"><span>Mode</span><strong id="newsMode">-</strong></div>
+          <div class="info-line"><span>Sentiment</span><strong id="newsSentiment">-</strong></div>
+          <div class="info-line"><span>Risk</span><strong id="newsRisk">-</strong></div>
+        </section>
 
-    <div class="card wide">
-      <h2>Symbol Performance</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Symbol</th>
-            <th>Total</th>
-            <th>Wins</th>
-            <th>Losses</th>
-            <th>Win Rate</th>
-            <th>PnL</th>
-          </tr>
-        </thead>
-        <tbody id="symbolRows"></tbody>
-      </table>
-    </div>
+        <section class="panel">
+          <div class="panel-title">Macro Risk</div>
+          <div class="info-line"><span>Mode</span><strong id="macroMode">-</strong></div>
+          <div class="info-line"><span>Regime</span><strong id="macroRegime">-</strong></div>
+          <div class="info-line"><span>DXY</span><strong id="macroDxy">-</strong></div>
+          <div class="info-line"><span>Rate</span><strong id="macroRate">-</strong></div>
+        </section>
 
-    <div class="card wide">
-      <h2>Decision Logs</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Symbol</th>
-            <th>Action</th>
-            <th>Signal</th>
-            <th>Risk</th>
-            <th>Reason</th>
-            <th>Strategy</th>
-          </tr>
-        </thead>
-        <tbody id="decisionRows"></tbody>
-      </table>
-    </div>
+        <section class="panel" id="backtestSection">
+          <div class="panel-title">Backtest</div>
+          <div class="info-line"><span>Mode</span><strong id="backtestMode">-</strong></div>
+          <div class="info-line"><span>Strategy</span><strong id="backtestStrategy">-</strong></div>
+          <div class="info-line"><span>Trades</span><strong id="backtestTrades">0</strong></div>
+          <div class="info-line"><span>Win Rate</span><strong id="backtestWinRate">0%</strong></div>
+          <div class="info-line"><span>PnL</span><strong id="backtestPnl">0</strong></div>
+        </section>
 
-    <div class="card wide">
-      <h2>System Logs</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Level</th>
-            <th>Module</th>
-            <th>Message</th>
-          </tr>
-        </thead>
-        <tbody id="systemRows"></tbody>
-      </table>
-    </div>
+      </aside>
+    </main>
 
-    <div class="card wide">
-      <h2>Last Trades</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Symbol</th>
-            <th>Action</th>
-            <th>Entry</th>
-            <th>Exit</th>
-            <th>PnL</th>
-            <th>Result</th>
-          </tr>
-        </thead>
-        <tbody id="trades"></tbody>
-      </table>
-    </div>
+    <section class="bottom-tabs">
+
+      <section class="panel" id="newsSection">
+        <div class="panel-title">Latest News</div>
+        <table><tbody id="newsRows"></tbody></table>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">Macro Events</div>
+        <table><tbody id="macroRows"></tbody></table>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">Symbol Performance</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Total</th>
+              <th>Wins</th>
+              <th>Losses</th>
+              <th>Win Rate</th>
+              <th>PnL</th>
+            </tr>
+          </thead>
+          <tbody id="symbolRows"></tbody>
+        </table>
+      </section>
+
+      <section class="panel" id="tradesSection">
+        <div class="panel-title">Last Trades</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Symbol</th>
+              <th>Action</th>
+              <th>Entry</th>
+              <th>Exit</th>
+              <th>PnL</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody id="trades"></tbody>
+        </table>
+      </section>
+
+      <section class="panel" id="logsSection">
+        <div class="panel-title">Decision Logs</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Symbol</th>
+              <th>Action</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody id="decisionRows"></tbody>
+        </table>
+      </section>
+
+      <section class="panel" id="systemSection">
+        <div class="panel-title">System Logs</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Level</th>
+              <th>Module</th>
+              <th>Message</th>
+            </tr>
+          </thead>
+          <tbody id="systemRows"></tbody>
+        </table>
+      </section>
+
+    </section>
+
+    <span id="healthFilesOk" class="hidden">0</span>
+    <span id="healthFilesTotal" class="hidden">0</span>
 
   </div>
 

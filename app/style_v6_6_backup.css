@@ -8,22 +8,16 @@ body {
   color: #eaecef;
   font-family: Arial, "Segoe UI", sans-serif;
   font-size: 12px;
-  overflow: hidden;
 }
 
 .terminal {
-  height: 100vh;
-  padding: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  padding: 8px;
 }
 
 .topbar {
-  height: 54px;
-  flex-shrink: 0;
+  height: 56px;
   background: #181a20;
-  border: 1px solid #2b3139;
+  border-bottom: 1px solid #2b3139;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -34,6 +28,7 @@ body {
   color: #f0b90b;
   font-size: 22px;
   font-weight: 900;
+  letter-spacing: 0.5px;
 }
 
 .mode {
@@ -64,9 +59,9 @@ body {
 .top-metrics div {
   background: #0b0e11;
   border: 1px solid #2b3139;
-  border-radius: 4px;
-  padding: 6px 10px;
-  min-width: 76px;
+  border-radius: 6px;
+  padding: 7px 10px;
+  min-width: 78px;
 }
 
 .top-metrics span {
@@ -80,14 +75,13 @@ body {
 }
 
 .toolbar {
-  height: 38px;
-  flex-shrink: 0;
+  height: 42px;
   background: #181a20;
-  border: 1px solid #2b3139;
+  border-bottom: 1px solid #2b3139;
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 8px;
+  padding: 6px 8px;
 }
 
 .toolbar button {
@@ -95,23 +89,26 @@ body {
   color: #eaecef;
   border: none;
   border-radius: 4px;
-  padding: 6px 12px;
+  padding: 7px 12px;
   font-weight: 700;
   cursor: pointer;
 }
 
+.toolbar button:hover {
+  background: #3c4450;
+}
+
 .ticker-strip {
-  height: 46px;
-  flex-shrink: 0;
+  height: 52px;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   background: #181a20;
-  border: 1px solid #2b3139;
+  border-bottom: 1px solid #2b3139;
 }
 
 .ticker-strip div {
   border-right: 1px solid #2b3139;
-  padding: 6px 10px;
+  padding: 7px 10px;
 }
 
 .ticker-strip span {
@@ -123,26 +120,24 @@ body {
 
 .ticker-strip strong {
   display: block;
-  margin-top: 3px;
-  font-size: 14px;
+  margin-top: 4px;
+  font-size: 15px;
 }
 
 .exchange-layout {
-  flex: 1;
-  min-height: 0;
   display: grid;
-  grid-template-columns: 260px minmax(520px, 1fr) 310px;
+  grid-template-columns: 260px 1fr 310px;
   gap: 4px;
+  margin-top: 4px;
+  min-height: 610px;
 }
 
 .left-panel,
 .right-panel,
 .center-panel {
-  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  overflow: hidden;
 }
 
 .panel,
@@ -150,15 +145,14 @@ body {
   background: #181a20;
   border: 1px solid #2b3139;
   border-radius: 4px;
-  padding: 8px;
-  overflow: hidden;
+  padding: 10px;
 }
 
 .panel-title {
   color: #f0b90b;
   font-weight: 800;
-  font-size: 13px;
-  margin-bottom: 6px;
+  font-size: 14px;
+  margin-bottom: 8px;
 }
 
 .market-list {
@@ -171,38 +165,29 @@ body {
   background: #0b0e11;
   border: 1px solid #2b3139;
   border-radius: 4px;
-  padding: 7px;
+  padding: 8px;
 }
 
 .radar-symbol {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 900;
 }
 
 .radar-action {
-  margin-top: 3px;
+  margin-top: 4px;
   font-weight: 700;
 }
 
 .radar-score {
-  margin-top: 2px;
+  margin-top: 3px;
   color: #848e9c;
 }
 
-.orderbook {
-  flex: 1;
-  min-height: 0;
-}
-
 .chart-panel {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
+  min-height: 370px;
 }
 
 .chart-header {
-  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -210,19 +195,19 @@ body {
 
 .label {
   color: #848e9c;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .chart-header h1 {
-  margin: 3px 0 0 0;
-  font-size: 24px;
+  margin: 4px 0 0 0;
+  font-size: 26px;
 }
 
 .signal-box {
   background: #0b0e11;
   border: 1px solid #2b3139;
   border-radius: 4px;
-  padding: 7px 12px;
+  padding: 8px 12px;
   min-width: 130px;
 }
 
@@ -234,15 +219,14 @@ body {
 
 .signal-box strong {
   display: block;
-  margin-top: 4px;
+  margin-top: 5px;
   font-size: 16px;
 }
 
 .chart-placeholder {
   position: relative;
-  flex: 1;
-  min-height: 330px;
-  margin-top: 10px;
+  height: 285px;
+  margin-top: 12px;
   background:
     linear-gradient(90deg, rgba(132,142,156,0.08) 1px, transparent 1px),
     linear-gradient(rgba(132,142,156,0.08) 1px, transparent 1px);
@@ -276,8 +260,6 @@ body {
 }
 
 .quick-stats {
-  height: 58px;
-  flex-shrink: 0;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 4px;
@@ -287,7 +269,7 @@ body {
   background: #181a20;
   border: 1px solid #2b3139;
   border-radius: 4px;
-  padding: 7px;
+  padding: 8px;
 }
 
 .quick-stats span,
@@ -301,20 +283,15 @@ body {
 .quick-stats strong,
 .info-line strong {
   display: block;
-  margin-top: 3px;
+  margin-top: 4px;
   font-size: 13px;
-}
-
-#positionsSection {
-  height: 150px;
-  flex-shrink: 0;
 }
 
 .info-line {
   background: #0b0e11;
   border: 1px solid #2b3139;
   border-radius: 4px;
-  padding: 7px;
+  padding: 8px;
   margin-bottom: 5px;
   display: flex;
   justify-content: space-between;
@@ -328,21 +305,13 @@ body {
   color: #eaecef;
   word-break: break-word;
   line-height: 1.4;
-  max-height: 90px;
-  overflow: auto;
 }
 
 .bottom-tabs {
-  height: 160px;
-  flex-shrink: 0;
+  margin-top: 4px;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: 1fr;
   gap: 4px;
-}
-
-.bottom-tabs .panel {
-  min-height: 0;
-  overflow: auto;
 }
 
 table {
@@ -353,7 +322,7 @@ table {
 th,
 td {
   border-bottom: 1px solid #2b3139;
-  padding: 6px;
+  padding: 7px;
   text-align: left;
   vertical-align: top;
 }
@@ -371,7 +340,6 @@ td {
 .updated {
   color: #848e9c;
   font-size: 11px;
-  margin: 0 0 6px 0;
 }
 
 .hidden {
@@ -379,20 +347,7 @@ td {
 }
 
 @media (max-width: 1100px) {
-  body {
-    overflow: auto;
-  }
-
-  .terminal {
-    height: auto;
-  }
-
   .exchange-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .bottom-tabs {
-    height: auto;
     grid-template-columns: 1fr;
   }
 
