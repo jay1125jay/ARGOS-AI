@@ -7,6 +7,7 @@ async function loadData() {
   const analytics = data.analytics || {};
   const news = data.news || {};
   const macro = data.macro || {};
+  const ai = data.ai || {};
   const positionsData = data.positions || { positions: [] };
   const positions = positionsData.positions || [];
 
@@ -34,7 +35,13 @@ async function loadData() {
   document.getElementById("macroMode").textContent = macro.mode ?? "-";
   document.getElementById("macroRegime").textContent = macro.market_regime ?? "-";
   document.getElementById("macroDxy").textContent = macro.dxy_status ?? "-";
-  document.getElementById("macroRate").textContent = macro.rate_risk ?? "-";  
+  document.getElementById("macroRate").textContent = macro.rate_risk ?? "-";
+  
+  document.getElementById("aiMode").textContent = ai.mode ?? "-";
+  document.getElementById("aiBias").textContent = ai.ai_bias ?? "-";
+  document.getElementById("aiConfidence").textContent = ai.confidence ?? "-";
+  document.getElementById("aiPermission").textContent = ai.trade_permission ?? "-";
+  document.getElementById("aiReason").textContent = ai.reason ?? "-";
 
   const positionRows = document.getElementById("positionRows");
   positionRows.innerHTML = "";
@@ -87,6 +94,56 @@ async function loadData() {
       <td>${r.action}</td>
     `;
     marketRows.appendChild(row);
+  });
+
+    const symbolRows = document.getElementById("symbolRows");
+  symbolRows.innerHTML = "";
+
+  const symbols = analytics.symbols || {};
+
+  Object.keys(symbols).forEach(symbol => {
+    const s = symbols[symbol];
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${symbol}</td>
+      <td>${s.total}</td>
+      <td>${s.wins}</td>
+      <td>${s.losses}</td>
+      <td>${s.win_rate}%</td>
+      <td>${s.pnl}</td>
+    `;
+    symbolRows.appendChild(row);
+  });
+
+  const decisionRows = document.getElementById("decisionRows");
+  decisionRows.innerHTML = "";
+
+  (data.decision_logs || []).slice(-10).reverse().forEach(d => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${d.time}</td>
+      <td>${d.symbol}</td>
+      <td>${d.action}</td>
+      <td>${d.signal_score}</td>
+      <td>${d.risk_score}</td>
+      <td>${d.reason}</td>
+      <td>${d.strategy_version}</td>
+    `;
+    decisionRows.appendChild(row);
+  });
+
+  const systemRows = document.getElementById("systemRows");
+  systemRows.innerHTML = "";
+
+  (data.system_logs || []).slice(-10).reverse().forEach(s => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${s.time}</td>
+      <td>${s.level}</td>
+      <td>${s.module}</td>
+      <td>${s.message}</td>
+    `;
+    systemRows.appendChild(row);
   });
 
   const tbody = document.getElementById("trades");

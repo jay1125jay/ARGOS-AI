@@ -17,6 +17,7 @@ NEWS = os.path.join(ROOT, "data", "news", "news_status.json")
 MACRO = os.path.join(ROOT, "data", "macro", "macro_status.json")
 SYSTEM_LOG = os.path.join(ROOT, "data", "logs", "system_log.csv")
 DECISION_LOG = os.path.join(ROOT, "data", "logs", "decision_log.csv")
+AI = os.path.join(ROOT, "data", "ai", "ai_status.json")
 
 
 def read_csv(path):
@@ -111,6 +112,7 @@ class Handler(BaseHTTPRequestHandler):
             macro = read_json(MACRO)
             system_logs = read_csv(SYSTEM_LOG)
             decision_logs = read_csv(DECISION_LOG)
+            ai = read_json(AI)
 
             latest_report = {
                 "total_trades": 0,
@@ -144,7 +146,8 @@ class Handler(BaseHTTPRequestHandler):
                 "news": news,
                 "macro": macro,
                 "system_logs": system_logs[-20:],
-                "decision_logs": decision_logs[-50:]
+                "decision_logs": decision_logs[-50:],
+                "ai": ai
             }).encode("utf-8")
 
             self.send_response(200)
@@ -183,3 +186,4 @@ class Handler(BaseHTTPRequestHandler):
 
 
 HTTPServer(("0.0.0.0", 8000), Handler).serve_forever()
+

@@ -6,15 +6,17 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>ARGOS AI</h1>
+  <h1>ARGOS AI CONTROL CENTER</h1>
   <p class="mode">MODE: PAPER_ONLY</p>
 
   <div class="grid">
+
     <div class="card">
       <h2>System</h2>
       <p>REAL_ORDER: FALSE</p>
       <p>API_ORDER: FALSE</p>
       <p>AUTO_PAPER: TRUE</p>
+      <p>CONTROL_CENTER: V4.9</p>
     </div>
 
     <div class="card">
@@ -44,19 +46,28 @@
     </div>
 
     <div class="card">
-  <h2>News Status</h2>
-  <p>Mode: <span id="newsMode">-</span></p>
-  <p>Sentiment: <span id="newsSentiment">-</span></p>
-  <p>Risk Level: <span id="newsRisk">-</span></p>
-</div>
+      <h2>News Status</h2>
+      <p>Mode: <span id="newsMode">-</span></p>
+      <p>Sentiment: <span id="newsSentiment">-</span></p>
+      <p>Risk Level: <span id="newsRisk">-</span></p>
+    </div>
 
-<div class="card">
-  <h2>Macro Status</h2>
-  <p>Mode: <span id="macroMode">-</span></p>
-  <p>Regime: <span id="macroRegime">-</span></p>
-  <p>DXY: <span id="macroDxy">-</span></p>
-  <p>Rate Risk: <span id="macroRate">-</span></p>
-</div>
+    <div class="card">
+      <h2>Macro Status</h2>
+      <p>Mode: <span id="macroMode">-</span></p>
+      <p>Regime: <span id="macroRegime">-</span></p>
+      <p>DXY: <span id="macroDxy">-</span></p>
+      <p>Rate Risk: <span id="macroRate">-</span></p>
+    </div>
+
+    <div class="card">
+      <h2>AI Decision</h2>
+      <p>Mode: <span id="aiMode">-</span></p>
+      <p>Bias: <span id="aiBias">-</span></p>
+      <p>Confidence: <span id="aiConfidence">-</span></p>
+      <p>Permission: <span id="aiPermission">-</span></p>
+      <p>Reason: <span id="aiReason">-</span></p>
+    </div>
 
     <div class="card wide">
       <h2>Open Positions</h2>
@@ -103,6 +114,56 @@
     </div>
 
     <div class="card wide">
+      <h2>Symbol Performance</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Total</th>
+            <th>Wins</th>
+            <th>Losses</th>
+            <th>Win Rate</th>
+            <th>PnL</th>
+          </tr>
+        </thead>
+        <tbody id="symbolRows"></tbody>
+      </table>
+    </div>
+
+    <div class="card wide">
+      <h2>Decision Logs</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Symbol</th>
+            <th>Action</th>
+            <th>Signal</th>
+            <th>Risk</th>
+            <th>Reason</th>
+            <th>Strategy</th>
+          </tr>
+        </thead>
+        <tbody id="decisionRows"></tbody>
+      </table>
+    </div>
+
+    <div class="card wide">
+      <h2>System Logs</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Level</th>
+            <th>Module</th>
+            <th>Message</th>
+          </tr>
+        </thead>
+        <tbody id="systemRows"></tbody>
+      </table>
+    </div>
+
+    <div class="card wide">
       <h2>Last Trades</h2>
       <table>
         <thead>
@@ -119,6 +180,7 @@
         <tbody id="trades"></tbody>
       </table>
     </div>
+
   </div>
 
   <script src="app.js"></script>
