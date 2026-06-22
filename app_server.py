@@ -4,6 +4,7 @@ import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from engines.portfolio_engine import calculate_portfolio
+from engines.analytics_engine import analyze_trades
 
 ROOT = r"C:\ARGOS_AI"
 APP = os.path.join(ROOT, "app")
@@ -109,13 +110,15 @@ class Handler(BaseHTTPRequestHandler):
 
             portfolio = calculate_portfolio(latest_report)
             positions = enrich_positions(positions, market)
+            analytics = analyze_trades()
 
             body = json.dumps({
                 "report": latest_report,
                 "portfolio": portfolio,
                 "trades": trades[-50:],
                 "market": market,
-                "positions": positions
+                "positions": positions,
+                "analytics": analytics
             }).encode("utf-8")
 
             self.send_response(200)
@@ -154,3 +157,4 @@ class Handler(BaseHTTPRequestHandler):
 
 
 HTTPServer(("0.0.0.0", 8000), Handler).serve_forever()
+

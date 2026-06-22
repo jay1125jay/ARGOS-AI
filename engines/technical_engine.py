@@ -128,16 +128,16 @@ def build_signal(symbol, candles):
 
     long_ready = (
         trend == "UP"
-        and signal_score >= 75
+        and signal_score >= 70
         and rsi >= 55
-        and vol_ratio >= 1.2
+        and vol_ratio >= 0.8
         and atr_pct >= 0.05
         and price_above_ema9
     )
 
     short_ready = (
         trend == "DOWN"
-        and signal_score <= 25
+        and signal_score <= 30
         and rsi <= 45
         and vol_ratio >= 1.2
         and atr_pct >= 0.05

@@ -5,6 +5,8 @@ from datetime import datetime
 BASE_DIR = r"C:\ARGOS_AI"
 POSITIONS_FILE = os.path.join(BASE_DIR, "data", "open_positions.json")
 
+POSITION_SIZE = 1000.0
+
 TP_PCT = 0.003
 SL_PCT = 0.002
 
@@ -59,6 +61,7 @@ def open_position(signal):
         "entry": entry,
         "tp": tp,
         "sl": sl,
+        "position_size": POSITION_SIZE,
         "status": "OPEN"
     }
 
@@ -66,6 +69,17 @@ def open_position(signal):
     save_positions(data)
 
     return position
+
+
+def calculate_pnl(action, entry, exit_price, position_size):
+    if action == "LONG":
+        pnl_pct = (exit_price - entry) / entry
+    else:
+        pnl_pct = (entry - exit_price) / entry
+
+    pnl = position_size * pnl_pct
+
+    return round(pnl, 6)
 
 
 def check_exit(current_signal):
@@ -97,11 +111,14 @@ def check_exit(current_signal):
         return None
 
     entry = float(position["entry"])
+    position_size = float(position.get("position_size", POSITION_SIZE))
 
-    if action == "LONG":
-        pnl = round(price - entry, 6)
-    else:
-        pnl = round(entry - price, 6)
+    pnl = calculate_pnl(
+        action,
+        entry,
+        price,
+        position_size
+    )
 
     closed = {
         "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),

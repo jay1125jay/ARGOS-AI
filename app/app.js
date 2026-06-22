@@ -4,6 +4,7 @@ async function loadData() {
 
   const portfolio = data.portfolio || {};
   const report = data.report || {};
+  const analytics = data.analytics || {};
   const positionsData = data.positions || { positions: [] };
   const positions = positionsData.positions || [];
 
@@ -41,6 +42,12 @@ async function loadData() {
   document.getElementById("losses").textContent = report.losses ?? 0;
   document.getElementById("winRate").textContent = (report.win_rate ?? 0) + "%";
   document.getElementById("pnl").textContent = report.total_pnl ?? 0;
+
+  document.getElementById("profitFactor").textContent = analytics.profit_factor ?? 0;
+  document.getElementById("longWinRate").textContent = (analytics.long_win_rate ?? 0) + "%";
+  document.getElementById("shortWinRate").textContent = (analytics.short_win_rate ?? 0) + "%";
+  document.getElementById("avgWin").textContent = analytics.avg_win ?? 0;
+  document.getElementById("avgLoss").textContent = analytics.avg_loss ?? 0;
 
   document.getElementById("marketUpdated").textContent = data.market?.updated_at || "-";
 
