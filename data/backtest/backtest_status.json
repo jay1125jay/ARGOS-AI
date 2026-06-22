@@ -1,11 +1,12 @@
 {
-  "mode": "PLACEHOLDER",
+  "mode": "ACTUAL_FROM_TRADES",
   "strategies": [
     {
       "name": "V4.0_BASE",
-      "total_trades": 0,
-      "win_rate": 0,
-      "total_pnl": 0
+      "total_trades": 10,
+      "win_rate": 30.0,
+      "total_pnl": -13.677322,
+      "profit_factor": 0.48
     }
   ]
 }

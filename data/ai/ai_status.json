@@ -1,7 +1,8 @@
 {
-  "mode": "AI_V1",
+  "mode": "UNIFIED_AI_V1",
   "ai_bias": "BEARISH",
-  "confidence": 10,
+  "confidence": 0,
   "trade_permission": "BLOCK",
-  "reason": "NEWS=NEGATIVE,MACRO=RISK_OFF"
+  "risk_mode": "DEFENSIVE",
+  "reason": "NEWS_NEGATIVE,NEWS_HIGH_RISK,MACRO_RISK_OFF,MACRO_HIGH_RISK,MARKET_BEAR"
 }
