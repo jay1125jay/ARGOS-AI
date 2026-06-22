@@ -29,8 +29,6 @@ async function loadData() {
   document.getElementById("pnl").textContent = report.total_pnl ?? 0;
 
   document.getElementById("profitFactor").textContent = analytics.profit_factor ?? 0;
-  document.getElementById("longWinRate").textContent = (analytics.long_win_rate ?? 0) + "%";
-  document.getElementById("shortWinRate").textContent = (analytics.short_win_rate ?? 0) + "%";
   document.getElementById("avgWin").textContent = analytics.avg_win ?? 0;
   document.getElementById("avgLoss").textContent = analytics.avg_loss ?? 0;
 
@@ -70,6 +68,11 @@ async function loadData() {
   document.getElementById("aiConfidence").textContent = ai.confidence ?? "-";
   document.getElementById("aiPermission").textContent = ai.trade_permission ?? "-";
   document.getElementById("aiReason").textContent = ai.reason ?? "-";
+
+  document.getElementById("heroAiBias").textContent = ai.ai_bias ?? "-";
+  document.getElementById("heroConfidence").textContent = ai.confidence ?? "-";
+  document.getElementById("heroPermission").textContent = ai.trade_permission ?? "-";
+  document.getElementById("heroRiskMode").textContent = ai.risk_mode ?? "-";
 
   const strategy = (backtest.strategies || [])[0] || {};
 
