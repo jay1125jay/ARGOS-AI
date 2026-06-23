@@ -92,6 +92,7 @@ setText("aiReason", execution.reason ?? ai.argos_message ?? ai.reason ?? "-");
   renderDecisionLogs(data.decision_logs || []);
   renderSystemLogs(data.system_logs || []);
   renderTrades(data.trades || []);
+  renderTradingView(chart);
 }
 
 function setText(id, value) {
@@ -445,11 +446,43 @@ function showTab(tabName) {
   event.target.classList.add("active");
 }
 
-function loadChart() {
-
+async function loadChart() {
   const symbol =
     document.getElementById("chartSearch").value ||
     "BTCUSDT";
 
-  document.getElementById("chartSymbol").textContent = symbol;
+  const market =
+    document.getElementById("chartMarket").value ||
+    "CRYPTO";
+
+  const res = await fetch(
+    `/api/chart?market=${encodeURIComponent(market)}&symbol=${encodeURIComponent(symbol)}`
+  );
+
+  const chart = await res.json();
+
+  setText("chartSymbol", chart.symbol ?? symbol);
+  setText("chartDirection", chart.direction ?? "WAIT");
+  setText("chartEntry", chart.entry ?? 0);
+  setText("chartTp", chart.tp ?? 0);
+  setText("chartSl", chart.sl ?? 0);
+  setText("chartCurrent", chart.current ?? 0);
+
+  renderTradingView(chart);
+}
+
+function renderTradingView(chart) {
+  const box = document.getElementById("tradingviewChart");
+
+  if (!box) return;
+
+  const symbol = chart.display_symbol || "BINANCE:BTCUSDT";
+
+  box.innerHTML = `
+    <div class="chart-placeholder">
+      ${symbol}
+      <br>
+      TRADINGVIEW CONNECT READY
+    </div>
+  `;
 }

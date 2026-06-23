@@ -168,6 +168,25 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(body)
             return
 
+        if self.path.startswith("/api/chart?"):
+            from urllib.parse import urlparse, parse_qs
+            from engines.chart_engine import build_chart_state
+
+            query = parse_qs(urlparse(self.path).query)
+
+            market = query.get("market", ["CRYPTO"])[0]
+            symbol = query.get("symbol", ["BTCUSDT"])[0]
+
+            chart = build_chart_state(market=market, symbol=symbol)
+
+            body = json.dumps(chart).encode("utf-8")
+
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
         file_name = "index.html"
 
         if self.path.endswith(".css") or self.path.endswith(".js"):

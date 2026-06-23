@@ -21,13 +21,13 @@ def map_tradingview_symbol(market, symbol):
     if market == "CRYPTO":
         return "BINANCE:" + symbol
 
-    if market == "US_STOCK":
+    if market in ["US", "US_STOCK"]:
         return "NASDAQ:" + symbol
 
-    if market == "KR_STOCK":
+    if market in ["KR", "KR_STOCK"]:
         return "KRX:" + symbol
 
-    if market == "FUTURES":
+    if market in ["FUTURES", "FUTURE"]:
         return "CME_MINI:" + symbol + "1!"
 
     return symbol
