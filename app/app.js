@@ -15,7 +15,7 @@ async function loadData() {
   const results = data.market?.results || [];
 
   setText("startBalance", portfolio.start_balance ?? 0);
-  setText("currentBalance", portfolio.current_balance ?? 0);
+  setText("currentBalance", formatNumber(portfolio.current_balance ?? 0));
   setText("totalReturn", (portfolio.total_return_pct ?? 0) + "%");
   setText("openPositions", positions.length);
 
@@ -27,7 +27,7 @@ async function loadData() {
   setText("wins", report.wins ?? 0);
   setText("losses", report.losses ?? 0);
   setText("winRate", (report.win_rate ?? 0) + "%");
-  setText("pnl", report.total_pnl ?? 0);
+  setText("pnl", formatNumber(report.total_pnl ?? 0));
 
   setText("profitFactor", analytics.profit_factor ?? 0);
   setText("avgWin", analytics.avg_win ?? 0);
@@ -49,8 +49,8 @@ async function loadData() {
   setText("aiReason", ai.reason ?? "-");
 
   setText("heroAiBias", ai.ai_bias ?? "-");
-  setText("heroConfidence", ai.confidence ?? "-");
-  setText("heroPermission", ai.trade_permission ?? "-");
+  setText("heroConfidence", formatConfidence(ai.confidence));
+  setText("heroPermission", formatPermission(ai.trade_permission));
   setText("heroRiskMode", ai.risk_mode ?? "-");
 
   const strategy = (backtest.strategies || [])[0] || {};
@@ -78,6 +78,27 @@ function setText(id, value) {
   if (el) {
     el.textContent = value;
   }
+}
+
+function formatConfidence(value) {
+  if (value === undefined || value === null || value === "-") return "-";
+  return value + "%";
+}
+
+function formatPermission(value) {
+  if (!value) return "-";
+  if (value === true) return "READY";
+  if (value === false) return "BLOCK";
+  return String(value).toUpperCase();
+}
+
+function formatNumber(value) {
+  const num = Number(value);
+  if (Number.isNaN(num)) return value;
+  return num.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
 function renderRadar(results) {
@@ -198,7 +219,7 @@ function renderDecisionLogs(logs) {
 
   rows.innerHTML = "";
 
-  logs.slice(-8).reverse().forEach(d => {
+  logs.slice(-3).reverse().forEach(d => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${d.time}</td>
@@ -234,7 +255,7 @@ function renderTrades(trades) {
 
   rows.innerHTML = "";
 
-  trades.slice(-8).reverse().forEach(t => {
+  trades.slice(-3).reverse().forEach(t => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${t.time}</td>
