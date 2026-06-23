@@ -1,3 +1,5 @@
+  let autoRunning = false;
+
 async function loadData() {
   const res = await fetch("/api/status");
   const data = await res.json();
@@ -45,13 +47,22 @@ async function loadData() {
   setText("aiMode", ai.mode ?? "-");
   setText("aiBias", ai.ai_bias ?? "-");
   setText("aiConfidence", ai.confidence ?? "-");
+  
+  if (!autoRunning) {
   setText("aiPermission", ai.trade_permission ?? "-");
+}
   setText("aiReason", ai.reason ?? "-");
 
-  setText("heroAiBias", ai.ai_bias ?? "-");
+  setText("heroAiBias", formatArgosBias(ai));
   setText("heroConfidence", formatConfidence(ai.confidence));
-  setText("heroPermission", formatPermission(ai.trade_permission));
-  setText("heroRiskMode", ai.risk_mode ?? "-");
+
+  if (!autoRunning) {
+  setText("heroPermission", formatArgosState(ai));
+  setText("aiPermission", formatArgosState(ai));
+}
+
+setText("heroRiskMode", formatRiskMode(ai.risk_mode));
+setText("aiReason", ai.argos_message ?? ai.reason ?? "-");
 
   const strategy = (backtest.strategies || [])[0] || {};
   setText("backtestMode", backtest.mode ?? "-");
@@ -87,9 +98,17 @@ function formatConfidence(value) {
 
 function formatPermission(value) {
   if (!value) return "-";
-  if (value === true) return "READY";
-  if (value === false) return "BLOCK";
-  return String(value).toUpperCase();
+  if (value === true) return "AUTO READY";
+  if (value === false) return "MARKET BLOCKED";
+
+  const text = String(value).toUpperCase();
+
+  if (text === "BLOCK") return "MARKET BLOCKED";
+  if (text === "WAIT") return "AI WAITING";
+  if (text === "READY") return "AUTO READY";
+  if (text === "ALLOW") return "AUTO READY";
+
+  return text;
 }
 
 function formatNumber(value) {
@@ -99,6 +118,43 @@ function formatNumber(value) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
+}
+
+function formatArgosState(ai) {
+  if (!ai) return "-";
+
+  const state = ai.argos_state || ai.trade_permission || "-";
+
+  if (state === "BLOCKED") return "MARKET BLOCKED";
+  if (state === "ANALYZING") return "AI ANALYZING";
+  if (state === "READY_LONG") return "READY LONG";
+  if (state === "READY_SHORT") return "READY SHORT";
+  if (state === "RUNNING") return "AI RUNNING";
+
+  return String(state).toUpperCase();
+}
+
+function formatArgosBias(ai) {
+  if (!ai) return "-";
+
+  if (ai.argos_state === "BLOCKED") return "NO TRADE";
+  if (ai.argos_state === "ANALYZING") return "WAIT";
+  if (ai.argos_state === "READY_LONG") return "LONG";
+  if (ai.argos_state === "READY_SHORT") return "SHORT";
+
+  return ai.ai_bias || "-";
+}
+
+function formatRiskMode(value) {
+  if (!value) return "-";
+
+  const text = String(value).toUpperCase();
+
+  if (text === "DEFENSIVE") return "DEFENSIVE MODE";
+  if (text === "NORMAL") return "NORMAL MODE";
+  if (text === "AGGRESSIVE") return "AGGRESSIVE MODE";
+
+  return text;
 }
 
 function renderRadar(results) {
@@ -283,3 +339,17 @@ function scrollToSection(id) {
 
 loadData();
 setInterval(loadData, 3000);
+
+function startAuto() {
+  autoRunning = true;
+
+  setText("heroPermission", "AI AUTO RUNNING");
+  setText("aiPermission", "AI AUTO RUNNING");
+}
+
+function stopAuto() {
+  autoRunning = false;
+
+  setText("heroPermission", "AUTO STOPPED");
+  setText("aiPermission", "AUTO STOPPED");
+}

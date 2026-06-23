@@ -1,8 +1,11 @@
 {
-  "mode": "UNIFIED_AI_V1",
+  "mode": "ARGOS_UNIFIED_AI_V2",
   "ai_bias": "BEARISH",
   "confidence": 0,
   "trade_permission": "BLOCK",
   "risk_mode": "DEFENSIVE",
-  "reason": "NEWS_NEGATIVE,NEWS_HIGH_RISK,MACRO_RISK_OFF,MACRO_HIGH_RISK,MARKET_BEAR"
+  "reason": "NEWS_NEGATIVE,NEWS_HIGH_RISK,MACRO_RISK_OFF,MACRO_HIGH_RISK,MARKET_BEAR",
+  "argos_state": "BLOCKED",
+  "argos_message": "Trading blocked by ARGOS risk control.",
+  "auto_ready": false
 }

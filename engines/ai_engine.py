@@ -17,6 +17,35 @@ def load_json(path, default):
         return json.load(f)
 
 
+def build_argos_state(score, bias, permission, reasons):
+    if permission == "BLOCK":
+        return {
+            "argos_state": "BLOCKED",
+            "argos_message": "Trading blocked by ARGOS risk control.",
+            "auto_ready": False
+        }
+
+    if score >= 70 and bias == "BULLISH":
+        return {
+            "argos_state": "READY_LONG",
+            "argos_message": "ARGOS is ready for a long setup.",
+            "auto_ready": True
+        }
+
+    if score >= 70 and bias == "BEARISH":
+        return {
+            "argos_state": "READY_SHORT",
+            "argos_message": "ARGOS is ready for a short setup.",
+            "auto_ready": True
+        }
+
+    return {
+        "argos_state": "ANALYZING",
+        "argos_message": "ARGOS is analyzing market conditions.",
+        "auto_ready": False
+    }
+
+
 def update_ai_status():
     news = load_json(NEWS_FILE, {})
     macro = load_json(MACRO_FILE, {})
@@ -27,8 +56,10 @@ def update_ai_status():
 
     news_sentiment = news.get("market_sentiment", "NEUTRAL")
     news_risk = news.get("risk_level", "NORMAL")
+
     macro_regime = macro.get("market_regime", "NEUTRAL")
     macro_risk = macro.get("event_risk", "NORMAL")
+
     market_regime = regime.get("market_regime", "SIDEWAYS")
     volatility = regime.get("volatility", "NORMAL")
 
@@ -87,16 +118,21 @@ def update_ai_status():
         permission = "ALLOW"
         risk_mode = "AGGRESSIVE"
     else:
-        permission = "ALLOW"
+        permission = "WAIT"
         risk_mode = "NORMAL"
 
+    state = build_argos_state(score, bias, permission, reasons)
+
     data = {
-        "mode": "UNIFIED_AI_V1",
+        "mode": "ARGOS_UNIFIED_AI_V2",
         "ai_bias": bias,
         "confidence": score,
         "trade_permission": permission,
         "risk_mode": risk_mode,
-        "reason": ",".join(reasons)
+        "reason": ",".join(reasons),
+        "argos_state": state["argos_state"],
+        "argos_message": state["argos_message"],
+        "auto_ready": state["auto_ready"]
     }
 
     os.makedirs(os.path.dirname(AI_FILE), exist_ok=True)
@@ -113,10 +149,12 @@ def load_ai_status():
 
 if __name__ == "__main__":
     result = update_ai_status()
-    print("UNIFIED_AI_UPDATE_OK")
+    print("ARGOS_AI_UPDATE_OK")
     print("MODE=" + result["mode"])
+    print("STATE=" + result["argos_state"])
     print("BIAS=" + result["ai_bias"])
     print("CONFIDENCE=" + str(result["confidence"]))
     print("PERMISSION=" + result["trade_permission"])
     print("RISK_MODE=" + result["risk_mode"])
-    print("REASON=" + result["reason"])
+    print("AUTO_READY=" + str(result["auto_ready"]))
+    print("MESSAGE=" + result["argos_message"])
