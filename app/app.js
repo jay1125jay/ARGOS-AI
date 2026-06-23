@@ -473,16 +473,41 @@ async function loadChart() {
 
 function renderTradingView(chart) {
   const box = document.getElementById("tradingviewChart");
-
   if (!box) return;
 
   const symbol = chart.display_symbol || "BINANCE:BTCUSDT";
 
-  box.innerHTML = `
-    <div class="chart-placeholder">
-      ${symbol}
-      <br>
-      TRADINGVIEW CONNECT READY
-    </div>
-  `;
+  box.innerHTML = "";
+
+  const widgetBox = document.createElement("div");
+  widgetBox.className = "tradingview-widget-container";
+  widgetBox.style.height = "100%";
+  widgetBox.style.width = "100%";
+
+  const chartDiv = document.createElement("div");
+  chartDiv.className = "tradingview-widget-container__widget";
+  chartDiv.style.height = "100%";
+  chartDiv.style.width = "100%";
+
+  const script = document.createElement("script");
+  script.type = "text/javascript";
+  script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+  script.async = true;
+
+  script.innerHTML = JSON.stringify({
+    autosize: true,
+    symbol: symbol,
+    interval: "5",
+    timezone: "Asia/Seoul",
+    theme: "dark",
+    style: "1",
+    locale: "en",
+    allow_symbol_change: true,
+    calendar: false,
+    support_host: "https://www.tradingview.com"
+  });
+
+  widgetBox.appendChild(chartDiv);
+  widgetBox.appendChild(script);
+  box.appendChild(widgetBox);
 }

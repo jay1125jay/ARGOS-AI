@@ -345,6 +345,18 @@ th {
   color: #ffd36e;
 }
 
+.tradingview-chart,
+.tradingview-widget-container,
+.tradingview-widget-container__widget {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.tradingview-widget-container iframe {
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .hidden {
   display: none !important;
 }
