@@ -17,52 +17,110 @@
       <div class="paper-badge">PAPER ONLY</div>
     </header>
 
+    <nav class="tabs">
+      <button class="tab active" onclick="showTab('home')">HOME</button>
+      <button class="tab" onclick="showTab('chart')">CHART</button>
+      <button class="tab" onclick="showTab('trades')">TRADES</button>
+      <button class="tab" onclick="showTab('settings')">SETTINGS</button>
+    </nav>
+
     <main class="main-screen">
 
-      <section class="ai-card">
-        <div class="ai-status" id="heroPermission">-</div>
-        <div class="ai-decision" id="heroAiBias">-</div>
-        <div class="ai-confidence" id="heroConfidence">-</div>
+      <section id="tab-home" class="tab-page active-page">
+        <section class="position-card">
+          <span>Current Position</span>
+          <h1 id="homeSymbol">NONE</h1>
+          <div class="direction" id="homeDirection">NO TRADE</div>
 
-        <div class="risk-chip">
-          <span>Risk</span>
-          <strong id="heroRiskMode">-</strong>
-        </div>
+          <div class="position-grid">
+            <div><span>Entry</span><strong id="homeEntry">0</strong></div>
+            <div><span>Current</span><strong id="homeCurrent">0</strong></div>
+            <div><span>Size</span><strong id="homeSize">0</strong></div>
+            <div><span>PnL</span><strong id="homePnl">0</strong></div>
+          </div>
+        </section>
+
+        <section class="auto-panel">
+          <button class="auto-start" onclick="startAuto()">AUTO START</button>
+          <button class="auto-stop" onclick="stopAuto()">AUTO STOP</button>
+        </section>
+
+        <section class="metrics">
+          <div><span>Balance</span><strong id="currentBalance">0</strong></div>
+          <div><span>Today PnL</span><strong id="pnl">0</strong></div>
+          <div><span>Win Rate</span><strong id="winRate">0%</strong></div>
+          <div><span>Position</span><strong id="openPositions">0</strong></div>
+        </section>
       </section>
 
-      <section class="auto-panel">
-        <button class="auto-start" onclick="startAuto()">AUTO START</button>
-        <button class="auto-stop" onclick="stopAuto()">AUTO STOP</button>
+      <section id="tab-chart" class="tab-page">
+        <section class="chart-toolbar">
+          <input id="chartSearch" placeholder="BTCUSDT / AAPL / 005930">
+          <select id="chartMarket">
+            <option>CRYPTO</option>
+            <option>KR</option>
+            <option>US</option>
+            <option>FUTURES</option>
+          </select>
+          <button onclick="loadChart()">LOAD</button>
+        </section>
+
+        <section class="chart-card">
+          <div class="chart-title">
+            <strong id="chartSymbol">BTCUSDT</strong>
+            <span id="chartDirection">WAIT</span>
+          </div>
+          <div class="chart-box">
+            <div class="chart-placeholder">TRADING CHART AREA</div>
+          </div>
+          <div class="chart-levels">
+            <div><span>Entry</span><strong id="chartEntry">0</strong></div>
+            <div><span>TP</span><strong id="chartTp">0</strong></div>
+            <div><span>SL</span><strong id="chartSl">0</strong></div>
+            <div><span>Current</span><strong id="chartCurrent">0</strong></div>
+          </div>
+        </section>
       </section>
 
-      <section class="metrics">
-        <div>
-          <span>Balance</span>
-          <strong id="currentBalance">0</strong>
-        </div>
-        <div>
-          <span>Today PnL</span>
-          <strong id="pnl">0</strong>
-        </div>
-        <div>
-          <span>Win Rate</span>
-          <strong id="winRate">0%</strong>
-        </div>
-        <div>
-          <span>Position</span>
-          <strong id="openPositions">0</strong>
-        </div>
+      <section id="tab-trades" class="tab-page">
+        <section class="trade-list">
+          <div class="section-title">Recent Trades</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Symbol</th>
+                <th>Action</th>
+                <th>Entry</th>
+                <th>Exit</th>
+                <th>PnL</th>
+              </tr>
+            </thead>
+            <tbody id="trades"></tbody>
+          </table>
+        </section>
       </section>
 
-      <section class="last-action-card">
-        <span>Last Action</span>
-        <strong id="aiPermission">-</strong>
-        <p id="aiReason">Waiting for AI decision...</p>
+      <section id="tab-settings" class="tab-page">
+        <section class="settings-card">
+          <div class="section-title">ARGOS Settings</div>
+
+          <label>Markets</label>
+          <div class="setting-row">CRYPTO · KR · US · FUTURES</div>
+
+          <label>Mode</label>
+          <div class="setting-row">PAPER ONLY</div>
+
+          <label>Risk</label>
+          <div class="setting-row" id="heroRiskMode">-</div>
+
+          <label>Status</label>
+          <div class="setting-row" id="heroPermission">-</div>
+        </section>
       </section>
 
     </main>
 
-    <!-- Hidden compatibility targets for app.js -->
     <div class="hidden">
       <strong id="mainSymbol">ARGOS</strong>
       <strong id="tradePermission">-</strong>
@@ -75,6 +133,10 @@
       <strong id="avgLoss">0</strong>
       <strong id="profitFactor">0</strong>
       <strong id="healthStatus">-</strong>
+      <strong id="heroAiBias">-</strong>
+      <strong id="heroConfidence">-</strong>
+      <strong id="aiPermission">-</strong>
+      <p id="aiReason">-</p>
 
       <div id="radarGrid"></div>
       <span id="marketUpdated">-</span>
@@ -104,7 +166,6 @@
       <table><tbody id="newsRows"></tbody></table>
       <table><tbody id="macroRows"></tbody></table>
       <table><tbody id="symbolRows"></tbody></table>
-      <table><tbody id="trades"></tbody></table>
       <table><tbody id="systemRows"></tbody></table>
 
       <span id="healthFilesOk">0</span>

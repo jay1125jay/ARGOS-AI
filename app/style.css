@@ -11,15 +11,22 @@ body {
 
 .argos-app {
   min-height: 100vh;
-  padding: 22px;
+  padding: 20px;
+}
+
+.app-header,
+.tabs,
+.main-screen {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .app-header {
-  max-width: 760px;
-  margin: 0 auto 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 16px;
 }
 
 .brand {
@@ -45,77 +52,116 @@ body {
   font-weight: 900;
 }
 
-.main-screen {
-  max-width: 760px;
-  margin: 0 auto;
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
 }
 
-.ai-card {
-  text-align: center;
-  padding: 38px 24px;
+.tab {
+  height: 46px;
   border: 1px solid #253759;
-  border-radius: 32px;
+  border-radius: 16px;
+  background: #0b1220;
+  color: #8fa3c7;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.tab.active {
+  color: #04110a;
+  background: #7cffb2;
+  border-color: #7cffb2;
+}
+
+.tab-page {
+  display: none;
+}
+
+.active-page {
+  display: block;
+}
+
+.position-card,
+.chart-card,
+.trade-list,
+.settings-card,
+.metrics div {
+  border: 1px solid #253759;
+  border-radius: 24px;
+  background: #0b1220;
+}
+
+.position-card {
+  padding: 28px;
+  text-align: center;
   background:
-    radial-gradient(circle at top, rgba(69, 128, 255, 0.24), transparent 38%),
+    radial-gradient(circle at top, rgba(69, 128, 255, 0.22), transparent 38%),
     linear-gradient(180deg, #101827, #080d16);
 }
 
-.ai-status {
-  font-size: 20px;
-  font-weight: 900;
-  color: #7cffb2;
-  letter-spacing: 1px;
-}
-
-.ai-decision {
-  margin-top: 20px;
-  font-size: 56px;
-  line-height: 1;
-  font-weight: 900;
-  letter-spacing: 3px;
-}
-
-.ai-confidence {
-  margin-top: 10px;
-  font-size: 30px;
-  font-weight: 900;
-  color: #7cc7ff;
-}
-
-.risk-chip {
-  margin: 26px auto 0;
-  max-width: 360px;
-  padding: 14px 18px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.055);
-  border: 1px solid rgba(255,255,255,0.08);
-  display: flex;
-  justify-content: space-between;
-}
-
-.risk-chip span {
+.position-card span,
+.metrics span,
+.chart-levels span,
+.settings-card label {
+  display: block;
   color: #8fa3c7;
   font-size: 12px;
   text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.risk-chip strong {
-  color: #ffd36e;
+.position-card h1 {
+  margin: 14px 0 8px;
+  font-size: 54px;
+  letter-spacing: 2px;
+}
+
+.direction {
+  font-size: 26px;
+  font-weight: 900;
+  color: #7cffb2;
+}
+
+.position-grid,
+.metrics,
+.chart-levels {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.position-grid div,
+.chart-levels div {
+  padding: 16px;
+  border: 1px solid #253759;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+}
+
+.position-grid strong,
+.chart-levels strong,
+.metrics strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 22px;
 }
 
 .auto-panel {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
-  margin-top: 16px;
+  margin-top: 14px;
 }
 
 .auto-start,
 .auto-stop {
-  height: 72px;
+  height: 68px;
   border: 0;
-  border-radius: 24px;
-  font-size: 22px;
+  border-radius: 22px;
+  font-size: 21px;
   font-weight: 900;
   letter-spacing: 1px;
   cursor: pointer;
@@ -133,49 +179,116 @@ body {
 }
 
 .metrics {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-top: 16px;
+  margin-top: 14px;
 }
 
-.metrics div,
-.last-action-card {
+.metrics div {
   padding: 18px;
-  border: 1px solid #253759;
-  border-radius: 22px;
-  background: #0b1220;
 }
 
-.metrics span,
-.last-action-card span {
-  display: block;
+.chart-toolbar {
+  display: grid;
+  grid-template-columns: 1fr 130px 90px;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.chart-toolbar input,
+.chart-toolbar select,
+.chart-toolbar button {
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid #253759;
+  background: #0b1220;
+  color: #f5f7ff;
+  padding: 0 12px;
+  font-weight: 700;
+}
+
+.chart-toolbar button {
+  cursor: pointer;
+  color: #04110a;
+  background: #7cffb2;
+  border-color: #7cffb2;
+}
+
+.chart-card {
+  padding: 18px;
+}
+
+.chart-title {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.chart-title strong {
+  font-size: 20px;
+}
+
+.chart-title span {
+  color: #7cffb2;
+  font-weight: 900;
+}
+
+.chart-box {
+  height: 420px;
+  border: 1px solid #253759;
+  border-radius: 20px;
+  background:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+    #070b13;
+  background-size: 40px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-placeholder {
   color: #8fa3c7;
-  font-size: 12px;
-  text-transform: uppercase;
+  font-weight: 900;
   letter-spacing: 1px;
 }
 
-.metrics strong {
-  display: block;
-  margin-top: 8px;
-  font-size: 24px;
+.trade-list,
+.settings-card {
+  padding: 18px;
 }
 
-.last-action-card {
-  margin-top: 16px;
+.section-title {
+  margin-bottom: 14px;
+  font-size: 14px;
+  font-weight: 900;
+  color: #d9e6ff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
-.last-action-card strong {
-  display: block;
-  margin-top: 8px;
-  font-size: 24px;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
 }
 
-.last-action-card p {
-  margin: 10px 0 0;
-  color: #c8d5ef;
-  line-height: 1.45;
+th,
+td {
+  padding: 11px 8px;
+  border-bottom: 1px solid #1d2b46;
+  text-align: left;
+}
+
+th {
+  color: #8fa3c7;
+}
+
+.setting-row {
+  margin: 8px 0 18px;
+  padding: 14px;
+  border: 1px solid #253759;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  font-weight: 900;
 }
 
 .hidden {
@@ -184,20 +297,19 @@ body {
 
 @media (max-width: 760px) {
   .argos-app {
-    padding: 16px;
+    padding: 14px;
   }
 
-  .ai-decision {
-    font-size: 46px;
+  .tabs {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .auto-panel {
+  .position-card h1 {
+    font-size: 38px;
+  }
+
+  .auto-panel,
+  .chart-toolbar {
     grid-template-columns: 1fr;
   }
-}
-
-.last-action-card p {
-  word-break: break-word;
-  overflow-wrap: anywhere;
-  font-size: 13px;
 }

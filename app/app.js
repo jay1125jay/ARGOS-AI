@@ -366,3 +366,31 @@ function stopAuto() {
   setText("heroPermission", "AUTO STOPPED");
   setText("aiPermission", "AUTO STOPPED");
 }
+
+function showTab(tabName) {
+
+  document.querySelectorAll(".tab-page")
+    .forEach(page => {
+      page.classList.remove("active-page");
+    });
+
+  document.querySelectorAll(".tab")
+    .forEach(tab => {
+      tab.classList.remove("active");
+    });
+
+  document
+    .getElementById("tab-" + tabName)
+    .classList.add("active-page");
+
+  event.target.classList.add("active");
+}
+
+function loadChart() {
+
+  const symbol =
+    document.getElementById("chartSearch").value ||
+    "BTCUSDT";
+
+  document.getElementById("chartSymbol").textContent = symbol;
+}
