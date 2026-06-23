@@ -26,17 +26,30 @@
 
     <main class="main-screen">
 
-      <section id="tab-home" class="tab-page active-page">
-        <section class="position-card">
-          <span>Current Position</span>
-          <h1 id="homeSymbol">NONE</h1>
-          <div class="direction" id="homeDirection">NO TRADE</div>
+      
+      <section class="ai-card">
+        <div class="ai-status" id="heroPermission">-</div>
+        <div class="ai-decision" id="heroAiBias">-</div>
+        <div class="ai-confidence" id="heroConfidence">-</div>
 
-          <div class="position-grid">
-            <div><span>Entry</span><strong id="homeEntry">0</strong></div>
-            <div><span>Current</span><strong id="homeCurrent">0</strong></div>
-            <div><span>Size</span><strong id="homeSize">0</strong></div>
-            <div><span>PnL</span><strong id="homePnl">0</strong></div>
+        <div class="risk-chip">
+          <span>Risk</span>
+          <strong id="heroRiskMode">-</strong>
+        </div>
+      </section>
+        <section class="portfolio-card">
+          <div class="portfolio-top">
+            <div>
+              <span>Current Positions</span>
+              <h1 id="homePositionCount">0</h1>
+            </div>
+            <div class="portfolio-status" id="homeAutoStatus">PAPER ONLY</div>
+          </div>
+
+          <div id="homePositionsList" class="position-list">
+            <div class="empty-position">
+              NO OPEN POSITIONS
+            </div>
           </div>
         </section>
 
@@ -133,8 +146,6 @@
       <strong id="avgLoss">0</strong>
       <strong id="profitFactor">0</strong>
       <strong id="healthStatus">-</strong>
-      <strong id="heroAiBias">-</strong>
-      <strong id="heroConfidence">-</strong>
       <strong id="aiPermission">-</strong>
       <p id="aiReason">-</p>
 

@@ -77,6 +77,7 @@ setText("aiReason", execution.reason ?? ai.argos_message ?? ai.reason ?? "-");
   renderRadar(results);
   renderMarketTable(results);
   renderPositions(positions);
+  renderHomePositions(positions);
   renderNews(news.headlines || []);
   renderMacro(macro.events || []);
   renderSymbolPerformance(analytics.symbols || {});
@@ -219,6 +220,56 @@ function renderPositions(positions) {
     rows.appendChild(row);
     return;
   }
+
+  function renderHomePositions(positions) {
+  const box = document.getElementById("homePositionsList");
+  if (!box) return;
+
+  setText("homePositionCount", positions.length);
+
+  box.innerHTML = "";
+
+  if (positions.length === 0) {
+    box.innerHTML = `
+      <div class="empty-position">
+        NO OPEN POSITIONS
+      </div>
+    `;
+    return;
+  }
+
+  positions.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "home-position-card";
+
+    const market = p.market || "CRYPTO";
+    const symbol = p.symbol || "-";
+    const direction = p.direction || p.action || "-";
+    const entry = p.entry ?? 0;
+    const current = p.current_price ?? p.current ?? 0;
+    const size = p.position_size ?? 0;
+    const pnl = p.unrealized_pnl ?? p.pnl ?? 0;
+
+    card.innerHTML = `
+      <div class="home-position-head">
+        <div>
+          <span>${market}</span>
+          <strong>${symbol}</strong>
+        </div>
+        <b>${direction}</b>
+      </div>
+
+      <div class="home-position-grid">
+        <div><span>Entry</span><strong>${entry}</strong></div>
+        <div><span>Current</span><strong>${current}</strong></div>
+        <div><span>Size</span><strong>${size}</strong></div>
+        <div><span>PnL</span><strong>${pnl}</strong></div>
+      </div>
+    `;
+
+    box.appendChild(card);
+  });
+}
 
   positions.forEach(p => {
     const row = document.createElement("tr");

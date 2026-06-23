@@ -291,6 +291,60 @@ th {
   font-weight: 900;
 }
 
+.ai-card {
+  text-align: center;
+  padding: 34px 24px;
+  border: 1px solid #253759;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top, rgba(69, 128, 255, 0.24), transparent 38%),
+    linear-gradient(180deg, #101827, #080d16);
+  margin-bottom: 14px;
+}
+
+.ai-status {
+  font-size: 22px;
+  font-weight: 900;
+  color: #7cffb2;
+  letter-spacing: 1px;
+}
+
+.ai-decision {
+  margin-top: 18px;
+  font-size: 54px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+
+.ai-confidence {
+  margin-top: 10px;
+  font-size: 30px;
+  font-weight: 900;
+  color: #7cc7ff;
+}
+
+.risk-chip {
+  margin: 24px auto 0;
+  max-width: 360px;
+  padding: 14px 18px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.055);
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  justify-content: space-between;
+}
+
+.risk-chip span {
+  color: #8fa3c7;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.risk-chip strong {
+  color: #ffd36e;
+}
+
 .hidden {
   display: none !important;
 }
