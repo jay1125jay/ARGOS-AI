@@ -76,11 +76,11 @@ body {
 }
 
 .tab-page {
-  display: none;
+  display: none !important;
 }
 
-.active-page {
-  display: block;
+.tab-page.active-page {
+  display: block !important;
 }
 
 .position-card,

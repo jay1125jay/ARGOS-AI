@@ -12,6 +12,7 @@ async function loadData() {
   const ai = data.ai || {};
   const backtest = data.backtest || {};
   const execution = data.execution || {};
+  const chart = data.chart || {};
   const health = data.health || {};
   const positionsData = data.positions || { positions: [] };
   const positions = positionsData.positions || [];
@@ -73,6 +74,13 @@ setText("aiReason", execution.reason ?? ai.argos_message ?? ai.reason ?? "-");
   setText("backtestPnl", strategy.total_pnl ?? 0);
 
   setText("marketUpdated", data.market?.updated_at || "-");
+
+  setText("chartSymbol", chart.symbol ?? "BTCUSDT");
+  setText("chartDirection", chart.direction ?? "WAIT");
+  setText("chartEntry", chart.entry ?? 0);
+  setText("chartTp", chart.tp ?? 0);
+  setText("chartSl", chart.sl ?? 0);
+  setText("chartCurrent", chart.current ?? 0);
 
   renderRadar(results);
   renderMarketTable(results);
