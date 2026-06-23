@@ -1,0 +1,9 @@
+{
+  "engine": "ARGOS_CHART_BRAIN_V1",
+  "symbol": "AAPL",
+  "trend": "NEUTRAL",
+  "momentum": "NEUTRAL",
+  "structure": "SIDEWAYS",
+  "signal": "WAIT",
+  "confidence": 50
+}

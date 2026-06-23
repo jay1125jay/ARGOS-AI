@@ -22,6 +22,7 @@ AI = os.path.join(ROOT, "data", "ai", "ai_status.json")
 BACKTEST = os.path.join(ROOT, "data", "backtest", "backtest_status.json")
 CHART = os.path.join(ROOT, "data", "chart", "chart_state.json")
 EXECUTION = os.path.join(ROOT, "data", "execution", "execution_status.json")
+CHART_ANALYSIS = os.path.join(ROOT, "data", "chart", "chart_analysis.json")
 
 
 def read_csv(path):
@@ -119,6 +120,7 @@ class Handler(BaseHTTPRequestHandler):
             ai = read_json(AI)
             backtest = read_json(BACKTEST)
             chart = read_json(CHART)
+            chart_analysis = read_json(CHART_ANALYSIS)
             execution = read_json(EXECUTION)
 
             latest_report = {
@@ -159,7 +161,8 @@ class Handler(BaseHTTPRequestHandler):
                 "ai": ai,
                 "backtest": backtest,
                 "execution": execution,
-                "chart": chart
+                "chart": chart,
+                "chart_analysis": chart_analysis,
             }).encode("utf-8")
 
             self.send_response(200)
