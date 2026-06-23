@@ -20,6 +20,7 @@ SYSTEM_LOG = os.path.join(ROOT, "data", "logs", "system_log.csv")
 DECISION_LOG = os.path.join(ROOT, "data", "logs", "decision_log.csv")
 AI = os.path.join(ROOT, "data", "ai", "ai_status.json")
 BACKTEST = os.path.join(ROOT, "data", "backtest", "backtest_status.json")
+EXECUTION = os.path.join(ROOT, "data", "execution", "execution_status.json")
 
 
 def read_csv(path):
@@ -116,6 +117,7 @@ class Handler(BaseHTTPRequestHandler):
             decision_logs = read_csv(DECISION_LOG)
             ai = read_json(AI)
             backtest = read_json(BACKTEST)
+            execution = read_json(EXECUTION)
 
             latest_report = {
                 "total_trades": 0,
@@ -153,7 +155,8 @@ class Handler(BaseHTTPRequestHandler):
                 "system_logs": system_logs[-20:],
                 "decision_logs": decision_logs[-50:],
                 "ai": ai,
-                "backtest": backtest
+                "backtest": backtest,
+                "execution": execution
             }).encode("utf-8")
 
             self.send_response(200)

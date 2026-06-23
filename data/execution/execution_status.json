@@ -1,0 +1,17 @@
+{
+  "mode": "PAPER_ONLY",
+  "engine": "ARGOS_EXECUTION_ENGINE_V1",
+  "updated_at": "2026-06-23 11:20:48",
+  "symbol": "BTCUSDT",
+  "execution_action": "NO_ORDER",
+  "direction": "NONE",
+  "entry": 0,
+  "tp": 0,
+  "sl": 0,
+  "position_size": 1000.0,
+  "reason": "No executable paper setup.",
+  "paper_order_ready": false,
+  "real_order_enabled": false,
+  "api_order_enabled": false,
+  "auto_real_order_enabled": false
+}

@@ -11,6 +11,7 @@ async function loadData() {
   const macro = data.macro || {};
   const ai = data.ai || {};
   const backtest = data.backtest || {};
+  const execution = data.execution || {};
   const health = data.health || {};
   const positionsData = data.positions || { positions: [] };
   const positions = positionsData.positions || [];
@@ -53,7 +54,7 @@ async function loadData() {
 }
   setText("aiReason", ai.reason ?? "-");
 
-  setText("heroAiBias", formatArgosBias(ai));
+  setText("heroAiBias", formatExecutionAction(execution, ai));
   setText("heroConfidence", formatConfidence(ai.confidence));
 
   if (!autoRunning) {
@@ -62,7 +63,7 @@ async function loadData() {
 }
 
 setText("heroRiskMode", formatRiskMode(ai.risk_mode));
-setText("aiReason", ai.argos_message ?? ai.reason ?? "-");
+setText("aiReason", execution.reason ?? ai.argos_message ?? ai.reason ?? "-");
 
   const strategy = (backtest.strategies || [])[0] || {};
   setText("backtestMode", backtest.mode ?? "-");
@@ -155,6 +156,18 @@ function formatRiskMode(value) {
   if (text === "AGGRESSIVE") return "AGGRESSIVE MODE";
 
   return text;
+}
+
+function formatExecutionAction(execution, ai) {
+  if (execution && execution.paper_order_ready) {
+    if (execution.direction === "LONG") return "LONG READY";
+    if (execution.direction === "SHORT") return "SHORT READY";
+  }
+
+  if (ai && ai.argos_state === "BLOCKED") return "NO TRADE";
+  if (ai && ai.argos_state === "ANALYZING") return "WAIT";
+
+  return ai?.ai_bias || "-";
 }
 
 function renderRadar(results) {

@@ -1,0 +1,15 @@
+{
+  "mode": "PAPER_ONLY",
+  "engine": "ARGOS_DECISION_ENGINE_V1",
+  "updated_at": "2026-06-23 10:47:05",
+  "symbol": "BTCUSDT",
+  "argos_state": "BLOCKED",
+  "risk_mode": "DEFENSIVE",
+  "confidence": 0,
+  "decision": "BLOCK",
+  "action": "NO_TRADE",
+  "reason": "ARGOS state is BLOCKED.",
+  "auto_allowed": false,
+  "real_order_enabled": false,
+  "api_order_enabled": false
+}
