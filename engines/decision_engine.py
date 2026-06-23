@@ -8,6 +8,7 @@ AI_FILE = os.path.join(BASE_DIR, "data", "ai", "ai_status.json")
 MARKET_FILE = os.path.join(BASE_DIR, "data", "market", "market_status.json")
 POSITIONS_FILE = os.path.join(BASE_DIR, "data", "open_positions.json")
 COOLDOWN_FILE = os.path.join(BASE_DIR, "data", "cooldown.json")
+CHART_ANALYSIS_FILE = os.path.join(BASE_DIR, "data", "chart", "chart_analysis.json")
 
 DECISION_DIR = os.path.join(BASE_DIR, "data", "decision")
 DECISION_FILE = os.path.join(DECISION_DIR, "decision_status.json")
@@ -43,11 +44,14 @@ def build_decision():
     market = load_json(MARKET_FILE, {})
     positions = load_json(POSITIONS_FILE, {})
     cooldown = load_json(COOLDOWN_FILE, {})
+    chart = load_json(CHART_ANALYSIS_FILE, {})
 
     argos_state = ai.get("argos_state", "ANALYZING")
     auto_ready = ai.get("auto_ready", False)
     risk_mode = ai.get("risk_mode", "NORMAL")
     confidence = ai.get("confidence", 0)
+    chart_signal = chart.get("signal", "WAIT")
+    chart_confidence = chart.get("confidence", 50)
 
     open_positions = positions.get("positions", [])
     in_cooldown = cooldown.get("active", False)
@@ -77,13 +81,13 @@ def build_decision():
         reason = "Open position exists. ARGOS should manage position first."
         auto_allowed = False
 
-    elif auto_ready and argos_state == "READY_LONG":
+    elif auto_ready and argos_state == "READY_LONG" and chart_signal in ["LONG", "WAIT"]:
         decision = "READY_LONG"
         action = "PAPER_LONG"
         reason = "ARGOS is ready for a paper long decision."
         auto_allowed = True
 
-    elif auto_ready and argos_state == "READY_SHORT":
+    elif auto_ready and argos_state == "READY_SHORT" and chart_signal in ["SHORT", "WAIT"]:
         decision = "READY_SHORT"
         action = "PAPER_SHORT"
         reason = "ARGOS is ready for a paper short decision."
