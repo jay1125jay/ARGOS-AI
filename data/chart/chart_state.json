@@ -1,0 +1,13 @@
+{
+  "mode": "PAPER_ONLY",
+  "market": "CRYPTO",
+  "symbol": "BTCUSDT",
+  "interval": "5m",
+  "provider": "TRADINGVIEW",
+  "display_symbol": "BINANCE:BTCUSDT",
+  "entry": 0,
+  "current": 0,
+  "tp": 0,
+  "sl": 0,
+  "direction": "WAIT"
+}

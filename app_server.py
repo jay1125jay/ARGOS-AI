@@ -20,6 +20,7 @@ SYSTEM_LOG = os.path.join(ROOT, "data", "logs", "system_log.csv")
 DECISION_LOG = os.path.join(ROOT, "data", "logs", "decision_log.csv")
 AI = os.path.join(ROOT, "data", "ai", "ai_status.json")
 BACKTEST = os.path.join(ROOT, "data", "backtest", "backtest_status.json")
+CHART = os.path.join(ROOT, "data", "chart", "chart_state.json")
 EXECUTION = os.path.join(ROOT, "data", "execution", "execution_status.json")
 
 
@@ -117,6 +118,7 @@ class Handler(BaseHTTPRequestHandler):
             decision_logs = read_csv(DECISION_LOG)
             ai = read_json(AI)
             backtest = read_json(BACKTEST)
+            chart = read_json(CHART)
             execution = read_json(EXECUTION)
 
             latest_report = {
@@ -156,7 +158,8 @@ class Handler(BaseHTTPRequestHandler):
                 "decision_logs": decision_logs[-50:],
                 "ai": ai,
                 "backtest": backtest,
-                "execution": execution
+                "execution": execution,
+                "chart": chart
             }).encode("utf-8")
 
             self.send_response(200)
