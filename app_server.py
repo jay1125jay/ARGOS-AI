@@ -25,7 +25,6 @@ EXECUTION = os.path.join(ROOT, "data", "execution", "execution_status.json")
 CHART_ANALYSIS = os.path.join(ROOT, "data", "chart", "chart_analysis.json")
 BRAIN = os.path.join(ROOT, "data", "brain", "argos_brain_status.json")
 
-
 def read_csv(path):
     if not os.path.exists(path):
         return []
@@ -123,7 +122,7 @@ class Handler(BaseHTTPRequestHandler):
             chart = read_json(CHART)            
             brain = read_json(BRAIN)
             execution = read_json(EXECUTION)
-
+            chart_analysis = read_json(CHART_ANALYSIS)
             latest_report = {
                 "total_trades": 0,
                 "wins": 0,
