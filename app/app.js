@@ -102,6 +102,13 @@ async function loadData() {
     "-"
   );
 
+  setText(
+    "heroAiReason",
+    ai.argos_message ??
+    ai.reason ??
+    "-"
+  );
+
   if (!autoRunning) {
   setText("heroPermission", formatArgosState(ai));
   setText("settingsPermission", formatArgosState(ai));
