@@ -23,6 +23,7 @@ BACKTEST = os.path.join(ROOT, "data", "backtest", "backtest_status.json")
 CHART = os.path.join(ROOT, "data", "chart", "chart_state.json")
 EXECUTION = os.path.join(ROOT, "data", "execution", "execution_status.json")
 CHART_ANALYSIS = os.path.join(ROOT, "data", "chart", "chart_analysis.json")
+BRAIN = os.path.join(ROOT, "data", "brain", "argos_brain_status.json")
 
 
 def read_csv(path):
@@ -119,8 +120,8 @@ class Handler(BaseHTTPRequestHandler):
             decision_logs = read_csv(DECISION_LOG)
             ai = read_json(AI)
             backtest = read_json(BACKTEST)
-            chart = read_json(CHART)
-            chart_analysis = read_json(CHART_ANALYSIS)
+            chart = read_json(CHART)            
+            brain = read_json(BRAIN)
             execution = read_json(EXECUTION)
 
             latest_report = {
@@ -163,6 +164,8 @@ class Handler(BaseHTTPRequestHandler):
                 "execution": execution,
                 "chart": chart,
                 "chart_analysis": chart_analysis,
+                "brain": brain
+                
             }).encode("utf-8")
 
             self.send_response(200)
