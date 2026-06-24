@@ -122,6 +122,8 @@ class Handler(BaseHTTPRequestHandler):
             chart = read_json(CHART)            
             brain = read_json(BRAIN)
             execution = read_json(EXECUTION)
+            PAPER_ROUTER = os.path.join(ROOT, "data", "execution", "paper_router_status.json")
+            paper_router = read_json(PAPER_ROUTER)
             chart_analysis = read_json(CHART_ANALYSIS)
             latest_report = {
                 "total_trades": 0,
@@ -161,6 +163,7 @@ class Handler(BaseHTTPRequestHandler):
                 "ai": ai,
                 "backtest": backtest,
                 "execution": execution,
+                "paper_router": paper_router,
                 "chart": chart,
                 "chart_analysis": chart_analysis,
                 "brain": brain
