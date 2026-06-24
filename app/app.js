@@ -59,6 +59,37 @@ async function loadData() {
   setText("heroAiBias", formatBrainDecision(brain, execution, ai));
   setText("heroConfidence", formatConfidence(brain.ai_summary?.confidence ?? ai.confidence));
 
+  setText(
+    "heroMarket",
+    brain.market_summary?.market ??
+    brain.chart_summary?.market ??
+    execution.market ??
+    "-"
+  );
+
+  setText(
+    "heroSymbol",
+    brain.market_summary?.symbol ??
+    brain.chart_summary?.symbol ??
+    execution.symbol ??
+    chart.symbol ??
+    "-"
+  );
+
+  setText(
+    "heroDecision",
+    brain.decision_summary?.decision ??
+    decision.decision ??
+    "-"
+  );
+
+  setText(
+    "heroExecution",
+    brain.execution_summary?.action ??
+    execution.action ??
+    "-"
+  );
+
   if (!autoRunning) {
   setText("heroPermission", formatArgosState(ai));
   setText("aiPermission", formatArgosState(ai));
