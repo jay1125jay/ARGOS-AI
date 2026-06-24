@@ -1,0 +1,39 @@
+{
+  "engine": "ARGOS_BRAIN_V1",
+  "mode": "PAPER_ONLY",
+  "updated_at": "2026-06-24 12:54:28",
+  "market_summary": {
+    "news_sentiment": "NEGATIVE",
+    "news_risk": "HIGH",
+    "macro_regime": "RISK_OFF",
+    "macro_risk": "HIGH",
+    "chart_signal": "WAIT",
+    "chart_confidence": 50
+  },
+  "ai_summary": {
+    "argos_state": "BLOCKED",
+    "ai_bias": "BEARISH",
+    "confidence": 0,
+    "risk_mode": "DEFENSIVE",
+    "auto_ready": false
+  },
+  "decision_summary": {
+    "decision": "BLOCK",
+    "action": "NO_TRADE",
+    "symbol": "BTCUSDT",
+    "auto_allowed": false
+  },
+  "execution_summary": {
+    "execution_action": "NO_ORDER",
+    "direction": "NONE",
+    "entry": 0,
+    "tp": 0,
+    "sl": 0,
+    "paper_order_ready": false
+  },
+  "safety": {
+    "real_order_enabled": false,
+    "api_order_enabled": false,
+    "auto_real_order_enabled": false
+  }
+}
