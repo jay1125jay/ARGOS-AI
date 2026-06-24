@@ -80,26 +80,31 @@
 
       <section id="tab-chart" class="tab-page">
         <section class="chart-toolbar">
-          <input id="chartSearch" placeholder="BTCUSDT / AAPL / 005930">
+          <input id="chartSearch" placeholder="BTCUSDT / AAPL / 005930 / NQ">
           <select id="chartMarket">
-            <option>CRYPTO</option>
-            <option>KR</option>
-            <option>US</option>
-            <option>FUTURES</option>
+            <option value="CRYPTO">CRYPTO</option>
+            <option value="KR">KR</option>
+            <option value="US">US</option>
+            <option value="FUTURES">FUTURES</option>
           </select>
           <button onclick="loadChart()">LOAD</button>
         </section>
 
         <section class="chart-card">
           <div class="chart-title">
-            <strong id="chartSymbol">BTCUSDT</strong>
-            <span id="chartDirection">WAIT</span>
+            <div>
+              <span>SELECTED CHART</span>
+              <strong id="chartSymbol">BTCUSDT</strong>
+            </div>
+            <div class="chart-status" id="chartDirection">WAIT</div>
           </div>
+
           <div class="chart-box">
             <div id="tradingviewChart" class="tradingview-chart">
-              <div class="chart-placeholder">TRADINGVIEW CHART READY</div>
+              <div class="chart-placeholder">CLICK LOAD TO OPEN CHART</div>
             </div>
           </div>
+
           <div class="chart-levels">
             <div><span>Entry</span><strong id="chartEntry">0</strong></div>
             <div><span>TP</span><strong id="chartTp">0</strong></div>

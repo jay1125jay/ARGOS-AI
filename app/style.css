@@ -97,7 +97,8 @@ body {
 .metrics span,
 .chart-levels span,
 .settings-card label,
-.portfolio-top span {
+.portfolio-top span,
+.chart-title span {
   display: block;
   color: #8fa3c7;
   font-size: 12px;
@@ -197,15 +198,23 @@ body {
 .chart-title {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 12px;
+  align-items: center;
+  margin-bottom: 14px;
 }
 
 .chart-title strong {
-  font-size: 20px;
+  display: block;
+  margin-top: 6px;
+  font-size: 22px;
 }
 
-.chart-title span {
+.chart-status {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(124, 255, 178, 0.12);
+  border: 1px solid rgba(124, 255, 178, 0.25);
   color: #7cffb2;
+  font-size: 12px;
   font-weight: 900;
 }
 
@@ -221,6 +230,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .chart-placeholder {
@@ -458,7 +468,8 @@ th {
     font-size: 34px;
   }
 
-  .portfolio-top {
+  .portfolio-top,
+  .chart-title {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;

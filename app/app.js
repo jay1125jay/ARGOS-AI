@@ -1,5 +1,7 @@
 let autoRunning = false;
 let lastTradingViewSymbol = "";
+let chartLoaded = false;
+let activeTab = "home";
 
 async function loadData() {
   const res = await fetch("/api/status");
@@ -80,12 +82,7 @@ async function loadData() {
 
   setText("marketUpdated", data.market?.updated_at || "-");
 
-  setText("chartSymbol", chart.symbol ?? "BTCUSDT");
-  setText("chartDirection", chart.direction ?? "WAIT");
-  setText("chartEntry", chart.entry ?? 0);
-  setText("chartTp", chart.tp ?? 0);
-  setText("chartSl", chart.sl ?? 0);
-  setText("chartCurrent", chart.current ?? 0);
+  updateChartNumbers(chart);
 
   renderRadar(results);
   renderMarketTable(results);
@@ -97,6 +94,15 @@ async function loadData() {
   renderDecisionLogs(data.decision_logs || []);
   renderSystemLogs(data.system_logs || []);
   renderTrades(data.trades || []);
+}
+
+function updateChartNumbers(chart) {
+  setText("chartSymbol", chart.symbol ?? "BTCUSDT");
+  setText("chartDirection", chart.direction ?? "WAIT");
+  setText("chartEntry", chart.entry ?? 0);
+  setText("chartTp", chart.tp ?? 0);
+  setText("chartSl", chart.sl ?? 0);
+  setText("chartCurrent", chart.current ?? 0);
 }
 
 function setText(id, value) {
@@ -366,6 +372,8 @@ function stopAuto() {
 }
 
 function showTab(tabName, event) {
+  activeTab = tabName;
+
   document.querySelectorAll(".tab-page").forEach(page => {
     page.classList.remove("active-page");
   });
@@ -380,6 +388,10 @@ function showTab(tabName, event) {
 
   if (event && event.target) {
     event.target.classList.add("active");
+  }
+
+  if (tabName === "chart" && !chartLoaded) {
+    loadChart();
   }
 }
 
@@ -398,14 +410,9 @@ async function loadChart() {
 
   const chart = await res.json();
 
-  setText("chartSymbol", chart.symbol ?? symbol);
-  setText("chartDirection", chart.direction ?? "WAIT");
-  setText("chartEntry", chart.entry ?? 0);
-  setText("chartTp", chart.tp ?? 0);
-  setText("chartSl", chart.sl ?? 0);
-  setText("chartCurrent", chart.current ?? 0);
-
+  updateChartNumbers(chart);
   renderTradingView(chart);
+  chartLoaded = true;
 }
 
 function renderTradingView(chart) {
@@ -418,8 +425,8 @@ function renderTradingView(chart) {
     return;
   }
 
-lastTradingViewSymbol = symbol;
-box.innerHTML = "";
+  lastTradingViewSymbol = symbol;
+  box.innerHTML = "";
 
   const widgetBox = document.createElement("div");
   widgetBox.className = "tradingview-widget-container";
@@ -456,7 +463,3 @@ box.innerHTML = "";
 
 loadData();
 setInterval(loadData, 3000);
-
-renderTradingView({
-  display_symbol: "BINANCE:BTCUSDT"
-});
