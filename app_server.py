@@ -21,9 +21,12 @@ DECISION_LOG = os.path.join(ROOT, "data", "logs", "decision_log.csv")
 AI = os.path.join(ROOT, "data", "ai", "ai_status.json")
 BACKTEST = os.path.join(ROOT, "data", "backtest", "backtest_status.json")
 CHART = os.path.join(ROOT, "data", "chart", "chart_state.json")
-EXECUTION = os.path.join(ROOT, "data", "execution", "execution_status.json")
 CHART_ANALYSIS = os.path.join(ROOT, "data", "chart", "chart_analysis.json")
 BRAIN = os.path.join(ROOT, "data", "brain", "argos_brain_status.json")
+DECISION = os.path.join(ROOT, "data", "decision", "decision_status.json")
+EXECUTION = os.path.join(ROOT, "data", "execution", "execution_status.json")
+PAPER_ROUTER = os.path.join(ROOT, "data", "execution", "paper_router_status.json")
+
 
 def read_csv(path):
     if not os.path.exists(path):
@@ -103,12 +106,71 @@ def enrich_positions(positions, market):
     return positions
 
 
+def build_home_summary(ai, brain, decision, execution, paper_router, positions, chart):
+    position_list = positions.get("positions", [])
+
+    return {
+        "mode": "PAPER_ONLY",
+        "market": (
+            brain.get("market_summary", {}).get("market")
+            or brain.get("chart_summary", {}).get("market")
+            or execution.get("market")
+            or chart.get("market")
+            or "CRYPTO"
+        ),
+        "symbol": (
+            brain.get("market_summary", {}).get("symbol")
+            or brain.get("chart_summary", {}).get("symbol")
+            or decision.get("symbol")
+            or execution.get("symbol")
+            or chart.get("symbol")
+            or "-"
+        ),
+        "decision": (
+            brain.get("decision_summary", {}).get("decision")
+            or decision.get("decision")
+            or "-"
+        ),
+        "decision_action": decision.get("action", "-"),
+        "execution": (
+            paper_router.get("status")
+            or brain.get("execution_summary", {}).get("action")
+            or execution.get("execution_action")
+            or execution.get("action")
+            or execution.get("order")
+            or "NO_ORDER"
+        ),
+        "router_status": paper_router.get("status", "-"),
+        "router_reason": (
+            paper_router.get("reason")
+            or execution.get("reason")
+            or "-"
+        ),
+        "ai_state": (
+            ai.get("argos_state")
+            or ai.get("trade_permission")
+            or "-"
+        ),
+        "ai_bias": ai.get("ai_bias", "-"),
+        "ai_confidence": ai.get("confidence", 0),
+        "ai_reason": (
+            ai.get("argos_message")
+            or ai.get("reason")
+            or "-"
+        ),
+        "risk_mode": ai.get("risk_mode", "-"),
+        "open_positions": len(position_list),
+        "real_order_enabled": False,
+        "api_order_enabled": False,
+        "auto_real_order_enabled": False
+    }
+
+
 class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
 
-        if self.path == "/api/status":
-
+        if self.path.startswith("/api/status"):
             trades = read_csv(TRADES)
             reports = read_csv(REPORT)
             market = read_json(MARKET)
@@ -119,12 +181,13 @@ class Handler(BaseHTTPRequestHandler):
             decision_logs = read_csv(DECISION_LOG)
             ai = read_json(AI)
             backtest = read_json(BACKTEST)
-            chart = read_json(CHART)            
-            brain = read_json(BRAIN)
-            execution = read_json(EXECUTION)
-            PAPER_ROUTER = os.path.join(ROOT, "data", "execution", "paper_router_status.json")
-            paper_router = read_json(PAPER_ROUTER)
+            chart = read_json(CHART)
             chart_analysis = read_json(CHART_ANALYSIS)
+            brain = read_json(BRAIN)
+            decision = read_json(DECISION)
+            execution = read_json(EXECUTION)
+            paper_router = read_json(PAPER_ROUTER)
+
             latest_report = {
                 "total_trades": 0,
                 "wins": 0,
@@ -148,6 +211,16 @@ class Handler(BaseHTTPRequestHandler):
             analytics = analyze_trades()
             health = get_health()
 
+            home_summary = build_home_summary(
+                ai,
+                brain,
+                decision,
+                execution,
+                paper_router,
+                positions,
+                chart
+            )
+
             body = json.dumps({
                 "report": latest_report,
                 "portfolio": portfolio,
@@ -162,12 +235,13 @@ class Handler(BaseHTTPRequestHandler):
                 "decision_logs": decision_logs[-50:],
                 "ai": ai,
                 "backtest": backtest,
-                "execution": execution,
-                "paper_router": paper_router,
                 "chart": chart,
                 "chart_analysis": chart_analysis,
-                "brain": brain
-                
+                "brain": brain,
+                "decision": decision,
+                "execution": execution,
+                "paper_router": paper_router,
+                "home_summary": home_summary
             }).encode("utf-8")
 
             self.send_response(200)
@@ -225,7 +299,3 @@ class Handler(BaseHTTPRequestHandler):
 
 
 HTTPServer(("0.0.0.0", 8000), Handler).serve_forever()
-
-
-
-
