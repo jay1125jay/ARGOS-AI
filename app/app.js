@@ -13,6 +13,7 @@ async function loadData() {
   const backtest = data.backtest || {};
   const execution = data.execution || {};
   const chart = data.chart || {};
+  const brain = data.brain || {};
   const health = data.health || {};
   const positionsData = data.positions || { positions: [] };
   const positions = positionsData.positions || [];
@@ -55,8 +56,8 @@ async function loadData() {
 }
   setText("aiReason", ai.reason ?? "-");
 
-  setText("heroAiBias", formatExecutionAction(execution, ai));
-  setText("heroConfidence", formatConfidence(ai.confidence));
+  setText("heroAiBias", formatBrainDecision(brain, execution, ai));
+  setText("heroConfidence", formatConfidence(brain.ai_summary?.confidence ?? ai.confidence));
 
   if (!autoRunning) {
   setText("heroPermission", formatArgosState(ai));
@@ -469,6 +470,18 @@ async function loadChart() {
   setText("chartCurrent", chart.current ?? 0);
 
   renderTradingView(chart);
+}
+
+function formatBrainDecision(brain, execution, ai) {
+  const decision = brain.decision_summary?.decision;
+  const action = brain.decision_summary?.action;
+
+  if (decision === "BLOCK") return "NO TRADE";
+  if (action === "PAPER_LONG") return "LONG";
+  if (action === "PAPER_SHORT") return "SHORT";
+  if (decision === "WAIT") return "WAIT";
+
+  return formatExecutionAction(execution, ai);
 }
 
 function renderTradingView(chart) {
