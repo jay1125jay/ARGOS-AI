@@ -324,6 +324,31 @@ th {
   color: #7cc7ff;
 }
 
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.hero-grid div {
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hero-grid span {
+  display: block;
+  font-size: 11px;
+  opacity: 0.65;
+  margin-bottom: 6px;
+}
+
+.hero-grid strong {
+  font-size: 13px;
+}
+
 .risk-chip {
   margin: 24px auto 0;
   max-width: 360px;
