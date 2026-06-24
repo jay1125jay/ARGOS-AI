@@ -95,6 +95,13 @@ async function loadData() {
     "NO_ORDER"
   );
 
+  setText(
+    "heroRouterReason",
+    paperRouter.reason ??
+    execution.reason ??
+    "-"
+  );
+
   if (!autoRunning) {
   setText("heroPermission", formatArgosState(ai));
   setText("settingsPermission", formatArgosState(ai));
