@@ -92,10 +92,12 @@ async function loadData() {
 
   if (!autoRunning) {
   setText("heroPermission", formatArgosState(ai));
+  setText("settingsPermission", formatArgosState(ai));
   setText("aiPermission", formatArgosState(ai));
 }
 
 setText("heroRiskMode", formatRiskMode(ai.risk_mode));
+setText("settingsRiskMode", formatRiskMode(ai.risk_mode));
 setText("aiReason", execution.reason ?? ai.argos_message ?? ai.reason ?? "-");
 
   const strategy = (backtest.strategies || [])[0] || {};
