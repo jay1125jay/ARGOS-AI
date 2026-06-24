@@ -64,7 +64,8 @@ async function loadData() {
     brain.market_summary?.market ??
     brain.chart_summary?.market ??
     execution.market ??
-    "-"
+    chart.market ??
+    "CRYPTO"
   );
 
   setText(
@@ -87,7 +88,8 @@ async function loadData() {
     "heroExecution",
     brain.execution_summary?.action ??
     execution.action ??
-    "-"
+    execution.order ??
+    "NO_ORDER"
   );
 
   if (!autoRunning) {
