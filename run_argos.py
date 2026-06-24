@@ -4,13 +4,8 @@ import urllib.request
 from datetime import datetime
 
 from engines.portfolio_engine import calculate_portfolio
-from engines.position_manager import open_position, check_all_exits, load_positions
-from engines.risk_engine import check_risk
+from engines.position_manager import check_all_exits, load_positions
 from engines.technical_engine import build_signal
-from engines.config_loader import get_strategy_version
-from engines.decision_logger import log_decision
-from engines.cooldown_engine import set_cooldown, is_cooldown_active
-from engines.ai_engine import load_ai_status
 from engines.report_engine import (
     ensure_report_files,
     save_trade,
@@ -18,6 +13,9 @@ from engines.report_engine import (
     calculate_report,
     save_report,
 )
+from engines.execution_engine import build_execution_plan
+from engines.paper_router import route_paper_order
+
 
 BASE_DIR = r"C:\ARGOS_AI"
 
@@ -112,6 +110,7 @@ def main():
     print("MODE=PAPER_ONLY")
     print("REAL_ORDER=FALSE")
     print("API_ORDER=FALSE")
+    print("AUTO_REAL_ORDER=FALSE")
     print("-" * 50)
 
     results, best = scan_market()
@@ -123,10 +122,6 @@ def main():
     print(f"BEST_SIGNAL_SCORE={best['signal_score']}")
     print(f"BEST_RISK_SCORE={best['risk_score']}")
 
-    latest_report = get_latest_report()
-    strategy_version = get_strategy_version()
-    ai_status = load_ai_status()
-
     closed_trades = check_all_exits(results)
 
     for trade in closed_trades:
@@ -134,52 +129,34 @@ def main():
         trade_changed = True
 
         print("POSITION_EXIT=EXECUTED")
-        log_decision(trade['symbol'], trade['action'], 0, 0, 'POSITION_EXIT_' + str(trade.get('exit_reason')), strategy_version)
         print(f"EXIT_SYMBOL={trade['symbol']}")
         print(f"EXIT_REASON={trade.get('exit_reason')}")
         print(f"PNL={trade['pnl']}")
         print(f"RESULT={trade['result']}")
-        set_cooldown(trade['symbol'], 5)
 
-    for signal in results:
-        if signal["action"] not in ["LONG", "SHORT"]:
-            continue
+    execution = build_execution_plan()
 
-        if ai_status.get('trade_permission') == 'BLOCK':
-            print(f"POSITION_ENTRY=AI_BLOCKED {signal['symbol']}")
-            log_decision(signal['symbol'], signal['action'], signal['signal_score'], signal['risk_score'], 'AI_BLOCKED_' + ai_status.get('ai_bias', 'UNKNOWN'), strategy_version)
-            continue
+    print("-" * 50)
+    print("EXECUTION_ENGINE=OK")
+    print("EXECUTION_ACTION=" + str(execution.get("execution_action")))
+    print("EXECUTION_SYMBOL=" + str(execution.get("symbol")))
+    print("EXECUTION_DIRECTION=" + str(execution.get("direction")))
+    print("PAPER_ORDER_READY=" + str(execution.get("paper_order_ready")))
+    print("REAL_ORDER_ENABLED=" + str(execution.get("real_order_enabled")))
+    print("API_ORDER_ENABLED=" + str(execution.get("api_order_enabled")))
 
-        if is_cooldown_active(signal['symbol']):
-            print(f"POSITION_ENTRY=COOLDOWN_BLOCKED {signal['symbol']}")
-            log_decision(signal['symbol'], signal['action'], signal['signal_score'], signal['risk_score'], 'COOLDOWN_BLOCKED', strategy_version)
-            continue
+    router = route_paper_order()
 
-        risk_result = check_risk(signal, latest_report)
+    print("-" * 50)
+    print("PAPER_ROUTER=OK")
+    print("ROUTER_STATUS=" + str(router.get("status")))
+    print("ROUTER_REASON=" + str(router.get("reason")))
+    print("ROUTER_REAL_ORDER_ENABLED=" + str(router.get("real_order_enabled")))
+    print("ROUTER_API_ORDER_ENABLED=" + str(router.get("api_order_enabled")))
+    print("ROUTER_AUTO_REAL_ORDER_ENABLED=" + str(router.get("auto_real_order_enabled")))
 
-        print(f"ENTRY_CHECK {signal['symbol']} ACTION={signal['action']} RISK_ALLOWED={risk_result['allowed']}")
-        log_decision(signal['symbol'], signal['action'], signal['signal_score'], signal['risk_score'], 'ENTRY_CHECK', strategy_version)
-
-        if not risk_result["allowed"]:
-            if risk_result["reasons"]:
-                print("RISK_REASONS=" + ",".join(risk_result["reasons"]))
-            continue
-
-        position = open_position(signal)
-
-        if position:
-            trade_changed = True
-
-            print("POSITION_ENTRY=EXECUTED")
-            log_decision(position['symbol'], position['action'], signal['signal_score'], signal['risk_score'], 'POSITION_ENTRY_EXECUTED', strategy_version)
-            print(f"SYMBOL={position['symbol']}")
-            print(f"ACTION={position['action']}")
-            print(f"ENTRY={position['entry']}")
-            print(f"TP={position['tp']}")
-            print(f"SL={position['sl']}")
-        else:
-            print(f"POSITION_ENTRY=BLOCKED {signal['symbol']}")
-            log_decision(signal['symbol'], signal['action'], signal['signal_score'], signal['risk_score'], 'POSITION_ENTRY_BLOCKED', strategy_version)
+    if router.get("status") == "PAPER_POSITION_OPENED":
+        trade_changed = True
 
     report = calculate_report()
 
@@ -211,7 +188,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
