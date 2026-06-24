@@ -15,6 +15,7 @@ async function loadData() {
   const paperRouter = data.paper_router || {};
   const chart = data.chart || {};
   const brain = data.brain || {};
+  const homeSummary = data.home_summary || {};
   const health = data.health || {};
   const positionsData = data.positions || { positions: [] };
   const positions = positionsData.positions || [];
@@ -57,65 +58,22 @@ async function loadData() {
 }
   setText("aiReason", ai.reason ?? "-");
 
-  setText("heroAiBias", formatBrainDecision(brain, execution, ai));
-  setText("heroConfidence", formatConfidence(brain.ai_summary?.confidence ?? ai.confidence));
-
-  setText(
-    "heroMarket",
-    brain.market_summary?.market ??
-    brain.chart_summary?.market ??
-    execution.market ??
-    chart.market ??
-    "CRYPTO"
-  );
-
-  setText(
-    "heroSymbol",
-    brain.market_summary?.symbol ??
-    brain.chart_summary?.symbol ??
-    execution.symbol ??
-    chart.symbol ??
-    "-"
-  );
-
-  setText(
-    "heroDecision",
-    brain.decision_summary?.decision ??
-    decision.decision ??
-    "-"
-  );
-
-  setText(
-    "heroExecution",
-    paperRouter.status ??
-    brain.execution_summary?.action ??
-    execution.execution_action ??
-    execution.action ??
-    execution.order ??
-    "NO_ORDER"
-  );
-
-  setText(
-    "heroRouterReason",
-    paperRouter.reason ??
-    execution.reason ??
-    "-"
-  );
-
-  setText(
-    "heroAiReason",
-    ai.argos_message ??
-    ai.reason ??
-    "-"
-  );
-
+  setText("heroAiBias", homeSummary.ai_state ?? formatBrainDecision(brain, execution, ai));
+  setText("heroConfidence", formatConfidence(homeSummary.ai_confidence ?? brain.ai_summary?.confidence ?? ai.confidence));
+  setText("heroMarket", homeSummary.market ?? "CRYPTO");
+  setText("heroSymbol", homeSummary.symbol ?? "-");
+  setText("heroDecision", homeSummary.decision ?? "-");
+  setText("heroExecution", homeSummary.execution ?? "NO_ORDER");
+  setText("heroRouterReason", homeSummary.router_reason ?? "-");
+  setText("heroAiReason", homeSummary.ai_reason ?? "-");
+  setText("heroRiskMode", formatRiskMode(homeSummary.risk_mode ?? ai.risk_mode));
+  
   if (!autoRunning) {
   setText("heroPermission", formatArgosState(ai));
   setText("settingsPermission", formatArgosState(ai));
   setText("aiPermission", formatArgosState(ai));
 }
 
-setText("heroRiskMode", formatRiskMode(ai.risk_mode));
 setText("settingsRiskMode", formatRiskMode(ai.risk_mode));
 setText("aiReason", execution.reason ?? ai.argos_message ?? ai.reason ?? "-");
 
