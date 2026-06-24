@@ -12,6 +12,7 @@ async function loadData() {
   const ai = data.ai || {};
   const backtest = data.backtest || {};
   const execution = data.execution || {};
+  const paperRouter = data.paper_router || {};
   const chart = data.chart || {};
   const brain = data.brain || {};
   const health = data.health || {};
@@ -86,7 +87,9 @@ async function loadData() {
 
   setText(
     "heroExecution",
+    paperRouter.status ??
     brain.execution_summary?.action ??
+    execution.execution_action ??
     execution.action ??
     execution.order ??
     "NO_ORDER"
