@@ -30,13 +30,18 @@ def save_json(path, data):
 
 
 def get_top_symbol(market):
+    best = market.get("best", {})
+
+    if best:
+        return best.get("symbol", "NONE")
+
     results = market.get("results", [])
 
     if not results:
         return "NONE"
 
-    best = results[0]
-    return best.get("symbol", "NONE")
+    first = results[0]
+    return first.get("symbol", "NONE")
 
 
 def build_decision():

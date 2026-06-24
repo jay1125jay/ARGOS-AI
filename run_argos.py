@@ -13,6 +13,7 @@ from engines.report_engine import (
     calculate_report,
     save_report,
 )
+from engines.decision_engine import build_decision
 from engines.execution_engine import build_execution_plan
 from engines.paper_router import route_paper_order
 
@@ -133,6 +134,15 @@ def main():
         print(f"EXIT_REASON={trade.get('exit_reason')}")
         print(f"PNL={trade['pnl']}")
         print(f"RESULT={trade['result']}")
+
+    decision = build_decision()
+
+    print("-" * 50)
+    print("DECISION_ENGINE=OK")
+    print("DECISION_SYMBOL=" + str(decision.get("symbol")))
+    print("DECISION=" + str(decision.get("decision")))
+    print("DECISION_ACTION=" + str(decision.get("action")))
+    print("AUTO_ALLOWED=" + str(decision.get("auto_allowed")))
 
     execution = build_execution_plan()
 
