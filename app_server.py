@@ -106,63 +106,56 @@ def enrich_positions(positions, market):
     return positions
 
 
-def build_home_summary(ai, brain, decision, execution, paper_router, positions, chart):
+def build_home_summary(
+    ai,
+    brain,
+    decision,
+    execution,
+    paper_router,
+    positions,
+    chart,
+    portfolio,
+    latest_report
+):
     position_list = positions.get("positions", [])
+    active = position_list[0] if position_list else {}
 
-    return {
-        "mode": "PAPER_ONLY",
-        "market": (
-            brain.get("market_summary", {}).get("market")
-            or brain.get("chart_summary", {}).get("market")
-            or execution.get("market")
-            or chart.get("market")
-            or "CRYPTO"
-        ),
-        "symbol": (
-            brain.get("market_summary", {}).get("symbol")
-            or brain.get("chart_summary", {}).get("symbol")
-            or decision.get("symbol")
+    if active:
+        side = active.get("action", "WAIT")
+        size = active.get("position_size", 0)
+        pnl = active.get("unrealized_pnl", 0)
+        symbol = active.get("symbol", "-")
+    else:
+        decision_text = str(decision.get("decision", "")).upper()
+        action_text = str(decision.get("action", "")).upper()
+
+        if action_text == "PAPER_LONG":
+            side = "LONG READY"
+        elif action_text == "PAPER_SHORT":
+            side = "SHORT READY"
+        elif decision_text == "BLOCK":
+            side = "WAIT"
+        else:
+            side = "WAIT"
+
+        size = "-"
+        pnl = latest_report.get("total_pnl", 0)
+        symbol = (
+            decision.get("symbol")
             or execution.get("symbol")
             or chart.get("symbol")
             or "-"
-        ),
-        "decision": (
-            brain.get("decision_summary", {}).get("decision")
-            or decision.get("decision")
-            or "-"
-        ),
-        "decision_action": decision.get("action", "-"),
-        "execution": (
-            paper_router.get("status")
-            or brain.get("execution_summary", {}).get("action")
-            or execution.get("execution_action")
-            or execution.get("action")
-            or execution.get("order")
-            or "NO_ORDER"
-        ),
-        "router_status": paper_router.get("status", "-"),
-        "router_reason": (
-            paper_router.get("reason")
-            or execution.get("reason")
-            or "-"
-        ),
-        "ai_state": (
-            ai.get("argos_state")
-            or ai.get("trade_permission")
-            or "-"
-        ),
-        "ai_bias": ai.get("ai_bias", "-"),
-        "ai_confidence": ai.get("confidence", 0),
-        "ai_reason": (
-            ai.get("argos_message")
-            or ai.get("reason")
-            or "-"
-        ),
-        "risk_mode": ai.get("risk_mode", "-"),
-        "open_positions": len(position_list),
-        "real_order_enabled": False,
-        "api_order_enabled": False,
-        "auto_real_order_enabled": False
+        )
+
+    return {
+        "mode": "PAPER_ONLY",
+        "symbol": symbol,
+        "side": side,
+        "size": size,
+        "pnl": pnl,
+        "balance": portfolio.get("current_balance", 0),
+        "win_rate": latest_report.get("win_rate", 0),
+        "open_positions": len(position_list)
     }
 
 
@@ -199,11 +192,11 @@ class Handler(BaseHTTPRequestHandler):
             if reports:
                 r = reports[-1]
                 latest_report = {
-                    "total_trades": r["total_trades"],
-                    "wins": r["wins"],
-                    "losses": r["losses"],
-                    "win_rate": r["win_rate"],
-                    "total_pnl": r["total_pnl"]
+                    "total_trades": float(r.get("total_trades", 0)),
+                    "wins": float(r.get("wins", 0)),
+                    "losses": float(r.get("losses", 0)),
+                    "win_rate": float(r.get("win_rate", 0)),
+                    "total_pnl": float(r.get("total_pnl", 0))
                 }
 
             portfolio = calculate_portfolio(latest_report)
@@ -218,7 +211,9 @@ class Handler(BaseHTTPRequestHandler):
                 execution,
                 paper_router,
                 positions,
-                chart
+                chart,
+                portfolio,
+                latest_report
             )
 
             body = json.dumps({
@@ -260,7 +255,6 @@ class Handler(BaseHTTPRequestHandler):
             symbol = query.get("symbol", ["BTCUSDT"])[0]
 
             chart = build_chart_state(market=market, symbol=symbol)
-
             body = json.dumps(chart).encode("utf-8")
 
             self.send_response(200)
@@ -288,7 +282,6 @@ class Handler(BaseHTTPRequestHandler):
 
         if file_name.endswith(".css"):
             content_type = "text/css"
-
         elif file_name.endswith(".js"):
             content_type = "application/javascript"
 

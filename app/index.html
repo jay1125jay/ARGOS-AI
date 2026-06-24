@@ -18,39 +18,37 @@
     </header>
 
     <nav class="tabs">
-      <button class="tab active" onclick="showTab('home')">HOME</button>
-      <button class="tab" onclick="showTab('chart')">CHART</button>
-      <button class="tab" onclick="showTab('trades')">TRADES</button>
-      <button class="tab" onclick="showTab('settings')">SETTINGS</button>
+      <button class="tab active" onclick="showTab('home', event)">HOME</button>
+      <button class="tab" onclick="showTab('chart', event)">CHART</button>
+      <button class="tab" onclick="showTab('trades', event)">TRADES</button>
+      <button class="tab" onclick="showTab('settings', event)">SETTINGS</button>
     </nav>
 
     <main class="main-screen">
 
       <section id="tab-home" class="tab-page active-page">
+        <section class="ai-card">
+          <div class="ai-status" id="heroPermission">AUTO CONTROL</div>
 
-    <section class="ai-card">
-      <div class="ai-status" id="heroPermission">AUTO CONTROL</div>
+          <div class="ai-label">TOP SIGNAL</div>
+          <div class="ai-symbol" id="heroSymbol">-</div>
 
-      <div class="ai-decision">
-        <span>TOP SIGNAL</span>
-        <strong id="heroSymbol">-</strong>
-      </div>
+          <div class="trade-summary-grid">
+            <div>
+              <span>Side</span>
+              <strong id="heroSide">-</strong>
+            </div>
+            <div>
+              <span>Size</span>
+              <strong id="heroSize">-</strong>
+            </div>
+            <div>
+              <span>PnL</span>
+              <strong id="heroPnl">0</strong>
+            </div>
+          </div>
+        </section>
 
-      <div class="trade-summary-grid">
-        <div>
-          <span>Direction</span>
-          <strong id="heroDecision">-</strong>
-        </div>
-        <div>
-          <span>Market</span>
-          <strong id="heroMarket">-</strong>
-        </div>
-        <div>
-          <span>Risk</span>
-          <strong id="heroRiskMode">-</strong>
-        </div>
-      </div>
-    </section>    
         <section class="portfolio-card">
           <div class="portfolio-top">
             <div>
@@ -59,7 +57,7 @@
             </div>
             <div class="portfolio-status" id="homeAutoStatus">PAPER ONLY</div>
           </div>
-            
+
           <div id="homePositionsList" class="position-list">
             <div class="empty-position">
               NO OPEN POSITIONS
@@ -74,9 +72,9 @@
 
         <section class="metrics">
           <div><span>Balance</span><strong id="currentBalance">0</strong></div>
-          <div><span>Today PnL</span><strong id="pnl">0</strong></div>
+          <div><span>Total PnL</span><strong id="pnl">0</strong></div>
           <div><span>Win Rate</span><strong id="winRate">0%</strong></div>
-          <div><span>Position</span><strong id="openPositions">0</strong></div>
+          <div><span>Open Positions</span><strong id="openPositions">0</strong></div>
         </section>
       </section>
 
@@ -123,6 +121,7 @@
                 <th>Entry</th>
                 <th>Exit</th>
                 <th>PnL</th>
+                <th>Result</th>
               </tr>
             </thead>
             <tbody id="trades"></tbody>
@@ -141,7 +140,7 @@
           <div class="setting-row">PAPER ONLY</div>
 
           <label>Risk</label>
-          <div class="setting-row" id="settingsRiskMode">-</div>
+          <div class="setting-row" id="settingsRiskMode">PAPER ONLY</div>
 
           <label>Status</label>
           <div class="setting-row" id="settingsPermission">-</div>

@@ -1,4 +1,5 @@
-  let autoRunning = false;
+let autoRunning = false;
+let lastTradingViewSymbol = "";
 
 async function loadData() {
   const res = await fetch("/api/status");
@@ -12,9 +13,7 @@ async function loadData() {
   const ai = data.ai || {};
   const backtest = data.backtest || {};
   const execution = data.execution || {};
-  const paperRouter = data.paper_router || {};
   const chart = data.chart || {};
-  const brain = data.brain || {};
   const homeSummary = data.home_summary || {};
   const health = data.health || {};
   const positionsData = data.positions || { positions: [] };
@@ -52,30 +51,25 @@ async function loadData() {
   setText("aiMode", ai.mode ?? "-");
   setText("aiBias", ai.ai_bias ?? "-");
   setText("aiConfidence", ai.confidence ?? "-");
-  
-  if (!autoRunning) {
-  setText("aiPermission", ai.trade_permission ?? "-");
-}
-  setText("aiReason", ai.reason ?? "-");
 
-  setText("heroAiBias", homeSummary.ai_state ?? formatBrainDecision(brain, execution, ai));
-  setText("heroConfidence", formatConfidence(homeSummary.ai_confidence ?? brain.ai_summary?.confidence ?? ai.confidence));
-  setText("heroMarket", homeSummary.market ?? "CRYPTO");
+  if (!autoRunning) {
+    setText("aiPermission", ai.trade_permission ?? "-");
+  }
+
+  setText("aiReason", execution.reason ?? ai.argos_message ?? ai.reason ?? "-");
+
   setText("heroSymbol", homeSummary.symbol ?? "-");
-  setText("heroDecision", homeSummary.decision ?? "-");
-  setText("heroExecution", homeSummary.execution ?? "NO_ORDER");
-  setText("heroRouterReason", homeSummary.router_reason ?? "-");
-  setText("heroAiReason", homeSummary.ai_reason ?? "-");
-  setText("heroRiskMode", formatRiskMode(homeSummary.risk_mode ?? ai.risk_mode));
-  
-  if (!autoRunning) {
-  setText("heroPermission", formatArgosState(ai));
-  setText("settingsPermission", formatArgosState(ai));
-  setText("aiPermission", formatArgosState(ai));
-}
+  setText("heroSide", homeSummary.side ?? "WAIT");
+  setText("heroSize", formatHomeSize(homeSummary.size));
+  setText("heroPnl", formatNumber(homeSummary.pnl ?? 0));
 
-setText("settingsRiskMode", formatRiskMode(ai.risk_mode));
-setText("aiReason", execution.reason ?? ai.argos_message ?? ai.reason ?? "-");
+  if (!autoRunning) {
+    setText("heroPermission", formatArgosState(ai));
+    setText("settingsPermission", formatArgosState(ai));
+    setText("aiPermission", formatArgosState(ai));
+  }
+
+  setText("settingsRiskMode", "PAPER ONLY");
 
   const strategy = (backtest.strategies || [])[0] || {};
   setText("backtestMode", backtest.mode ?? "-");
@@ -103,7 +97,6 @@ setText("aiReason", execution.reason ?? ai.argos_message ?? ai.reason ?? "-");
   renderDecisionLogs(data.decision_logs || []);
   renderSystemLogs(data.system_logs || []);
   renderTrades(data.trades || []);
-  renderTradingView(chart);
 }
 
 function setText(id, value) {
@@ -113,26 +106,6 @@ function setText(id, value) {
   }
 }
 
-function formatConfidence(value) {
-  if (value === undefined || value === null || value === "-") return "-";
-  return value + "%";
-}
-
-function formatPermission(value) {
-  if (!value) return "-";
-  if (value === true) return "AUTO READY";
-  if (value === false) return "MARKET BLOCKED";
-
-  const text = String(value).toUpperCase();
-
-  if (text === "BLOCK") return "MARKET BLOCKED";
-  if (text === "WAIT") return "AI WAITING";
-  if (text === "READY") return "AUTO READY";
-  if (text === "ALLOW") return "AUTO READY";
-
-  return text;
-}
-
 function formatNumber(value) {
   const num = Number(value);
   if (Number.isNaN(num)) return value;
@@ -140,6 +113,13 @@ function formatNumber(value) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
+}
+
+function formatHomeSize(value) {
+  if (value === "-" || value === null || value === undefined || value === "") {
+    return "NO POSITION";
+  }
+  return formatNumber(value);
 }
 
 function formatArgosState(ai) {
@@ -154,41 +134,6 @@ function formatArgosState(ai) {
   if (state === "RUNNING") return "AI RUNNING";
 
   return String(state).toUpperCase();
-}
-
-function formatArgosBias(ai) {
-  if (!ai) return "-";
-
-  if (ai.argos_state === "BLOCKED") return "NO TRADE";
-  if (ai.argos_state === "ANALYZING") return "WAIT";
-  if (ai.argos_state === "READY_LONG") return "LONG";
-  if (ai.argos_state === "READY_SHORT") return "SHORT";
-
-  return ai.ai_bias || "-";
-}
-
-function formatRiskMode(value) {
-  if (!value) return "-";
-
-  const text = String(value).toUpperCase();
-
-  if (text === "DEFENSIVE") return "DEFENSIVE MODE";
-  if (text === "NORMAL") return "NORMAL MODE";
-  if (text === "AGGRESSIVE") return "AGGRESSIVE MODE";
-
-  return text;
-}
-
-function formatExecutionAction(execution, ai) {
-  if (execution && execution.paper_order_ready) {
-    if (execution.direction === "LONG") return "LONG READY";
-    if (execution.direction === "SHORT") return "SHORT READY";
-  }
-
-  if (ai && ai.argos_state === "BLOCKED") return "NO TRADE";
-  if (ai && ai.argos_state === "ANALYZING") return "WAIT";
-
-  return ai?.ai_bias || "-";
 }
 
 function renderRadar(results) {
@@ -253,6 +198,54 @@ function renderPositions(positions) {
       <td>${p.sl_distance_pct}%</td>
     `;
     rows.appendChild(row);
+  });
+}
+
+function renderHomePositions(positions) {
+  const box = document.getElementById("homePositionsList");
+  const count = document.getElementById("homePositionCount");
+
+  if (!box || !count) return;
+
+  count.textContent = positions.length;
+  box.innerHTML = "";
+
+  if (positions.length === 0) {
+    box.innerHTML = `<div class="empty-position">NO OPEN POSITIONS</div>`;
+    return;
+  }
+
+  positions.forEach(p => {
+    const item = document.createElement("div");
+    item.className = "position-item";
+
+    item.innerHTML = `
+      <div class="position-item-top">
+        <div class="position-item-symbol">${p.symbol}</div>
+        <div class="position-item-side">${p.action}</div>
+      </div>
+
+      <div class="position-item-grid">
+        <div>
+          <span>Entry</span>
+          <strong>${formatNumber(p.entry)}</strong>
+        </div>
+        <div>
+          <span>Current</span>
+          <strong>${formatNumber(p.current_price)}</strong>
+        </div>
+        <div>
+          <span>PnL</span>
+          <strong>${formatNumber(p.unrealized_pnl)}</strong>
+        </div>
+        <div>
+          <span>Size</span>
+          <strong>${formatNumber(p.position_size)}</strong>
+        </div>
+      </div>
+    `;
+
+    box.appendChild(item);
   });
 }
 
@@ -345,7 +338,7 @@ function renderTrades(trades) {
 
   rows.innerHTML = "";
 
-  trades.slice(-3).reverse().forEach(t => {
+  trades.slice(-20).reverse().forEach(t => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${t.time}</td>
@@ -354,57 +347,40 @@ function renderTrades(trades) {
       <td>${t.entry}</td>
       <td>${t.exit}</td>
       <td>${t.pnl}</td>
-      <td>${t.result}</td>
+      <td>${t.result ?? "-"}</td>
     `;
     rows.appendChild(row);
   });
 }
 
-function scrollToSection(id) {
-  const target = document.getElementById(id);
-
-  if (target) {
-    target.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }
-}
-
-loadData();
-setInterval(loadData, 3000);
-
 function startAuto() {
   autoRunning = true;
-
   setText("heroPermission", "AI AUTO RUNNING");
   setText("aiPermission", "AI AUTO RUNNING");
 }
 
 function stopAuto() {
   autoRunning = false;
-
   setText("heroPermission", "AUTO STOPPED");
   setText("aiPermission", "AUTO STOPPED");
 }
 
-function showTab(tabName) {
+function showTab(tabName, event) {
+  document.querySelectorAll(".tab-page").forEach(page => {
+    page.classList.remove("active-page");
+  });
 
-  document.querySelectorAll(".tab-page")
-    .forEach(page => {
-      page.classList.remove("active-page");
-    });
-
-  document.querySelectorAll(".tab")
-    .forEach(tab => {
-      tab.classList.remove("active");
-    });
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.classList.remove("active");
+  });
 
   document
     .getElementById("tab-" + tabName)
     .classList.add("active-page");
 
-  event.target.classList.add("active");
+  if (event && event.target) {
+    event.target.classList.add("active");
+  }
 }
 
 async function loadChart() {
@@ -432,25 +408,18 @@ async function loadChart() {
   renderTradingView(chart);
 }
 
-function formatBrainDecision(brain, execution, ai) {
-  const decision = brain.decision_summary?.decision;
-  const action = brain.decision_summary?.action;
-
-  if (decision === "BLOCK") return "NO TRADE";
-  if (action === "PAPER_LONG") return "LONG";
-  if (action === "PAPER_SHORT") return "SHORT";
-  if (decision === "WAIT") return "WAIT";
-
-  return formatExecutionAction(execution, ai);
-}
-
 function renderTradingView(chart) {
   const box = document.getElementById("tradingviewChart");
   if (!box) return;
 
   const symbol = chart.display_symbol || "BINANCE:BTCUSDT";
 
-  box.innerHTML = "";
+  if (symbol === lastTradingViewSymbol) {
+    return;
+  }
+
+lastTradingViewSymbol = symbol;
+box.innerHTML = "";
 
   const widgetBox = document.createElement("div");
   widgetBox.className = "tradingview-widget-container";
@@ -484,3 +453,10 @@ function renderTradingView(chart) {
   widgetBox.appendChild(script);
   box.appendChild(widgetBox);
 }
+
+loadData();
+setInterval(loadData, 3000);
+
+renderTradingView({
+  display_symbol: "BINANCE:BTCUSDT"
+});

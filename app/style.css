@@ -83,28 +83,21 @@ body {
   display: block !important;
 }
 
-.position-card,
 .chart-card,
 .trade-list,
 .settings-card,
-.metrics div {
+.metrics div,
+.portfolio-card {
   border: 1px solid #253759;
   border-radius: 24px;
   background: #0b1220;
 }
 
-.position-card {
-  padding: 28px;
-  text-align: center;
-  background:
-    radial-gradient(circle at top, rgba(69, 128, 255, 0.22), transparent 38%),
-    linear-gradient(180deg, #101827, #080d16);
-}
-
 .position-card span,
 .metrics span,
 .chart-levels span,
-.settings-card label {
+.settings-card label,
+.portfolio-top span {
   display: block;
   color: #8fa3c7;
   font-size: 12px;
@@ -112,19 +105,6 @@ body {
   letter-spacing: 1px;
 }
 
-.position-card h1 {
-  margin: 14px 0 8px;
-  font-size: 54px;
-  letter-spacing: 2px;
-}
-
-.direction {
-  font-size: 26px;
-  font-weight: 900;
-  color: #7cffb2;
-}
-
-.position-grid,
 .metrics,
 .chart-levels {
   display: grid;
@@ -133,7 +113,6 @@ body {
   margin-top: 18px;
 }
 
-.position-grid div,
 .chart-levels div {
   padding: 16px;
   border: 1px solid #253759;
@@ -141,7 +120,6 @@ body {
   background: rgba(255,255,255,0.04);
 }
 
-.position-grid strong,
 .chart-levels strong,
 .metrics strong {
   display: block;
@@ -309,26 +287,28 @@ th {
   letter-spacing: 1px;
 }
 
-.ai-decision {
+.ai-label {
   margin-top: 18px;
-  font-size: 54px;
-  line-height: 1;
+  font-size: 14px;
+  color: #8fa3c7;
   font-weight: 900;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
-.ai-confidence {
-  margin-top: 10px;
-  font-size: 30px;
+.ai-symbol {
+  margin-top: 12px;
+  font-size: 52px;
+  line-height: 1;
   font-weight: 900;
-  color: #7cc7ff;
+  letter-spacing: 2px;
 }
 
 .trade-summary-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin-top: 18px;
+  margin-top: 24px;
 }
 
 .trade-summary-grid div {
@@ -346,28 +326,98 @@ th {
 }
 
 .trade-summary-grid strong {
-  font-size: 14px;
+  font-size: 18px;
 }
 
-.risk-chip {
-  margin: 24px auto 0;
-  max-width: 360px;
-  padding: 14px 18px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.055);
-  border: 1px solid rgba(255,255,255,0.08);
+.portfolio-card {
+  padding: 22px;
+  margin-bottom: 14px;
+}
+
+.portfolio-top {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
 }
 
-.risk-chip span {
-  color: #8fa3c7;
+.portfolio-top h1 {
+  margin: 10px 0 0;
+  font-size: 42px;
+}
+
+.portfolio-status {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(124, 255, 178, 0.12);
+  border: 1px solid rgba(124, 255, 178, 0.25);
+  color: #7cffb2;
   font-size: 12px;
+  font-weight: 900;
+}
+
+.position-list {
+  display: grid;
+  gap: 12px;
+}
+
+.position-item {
+  padding: 16px;
+  border: 1px solid #253759;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+}
+
+.position-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.position-item-symbol {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.position-item-side {
+  font-size: 14px;
+  font-weight: 900;
+  color: #7cffb2;
+}
+
+.position-item-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.position-item-grid div {
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.position-item-grid span {
+  display: block;
+  font-size: 11px;
+  color: #8fa3c7;
+  margin-bottom: 6px;
   text-transform: uppercase;
 }
 
-.risk-chip strong {
-  color: #ffd36e;
+.position-item-grid strong {
+  font-size: 14px;
+}
+
+.empty-position {
+  padding: 18px;
+  border: 1px dashed #253759;
+  border-radius: 18px;
+  text-align: center;
+  color: #8fa3c7;
+  font-weight: 700;
 }
 
 .tradingview-chart,
@@ -395,12 +445,22 @@ th {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .position-card h1 {
-    font-size: 38px;
+  .auto-panel,
+  .chart-toolbar,
+  .metrics,
+  .chart-levels,
+  .trade-summary-grid,
+  .position-item-grid {
+    grid-template-columns: 1fr;
   }
 
-  .auto-panel,
-  .chart-toolbar {
-    grid-template-columns: 1fr;
+  .ai-symbol {
+    font-size: 34px;
+  }
+
+  .portfolio-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }
