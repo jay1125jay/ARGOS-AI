@@ -5,8 +5,9 @@ def get_candidate():
         "action": "WAIT",
         "score": 0,
         "risk_score": 100,
+        "priority": 60,
         "status": "SKELETON",
-        "source": "FUTURES_CONTEXT_ENGINE_V14",
+        "source": "FUTURES_CONTEXT_ENGINE_V15",
         "watch_data": [
             "macro_event",
             "interest_rate",

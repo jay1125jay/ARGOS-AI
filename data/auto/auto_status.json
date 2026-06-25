@@ -1,29 +1,33 @@
 {
-  "engine": "ARGOS_AUTO_SELECTOR_V13",
+  "engine": "ARGOS_AUTO_SELECTOR_V15",
   "mode": "PAPER_ONLY",
-  "updated_at": "2026-06-26 06:29:23",
+  "updated_at": "2026-06-26 06:32:15",
   "auto_start_ready": true,
   "real_order_enabled": false,
   "api_order_enabled": false,
   "auto_real_order_enabled": false,
   "selected": {
     "market": "CRYPTO",
-    "symbol": "BTCUSDT",
+    "symbol": "SOLUSDT",
     "action": "LONG",
-    "score": 85,
-    "risk_score": 20,
+    "score": 85.0,
+    "risk_score": 20.0,
+    "priority": 90,
     "status": "ACTIVE",
-    "source": "CRYPTO_SCALP_ENGINE"
+    "source": "CRYPTO_SCALP_ENGINE_V15",
+    "selection_score": 155.0
   },
   "candidates": [
     {
       "market": "CRYPTO",
-      "symbol": "BTCUSDT",
+      "symbol": "SOLUSDT",
       "action": "LONG",
-      "score": 85,
-      "risk_score": 20,
+      "score": 85.0,
+      "risk_score": 20.0,
+      "priority": 90,
       "status": "ACTIVE",
-      "source": "CRYPTO_SCALP_ENGINE"
+      "source": "CRYPTO_SCALP_ENGINE_V15",
+      "selection_score": 155.0
     },
     {
       "market": "KR_STOCK",
@@ -31,15 +35,17 @@
       "action": "WAIT",
       "score": 0,
       "risk_score": 100,
+      "priority": 40,
       "status": "SKELETON",
-      "source": "KR_STOCK_CONTEXT_ENGINE_V14",
+      "source": "KR_STOCK_CONTEXT_ENGINE_V15",
       "watch_data": [
         "disclosure",
         "news_material",
         "theme",
         "trading_value",
         "order_flow"
-      ]
+      ],
+      "selection_score": -999
     },
     {
       "market": "US_STOCK",
@@ -47,8 +53,9 @@
       "action": "WAIT",
       "score": 0,
       "risk_score": 100,
+      "priority": 50,
       "status": "SKELETON",
-      "source": "US_STOCK_CONTEXT_ENGINE_V14",
+      "source": "US_STOCK_CONTEXT_ENGINE_V15",
       "watch_data": [
         "earnings",
         "guidance",
@@ -56,7 +63,8 @@
         "premarket",
         "sector_flow",
         "macro"
-      ]
+      ],
+      "selection_score": -999
     },
     {
       "market": "FUTURES",
@@ -64,8 +72,9 @@
       "action": "WAIT",
       "score": 0,
       "risk_score": 100,
+      "priority": 60,
       "status": "SKELETON",
-      "source": "FUTURES_CONTEXT_ENGINE_V14",
+      "source": "FUTURES_CONTEXT_ENGINE_V15",
       "watch_data": [
         "macro_event",
         "interest_rate",
@@ -73,7 +82,8 @@
         "session_flow",
         "index_trend",
         "volatility"
-      ]
+      ],
+      "selection_score": -999
     }
   ]
 }
