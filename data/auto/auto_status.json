@@ -1,14 +1,14 @@
 {
   "engine": "ARGOS_AUTO_SELECTOR_V15",
   "mode": "PAPER_ONLY",
-  "updated_at": "2026-06-26 06:32:15",
+  "updated_at": "2026-06-26 06:40:02",
   "auto_start_ready": true,
   "real_order_enabled": false,
   "api_order_enabled": false,
   "auto_real_order_enabled": false,
   "selected": {
     "market": "CRYPTO",
-    "symbol": "SOLUSDT",
+    "symbol": "BTCUSDT",
     "action": "LONG",
     "score": 85.0,
     "risk_score": 20.0,
@@ -20,7 +20,7 @@
   "candidates": [
     {
       "market": "CRYPTO",
-      "symbol": "SOLUSDT",
+      "symbol": "BTCUSDT",
       "action": "LONG",
       "score": 85.0,
       "risk_score": 20.0,

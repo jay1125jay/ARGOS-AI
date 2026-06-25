@@ -6,6 +6,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from engines.portfolio_engine import calculate_portfolio
 from engines.analytics_engine import analyze_trades
 from engines.health_engine import get_health
+from engines.home_summary_engine import build_home_summary
 
 ROOT = r"C:\ARGOS_AI"
 APP = os.path.join(ROOT, "app")
@@ -26,6 +27,7 @@ BRAIN = os.path.join(ROOT, "data", "brain", "argos_brain_status.json")
 DECISION = os.path.join(ROOT, "data", "decision", "decision_status.json")
 EXECUTION = os.path.join(ROOT, "data", "execution", "execution_status.json")
 PAPER_ROUTER = os.path.join(ROOT, "data", "execution", "paper_router_status.json")
+AUTO = os.path.join(ROOT, "data", "auto", "auto_status.json")
 
 
 def read_csv(path):
@@ -105,60 +107,6 @@ def enrich_positions(positions, market):
 
     return positions
 
-
-def build_home_summary(
-    ai,
-    brain,
-    decision,
-    execution,
-    paper_router,
-    positions,
-    chart,
-    portfolio,
-    latest_report
-):
-    position_list = positions.get("positions", [])
-    active = position_list[0] if position_list else {}
-
-    if active:
-        side = active.get("action", "WAIT")
-        size = active.get("position_size", 0)
-        pnl = active.get("unrealized_pnl", 0)
-        symbol = active.get("symbol", "-")
-    else:
-        decision_text = str(decision.get("decision", "")).upper()
-        action_text = str(decision.get("action", "")).upper()
-
-        if action_text == "PAPER_LONG":
-            side = "LONG READY"
-        elif action_text == "PAPER_SHORT":
-            side = "SHORT READY"
-        elif decision_text == "BLOCK":
-            side = "WAIT"
-        else:
-            side = "WAIT"
-
-        size = "-"
-        pnl = latest_report.get("total_pnl", 0)
-        symbol = (
-            decision.get("symbol")
-            or execution.get("symbol")
-            or chart.get("symbol")
-            or "-"
-        )
-
-    return {
-        "mode": "PAPER_ONLY",
-        "symbol": symbol,
-        "side": side,
-        "size": size,
-        "pnl": pnl,
-        "balance": portfolio.get("current_balance", 0),
-        "win_rate": latest_report.get("win_rate", 0),
-        "open_positions": len(position_list)
-    }
-
-
 class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -180,6 +128,7 @@ class Handler(BaseHTTPRequestHandler):
             decision = read_json(DECISION)
             execution = read_json(EXECUTION)
             paper_router = read_json(PAPER_ROUTER)
+            auto = read_json(AUTO)            
 
             latest_report = {
                 "total_trades": 0,
@@ -205,15 +154,12 @@ class Handler(BaseHTTPRequestHandler):
             health = get_health()
 
             home_summary = build_home_summary(
-                ai,
-                brain,
-                decision,
-                execution,
-                paper_router,
-                positions,
-                chart,
-                portfolio,
-                latest_report
+                portfolio=portfolio,
+                report=latest_report,
+                positions=positions,
+                decision=decision,
+                execution=execution,
+                auto_status=auto
             )
 
             body = json.dumps({
@@ -236,6 +182,7 @@ class Handler(BaseHTTPRequestHandler):
                 "decision": decision,
                 "execution": execution,
                 "paper_router": paper_router,
+                "auto": auto,
                 "home_summary": home_summary
             }).encode("utf-8")
 

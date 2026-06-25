@@ -244,7 +244,6 @@ def main():
     print(f"WIN_RATE={report['win_rate']}%")
     print(f"TOTAL_PNL={report['total_pnl']}")
     print(f"CURRENT_BALANCE={portfolio['current_balance']}")
-    print(f"CURRENT_BALANCE={portfolio['current_balance']}")
     select_auto_candidate()
     append_operation_log()     
 
