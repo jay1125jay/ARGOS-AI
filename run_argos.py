@@ -12,13 +12,14 @@ from engines.report_engine import (
     calculate_report,
     save_report,
 )
+from engines.news_engine import update_news_status
+from engines.macro_engine import update_macro_status
 from engines.decision_engine import build_decision
 from engines.execution_engine import build_execution_plan
 from engines.paper_router import route_paper_order
 
 
 BASE_DIR = r"C:\ARGOS_AI"
-
 MARKET_FILE = os.path.join(BASE_DIR, "data", "market", "market_status.json")
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "XRPUSDT", "BNBUSDT"]
@@ -44,10 +45,7 @@ def signal_strength(item):
     action = item.get("action", "WAIT")
 
     direction_strength = abs(signal_score - 50)
-
-    action_bonus = 0
-    if action in ["LONG", "SHORT"]:
-        action_bonus = 100
+    action_bonus = 100 if action in ["LONG", "SHORT"] else 0
 
     return action_bonus + direction_strength - risk_score
 
@@ -63,10 +61,7 @@ def select_best_signal(results):
             "selection_reason": "NO_RESULTS"
         }
 
-    actionable = [
-        item for item in results
-        if item.get("action") in ["LONG", "SHORT"]
-    ]
+    actionable = [item for item in results if item.get("action") in ["LONG", "SHORT"]]
 
     if actionable:
         best = sorted(actionable, key=signal_strength, reverse=True)[0]
@@ -150,6 +145,18 @@ def main():
     print("AUTO_REAL_ORDER=FALSE")
     print("-" * 50)
 
+    news = update_news_status()
+    macro = update_macro_status()
+
+    print("NEWS_ENGINE=OK")
+    print("NEWS_SENTIMENT=" + str(news.get("market_sentiment")))
+    print("NEWS_RISK=" + str(news.get("risk_level")))
+    print("MACRO_ENGINE=OK")
+    print("MACRO_REGIME=" + str(macro.get("market_regime")))
+    print("MACRO_RATE_RISK=" + str(macro.get("rate_risk")))
+    print("MACRO_EVENT_RISK=" + str(macro.get("event_risk")))
+    print("-" * 50)
+
     results, best = scan_market()
     print_market(results)
 
@@ -179,6 +186,7 @@ def main():
     print("DECISION_SYMBOL=" + str(decision.get("symbol")))
     print("DECISION=" + str(decision.get("decision")))
     print("DECISION_ACTION=" + str(decision.get("action")))
+    print("DECISION_REASON=" + str(decision.get("reason")))
     print("AUTO_ALLOWED=" + str(decision.get("auto_allowed")))
 
     execution = build_execution_plan()
@@ -211,26 +219,20 @@ def main():
     if trade_changed:
         save_report(report)
 
-    total = report["total_trades"]
-    wins = report["wins"]
-    losses = report["losses"]
-    win_rate = report["win_rate"]
-    total_pnl = report["total_pnl"]
-
     portfolio = calculate_portfolio({
-        "total_pnl": total_pnl,
-        "total_trades": total,
-        "win_rate": win_rate,
+        "total_pnl": report["total_pnl"],
+        "total_trades": report["total_trades"],
+        "win_rate": report["win_rate"],
     })
 
     print_positions()
 
     print("-" * 50)
-    print(f"TOTAL_TRADES={total}")
-    print(f"WINS={wins}")
-    print(f"LOSSES={losses}")
-    print(f"WIN_RATE={win_rate}%")
-    print(f"TOTAL_PNL={total_pnl}")
+    print(f"TOTAL_TRADES={report['total_trades']}")
+    print(f"WINS={report['wins']}")
+    print(f"LOSSES={report['losses']}")
+    print(f"WIN_RATE={report['win_rate']}%")
+    print(f"TOTAL_PNL={report['total_pnl']}")
     print(f"CURRENT_BALANCE={portfolio['current_balance']}")
 
 
