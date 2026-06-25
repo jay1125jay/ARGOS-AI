@@ -1,10 +1,10 @@
 {
   "mode": "PAPER_ONLY",
   "engine": "ARGOS_PAPER_ROUTER_V2",
-  "updated_at": "2026-06-26 05:52:05",
+  "updated_at": "2026-06-26 06:08:46",
   "status": "WAIT",
   "reason": "Execution engine has no paper-ready order.",
-  "source_symbol": "XRPUSDT",
+  "source_symbol": "BTCUSDT",
   "source_direction": "NONE",
   "source_execution_action": "NO_ORDER",
   "source_position_size": 1000.0,

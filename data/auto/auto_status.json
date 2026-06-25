@@ -1,0 +1,56 @@
+{
+  "engine": "ARGOS_AUTO_SELECTOR_V13",
+  "mode": "PAPER_ONLY",
+  "updated_at": "2026-06-26 06:08:46",
+  "auto_start_ready": true,
+  "real_order_enabled": false,
+  "api_order_enabled": false,
+  "auto_real_order_enabled": false,
+  "selected": {
+    "market": "CRYPTO",
+    "symbol": "BTCUSDT",
+    "action": "LONG",
+    "score": 85,
+    "risk_score": 20,
+    "status": "ACTIVE",
+    "source": "CRYPTO_SCALP_ENGINE"
+  },
+  "candidates": [
+    {
+      "market": "CRYPTO",
+      "symbol": "BTCUSDT",
+      "action": "LONG",
+      "score": 85,
+      "risk_score": 20,
+      "status": "ACTIVE",
+      "source": "CRYPTO_SCALP_ENGINE"
+    },
+    {
+      "market": "KR_STOCK",
+      "symbol": "NONE",
+      "action": "WAIT",
+      "score": 0,
+      "risk_score": 100,
+      "status": "PLACEHOLDER",
+      "source": "KR_STOCK_ENGINE_PENDING"
+    },
+    {
+      "market": "US_STOCK",
+      "symbol": "NONE",
+      "action": "WAIT",
+      "score": 0,
+      "risk_score": 100,
+      "status": "PLACEHOLDER",
+      "source": "US_STOCK_ENGINE_PENDING"
+    },
+    {
+      "market": "FUTURES",
+      "symbol": "NONE",
+      "action": "WAIT",
+      "score": 0,
+      "risk_score": 100,
+      "status": "PLACEHOLDER",
+      "source": "FUTURES_ENGINE_PENDING"
+    }
+  ]
+}
