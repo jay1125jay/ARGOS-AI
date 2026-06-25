@@ -11,95 +11,90 @@ EXECUTION_FILE = os.path.join(BASE_DIR, "data", "execution", "execution_status.j
 ROUTER_FILE = os.path.join(BASE_DIR, "data", "execution", "paper_router_status.json")
 POSITIONS_FILE = os.path.join(BASE_DIR, "data", "open_positions.json")
 REPORT_FILE = os.path.join(BASE_DIR, "data", "reports", "report.csv")
-LOG_FILE = os.path.join(BASE_DIR, "data", "logs", "operation_log.csv")
+
+LOG_DIR = os.path.join(BASE_DIR, "data", "logs")
+LOG_FILE = os.path.join(LOG_DIR, "operation_log.csv")
 
 
 def load_json(path, default):
     if not os.path.exists(path):
         return default
+
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
-def read_csv(path):
-    if not os.path.exists(path):
-        return []
-    with open(path, "r", encoding="utf-8") as f:
-        return list(csv.DictReader(f))
+def read_report():
+    if not os.path.exists(REPORT_FILE):
+        return {}
 
-
-def ensure_log_file():
-    os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
-
-    if os.path.exists(LOG_FILE):
-        return
-
-    with open(LOG_FILE, "w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow([
-            "time",
-            "best_symbol",
-            "best_action",
-            "best_signal_score",
-            "best_risk_score",
-            "decision",
-            "decision_action",
-            "execution_action",
-            "router_status",
-            "router_reason",
-            "open_positions",
-            "report_total_trades",
-            "report_total_pnl"
-        ])
-
-
-def get_latest_report():
-    rows = read_csv(REPORT_FILE)
-    if not rows:
-        return {
-            "total_trades": 0,
-            "total_pnl": 0
-        }
-    r = rows[-1]
-    return {
-        "total_trades": r.get("total_trades", 0),
-        "total_pnl": r.get("total_pnl", 0)
-    }
+    with open(REPORT_FILE, "r", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+        if not rows:
+            return {}
+        return rows[-1]
 
 
 def append_operation_log():
-    ensure_log_file()
+    os.makedirs(LOG_DIR, exist_ok=True)
 
     market = load_json(MARKET_FILE, {})
     decision = load_json(DECISION_FILE, {})
     execution = load_json(EXECUTION_FILE, {})
     router = load_json(ROUTER_FILE, {})
     positions = load_json(POSITIONS_FILE, {"positions": []})
-    report = get_latest_report()
+    report = read_report()
 
     best = market.get("best", {})
 
-    row = [
-        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        best.get("symbol", "NONE"),
-        best.get("action", "WAIT"),
-        best.get("signal_score", 0),
-        best.get("risk_score", 100),
-        decision.get("decision", "WAIT"),
-        decision.get("action", "NO_TRADE"),
-        execution.get("execution_action", "NO_ORDER"),
-        router.get("status", "WAIT"),
-        router.get("reason", "-"),
-        len(positions.get("positions", [])),
-        report.get("total_trades", 0),
-        report.get("total_pnl", 0),
-    ]
+    row = {
+        "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "best_symbol": best.get("symbol", "NONE"),
+        "best_action": best.get("action", "WAIT"),
+        "best_signal_score": best.get("signal_score", 0),
+        "best_risk_score": best.get("risk_score", 100),
+
+        "decision": decision.get("decision", "WAIT"),
+        "decision_action": decision.get("action", "NO_TRADE"),
+        "decision_reason": decision.get("reason", "-"),
+        "filter_action": decision.get("filter_action", "-"),
+        "context_tags": "|".join(decision.get("context_tags", [])),
+
+        "execution_action": execution.get("execution_action", "NO_ORDER"),
+        "router_status": router.get("status", "WAIT"),
+        "router_reason": router.get("reason", "-"),
+
+        "open_positions": len(positions.get("positions", [])),
+        "report_total_trades": report.get("total_trades", 0),
+        "report_total_pnl": report.get("total_pnl", 0)
+    }
+
+    file_exists = os.path.exists(LOG_FILE)
 
     with open(LOG_FILE, "a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow(row)
+        writer = csv.DictWriter(
+            f,
+            fieldnames=[
+                "time",
+                "best_symbol",
+                "best_action",
+                "best_signal_score",
+                "best_risk_score",
+                "decision",
+                "decision_action",
+                "decision_reason",
+                "filter_action",
+                "context_tags",
+                "execution_action",
+                "router_status",
+                "router_reason",
+                "open_positions",
+                "report_total_trades",
+                "report_total_pnl",
+            ]
+        )
 
-    return {
-        "status": "OK",
-        "log_file": LOG_FILE
-    }
+        if not file_exists:
+            writer.writeheader()
+
+        writer.writerow(row)

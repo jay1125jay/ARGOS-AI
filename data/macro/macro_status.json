@@ -1,11 +1,15 @@
 {
   "mode": "LIVE_RSS",
-  "updated_at": "2026-06-25 23:44:38",
+  "updated_at": "2026-06-26 05:42:15",
   "market_regime": "RISK_OFF",
   "dxy_status": "RSS_ONLY",
   "rate_risk": "HIGH",
   "event_risk": "HIGH",
   "events": [
+    {
+      "title": "Fed expected to hold rates steady in July, hike in September - Reuters",
+      "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPVk00RzlFdHFJVkhBbGVLVDZHOWtmc2xabW1KaTBadTJJWEVtbHFUaFhHMFVIa2dpSng4NzYxUDc4MXZTNVZSeTBiUVRZRDlTY01DaV9wUElHakRyRGJIOW94VUt3Yl91ZHVVZVAyQjRQS0hQMW45dG9JaDdJMWJvazBOcnVRU0FyVEU0Y3cxYUtDcmE0RmZJ?oc=5"
+    },
     {
       "title": "The Fed may raise interest rates within months. Here's what it means for you. - ABC News - Breaking News, Latest News and Videos",
       "link": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNenUzMm5kWTJOUHEtcHhxdmdwbDBYb1dFME1RZ185dkxEcWRIanY3ZmRvUGs5WjZKbVJHLWxHdlNtUVV3Rm1lUE5EOVpjaGV5bVJHeUZhYm9HT29JY0JtSGdWdTkzeGxWMzJBeTBDYThUajFoaURnSG05ZnVpdnhxUHNkbi1uZGtsVFVXcEdB0gGTAUFVX3lxTE5RUERWVjBaZ1pSbEM1MEhPVzZWaWFEX3JOSGJlbmtDbnNwRzJuZ2hkckZ1dlJtbkJ6YjljeGhzdWVvZjhWMFp3TzhLSGM5Um9aSko2QV84cEVMNmtLa2hPNWR3Qnp2aUhHS0hhLWJqZG1HMi16aUc4cEtIdzV6emp3bFlQZ0UySmFpZVUyQWNYOGUwdw?oc=5"
@@ -23,8 +27,8 @@
       "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPdkQ3eWxaQVBQdG5DMHg5Znk1UnE5NTM5MGt2cVNBNGVVUmI1el94SFZGdnVzbTZOcF9VX3l3Z290M0U1VW9TNjFxa2dLRHJ5MlpLd0c5S2JmRjFGUXduYy1NN2lJQjJFNHhpX0hTOUNpcWhNN0g1blFqYTQySExiUEVDd2g2UVYzWUdsQ3p4R091c0ZwWmdxYU9BM1NCZm1O?oc=5"
     },
     {
-      "title": "Federal Reserve holds interest rates steady as Trump\u2019s new chairman faces fresh inflation woes - NBC News",
-      "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPdERIN3pDeThkLVR4YkNjUmF0WTlyR2RoZ0V4RzdxdDMxQlZJaEhPLXpBUXJ4VUsxZld1TTZ5Wk0xRXBMNHZ1dHBrbFVJM3FwQy1tUnZ4SU5VVTlxbldQcDZtNl9JRzdYUnRPaFR2TXAtWHJYWGZfUVRUWHVKRXAyVmlSMDFxcnRnRThlVGhkNURiVjhK?oc=5"
+      "title": "June Monthly Exec Briefing: US consumer bruised by persistent inflation - rbc.com",
+      "link": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxPM0hRbFlROFprQXRWaVBUcWtnbldmRVhxSHQtVlQ5c1hXcjY5UnNhWDFsaTY4WVYtUmE4aDdENnBZRVlFZERuMlNLU0hPeEhmeW5IVEw1WWctZTQ2MnRtbXVRckVZNUpXWE1GN0pRVkM3d1FHa0tOa1dCZE44di1YUlhhanJPMmZQLXJDRHdrLXR5dTE1SXFnZ1N3ZUdFaDFGWHJxU1RWcXJKNWZUUV9OLXhaeEdXV2JQbDF2amVrRWd5Z1h5R3Z3ZlQ3VW9HRTlhbkQ4?oc=5"
     },
     {
       "title": "Consumer prices rose 4.2% annually in May, highest in three years - CNBC",
@@ -35,16 +39,12 @@
       "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNZXFibFcwbzFFbm0zRnRfS2swaE14TlRJRXRLRHJtX3RFZkNxMGY5RGs0Y19qV1N5RXFEYlQxcmtVUnJEblRza081X0lkUXdjSkpqQzFndkNwTlBIMFZRRjN3NzYxS2V5NUlRS29NVEZkc3FkSFZwWGVzdE1tLWdILVoyY3c1eE9zNkVPZWREU1paMmZ6M3U0X2xGSGpPQWcxNVNkYXlpNThzd1BDWmZz?oc=5"
     },
     {
+      "title": "US CPI Data is Critical for Bitcoin and Gold This Week - Yahoo Finance",
+      "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOVjJMTnY0UWxvMXQyWnROWkhQUmhxa3dyc21aTWtyWTB5ejZLeVZyQkZybUV3UlVkMmZNS0VZb09ObTNYRTdPZWZBV1BtU0l1TXljblA0bHBxNlBDZ0I5dlVDSFJJMGloTWFIS2ZNXy1abExRallDLURfWVhMb09KMlZvUVN6aDhkRG8wZXNYMTEwZk4wMUlPRg?oc=5"
+    },
+    {
       "title": "US inflation tops 4% for first time in three years as oil prices jump - CNN",
       "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTFB6WWFOQ3BWakFBNUhOWVRza0k5cnQ3QUFrREtjNXhORTRKN0h1TG04VlR4WDBHTi1tb21nQllITkJQTnNqSHN2Z2t2aVctQm1kbXN1M2gybmcwWWtoRHpKNGVyWE1nYW9NQTBRWVRZQkdjNndBNHp3?oc=5"
-    },
-    {
-      "title": "US Inflation Accelerates, Though Core Gauge Comes in Softer - Bloomberg",
-      "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQR0ctam5tUWxyRmJWSUw0Z29Cc3Y0MGRHVEY0dThwTDdSSFJrZGx0a1hqOVY5Y2l5Y3R4djdJU2psMnVRUFpnaXl3X0hQQTN3NF95SEFlZG9kMzNLQmQ0Mm1IMi04N2xVQVVzUzc1RTVzR1pYSzl2bDMzaFRvSW5fOXFQNkZjY2U5elZEa0dZVzdwWDhqTjRJRXVVZ2tOeXFZS19FQnFWaVRJOFhBOWc?oc=5"
-    },
-    {
-      "title": "Gold market exhales as U.S. CPI rises roughly in line with expectations - KITCO",
-      "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQeFdwV296RnQxRzdDUGtZaHZPcHZoQ1l2ZGRnQ3MtMDlBSl9oNzVISVNHbDNMeFM5UXhlUEhHeDd2OFRyWnhZcUVfcUFBTVBzMld6bFVkLTYtSXU0dkh0Zy1hLVFVemNPSFJHckwzOU03OTVXRFItc1JkTDFTVlNUMFNpUDhkb3BSRWFfanluc2E2V3VOWmRFN2t0eVgyRUxvR21PdTlSWQ?oc=5"
     },
     {
       "title": "US Dollar Index Hits 13-Month High Above 100, Summer Warning for Crypto and Stocks - Yahoo Finance",
@@ -79,8 +79,8 @@
       "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNVENRSm9aeUU0WlZDRzN2UnpXbThhR09CbkQyVWwtZmxSR2pIeGpMTmh1VHc1R1NsQmRjSVF0VWxuN0F3R3hlYUh3bmJTRktJSWxqcXRiUE5DTTNhVFYtLUpKQkZaNGViWkVaMFhKSzJOcTJUTU5TWmZQSFZrb3FRci1xR2RmaWk4T1VROThqcTB5TnB6dXZpMVR6NjNKaEZxV1BLYk1jYlNUU0hycFhYaTJyaXk?oc=5"
     },
     {
-      "title": "Three Fed signals that could make the bitcoin (BTC) price pop: Crypto Daily - CoinDesk",
-      "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNT2FaR25laC1jUU8teE1KNS1rWlI4NFpLQVVuZWZqX21UbG1ObElYU09BVDhiSXNwcTBxcWVSdElGMEZkdTFQaC15RV9xQUNuckVRRXRIdmNWVnFaNlVQRS04VVlhUG1zNktudmdMLVBUTjYyZzZxaWRXdHR5NE1vTlJJR3ZfSG1Lc3pOa2V4Z2ZMd05KalhJ?oc=5"
+      "title": "'Between supportive and restrictive forces': Bitcoin stalls near $64,000 as Fed rate-hike risk overshadows Iran ceasefire relief - The Block",
+      "link": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxNLW9uaXJ4RTh5UVpqMG03ZWRna3dnTjdrZ0o4WWRta1JDelFUWHMxVkNxUFI5bTdjUEphUDhYNG80Q1pMOXJ0eFZ6R240NGR0ZlQ1R045eWVsdkhRQy1kRC0wZmFpRDE0WTZ1X1E2MFFramd4T2g0NHdlNzc5UktDT1dWcXpRWFVWTzhzemxhUFdrRHV1TEFOajVzbnFnYk9LSG1ubElpRUt2aktPTmdUU21uOVpfUGx5dHVTZUtzLXkwMm9nZWsxOGdlU043aHE1cHc3UXQ0aXM2ZTJFdVlaby11N3A4bkh1dm81eDNvckk?oc=5"
     },
     {
       "title": "Crypto Fundamental Analysis Fed comments weigh on the market - FOREX.com",

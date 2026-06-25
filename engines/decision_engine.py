@@ -2,6 +2,8 @@ import json
 import os
 from datetime import datetime
 
+from engines.scalp_context_engine import build_scalp_context
+
 BASE_DIR = r"C:\ARGOS_AI"
 
 AI_FILE = os.path.join(BASE_DIR, "data", "ai", "ai_status.json")
@@ -9,8 +11,6 @@ MARKET_FILE = os.path.join(BASE_DIR, "data", "market", "market_status.json")
 POSITIONS_FILE = os.path.join(BASE_DIR, "data", "open_positions.json")
 COOLDOWN_FILE = os.path.join(BASE_DIR, "data", "cooldown.json")
 CHART_ANALYSIS_FILE = os.path.join(BASE_DIR, "data", "chart", "chart_analysis.json")
-NEWS_FILE = os.path.join(BASE_DIR, "data", "news", "news_status.json")
-MACRO_FILE = os.path.join(BASE_DIR, "data", "macro", "macro_status.json")
 
 DECISION_DIR = os.path.join(BASE_DIR, "data", "decision")
 DECISION_FILE = os.path.join(DECISION_DIR, "decision_status.json")
@@ -48,128 +48,75 @@ def get_top_market_item(market):
     }
 
 
-def build_data_risk(news, macro):
-    news_sentiment = news.get("market_sentiment", "NEUTRAL")
-    news_risk = news.get("risk_level", "NORMAL")
-    macro_regime = macro.get("market_regime", "NEUTRAL")
-    macro_rate_risk = macro.get("rate_risk", "NORMAL")
-    macro_event_risk = macro.get("event_risk", "NORMAL")
-
-    reasons = []
-    blocked = False
-    defensive = False
-
-    if news_risk == "HIGH":
-        blocked = True
-        reasons.append("NEWS_HIGH_RISK")
-
-    if macro_rate_risk == "HIGH" or macro_event_risk == "HIGH":
-        blocked = True
-        reasons.append("MACRO_HIGH_RISK")
-
-    if news_risk == "WATCH":
-        defensive = True
-        reasons.append("NEWS_WATCH")
-
-    if macro_rate_risk == "WATCH" or macro_event_risk == "WATCH":
-        defensive = True
-        reasons.append("MACRO_WATCH")
-
-    if news_sentiment == "NEGATIVE":
-        defensive = True
-        reasons.append("NEWS_NEGATIVE")
-
-    if macro_regime == "RISK_OFF":
-        defensive = True
-        reasons.append("MACRO_RISK_OFF")
-
-    if not reasons:
-        reasons.append("DATA_NORMAL")
-
-    return {
-        "blocked": blocked,
-        "defensive": defensive,
-        "reasons": reasons,
-        "news_sentiment": news_sentiment,
-        "news_risk": news_risk,
-        "macro_regime": macro_regime,
-        "macro_rate_risk": macro_rate_risk,
-        "macro_event_risk": macro_event_risk
-    }
-
-
 def build_decision():
     ai = load_json(AI_FILE, {})
     market = load_json(MARKET_FILE, {})
     positions = load_json(POSITIONS_FILE, {})
     cooldown = load_json(COOLDOWN_FILE, {})
     chart = load_json(CHART_ANALYSIS_FILE, {})
-    news = load_json(NEWS_FILE, {})
-    macro = load_json(MACRO_FILE, {})
 
     top = get_top_market_item(market)
+    scalp_context = build_scalp_context()
 
     symbol = top.get("symbol", "NONE")
-    market_action = top.get("action", "WAIT")
+    market_action = str(top.get("action", "WAIT")).upper()
     signal_score = float(top.get("signal_score", 0) or 0)
     risk_score = float(top.get("risk_score", 100) or 100)
 
-    argos_state = ai.get("argos_state", "ANALYZING")
-    auto_ready = ai.get("auto_ready", False)
-    risk_mode = ai.get("risk_mode", "NORMAL")
+    argos_state = str(ai.get("argos_state", "ANALYZING")).upper()
+    auto_ready = bool(ai.get("auto_ready", False))
+    risk_mode = str(ai.get("risk_mode", "NORMAL")).upper()
     confidence = ai.get("confidence", 0)
 
-    chart_signal = chart.get("signal", "WAIT")
+    chart_signal = str(chart.get("signal", "WAIT")).upper()
     open_positions = positions.get("positions", [])
     in_cooldown = cooldown.get("active", False)
 
-    data_risk = build_data_risk(news, macro)
-
     decision = "WAIT"
     action = "NO_TRADE"
-    reason = "ARGOS is waiting for valid conditions."
+    reason = "ARGOS is waiting for valid scalp conditions."
     auto_allowed = False
+
+    filter_action = scalp_context["filter_action"]
+    allow_entry = scalp_context["allow_entry"]
+    context_tags = scalp_context["tags"]
 
     if len(open_positions) > 0:
         decision = "MANAGE_POSITION"
         action = "MANAGE"
-        reason = "Open position exists. ARGOS should manage position first."
+        reason = "Open position exists. Manage current position first."
 
     elif in_cooldown:
         decision = "WAIT"
         action = "NO_TRADE"
-        reason = "Cooldown is active."
+        reason = "COOLDOWN_ACTIVE"
 
-    elif data_risk["blocked"]:
+    elif filter_action == "HARD_BLOCK" or not allow_entry:
         decision = "BLOCK"
         action = "NO_TRADE"
-        reason = ",".join(data_risk["reasons"])
+        reason = ",".join(context_tags)
 
     elif argos_state == "BLOCKED":
-        decision = "BLOCK"
-        action = "NO_TRADE"
-        reason = "ARGOS state is BLOCKED."
-
-    elif risk_score >= 70:
-        decision = "BLOCK"
-        action = "NO_TRADE"
-        reason = "MARKET_SIGNAL_RISK_HIGH"
-
-    elif data_risk["defensive"] and market_action == "WAIT":
+        # 기존 BLOCKED라도 HARD_BLOCK 아니면 완전 차단하지 않고 CAUTION 대기
         decision = "WAIT"
         action = "NO_TRADE"
-        reason = ",".join(data_risk["reasons"]) + ",MARKET_WAIT"
+        reason = "AI_STATE_BLOCKED"
+
+    elif risk_score >= 80:
+        decision = "BLOCK"
+        action = "NO_TRADE"
+        reason = "MARKET_SIGNAL_RISK_TOO_HIGH"
 
     elif market_action == "LONG" and signal_score >= 65:
         decision = "READY_LONG"
         action = "PAPER_LONG"
-        reason = "DATA_ALLOWED,MARKET_LONG_SIGNAL"
+        reason = "MARKET_LONG_SIGNAL"
         auto_allowed = True
 
     elif market_action == "SHORT" and signal_score <= 35:
         decision = "READY_SHORT"
         action = "PAPER_SHORT"
-        reason = "DATA_ALLOWED,MARKET_SHORT_SIGNAL"
+        reason = "MARKET_SHORT_SIGNAL"
         auto_allowed = True
 
     elif auto_ready and argos_state == "READY_LONG" and chart_signal in ["LONG", "WAIT"]:
@@ -184,9 +131,19 @@ def build_decision():
         reason = "AI_READY_SHORT"
         auto_allowed = True
 
+    else:
+        if filter_action == "CAUTION":
+            reason = "CAUTION_NO_VALID_SIGNAL"
+        elif filter_action == "WATCHLIST":
+            reason = "WATCHLIST_NO_VALID_SIGNAL"
+        elif filter_action == "VOL_BOOST":
+            reason = "VOL_BOOST_NO_VALID_SIGNAL"
+        else:
+            reason = "NO_VALID_SIGNAL"
+
     data = {
         "mode": "PAPER_ONLY",
-        "engine": "ARGOS_DECISION_ENGINE_V2_DATA_AWARE",
+        "engine": "ARGOS_DECISION_ENGINE_V10_SCALP",
         "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "symbol": symbol,
         "argos_state": argos_state,
@@ -195,11 +152,17 @@ def build_decision():
         "market_action": market_action,
         "signal_score": signal_score,
         "risk_score": risk_score,
-        "news_sentiment": data_risk["news_sentiment"],
-        "news_risk": data_risk["news_risk"],
-        "macro_regime": data_risk["macro_regime"],
-        "macro_rate_risk": data_risk["macro_rate_risk"],
-        "macro_event_risk": data_risk["macro_event_risk"],
+        "chart_signal": chart_signal,
+        "filter_action": filter_action,
+        "context_tags": context_tags,
+        "size_multiplier": scalp_context["size_multiplier"],
+        "tp_multiplier": scalp_context["tp_multiplier"],
+        "sl_multiplier": scalp_context["sl_multiplier"],
+        "news_sentiment": scalp_context["news_sentiment"],
+        "news_risk": scalp_context["news_risk"],
+        "macro_regime": scalp_context["macro_regime"],
+        "macro_rate_risk": scalp_context["macro_rate_risk"],
+        "macro_event_risk": scalp_context["macro_event_risk"],
         "decision": decision,
         "action": action,
         "reason": reason,
@@ -219,11 +182,8 @@ if __name__ == "__main__":
     print("ENGINE=" + result["engine"])
     print("SYMBOL=" + result["symbol"])
     print("MARKET_ACTION=" + str(result["market_action"]))
-    print("NEWS_RISK=" + str(result["news_risk"]))
-    print("MACRO_EVENT_RISK=" + str(result["macro_event_risk"]))
+    print("FILTER_ACTION=" + str(result["filter_action"]))
     print("DECISION=" + result["decision"])
     print("ACTION=" + result["action"])
     print("REASON=" + result["reason"])
     print("AUTO_ALLOWED=" + str(result["auto_allowed"]))
-    print("REAL_ORDER_ENABLED=" + str(result["real_order_enabled"]))
-    print("API_ORDER_ENABLED=" + str(result["api_order_enabled"]))

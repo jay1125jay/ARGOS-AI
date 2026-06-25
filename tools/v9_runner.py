@@ -11,8 +11,8 @@ if BASE_DIR not in sys.path:
 from run_argos import main as run_argos_main
 
 
-LOOP_COUNT = 20
-SLEEP_SECONDS = 10
+LOOP_COUNT = 720
+SLEEP_SECONDS = 30
 
 RUNNER_LOG = os.path.join(BASE_DIR, "data", "logs", "v9_runner_log.txt")
 
