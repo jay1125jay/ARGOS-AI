@@ -23,14 +23,12 @@ EXECUTION_FILE = os.path.join(EXECUTION_DIR, "execution_status.json")
 def load_json(path, default):
     if not os.path.exists(path):
         return default
-
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 def save_json(path, data):
     os.makedirs(os.path.dirname(path), exist_ok=True)
-
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
 
@@ -39,7 +37,6 @@ def find_market_item(market, symbol):
     for item in market.get("results", []):
         if item.get("symbol") == symbol:
             return item
-
     return {}
 
 
@@ -52,6 +49,10 @@ def build_execution_plan():
     action = decision.get("action", "NO_TRADE")
     auto_allowed = decision.get("auto_allowed", False)
 
+    size_multiplier = float(decision.get("size_multiplier", 1.0) or 1.0)
+    tp_multiplier = float(decision.get("tp_multiplier", 1.0) or 1.0)
+    sl_multiplier = float(decision.get("sl_multiplier", 1.0) or 1.0)
+
     open_positions = positions.get("positions", [])
     market_item = find_market_item(market, symbol)
 
@@ -63,9 +64,11 @@ def build_execution_plan():
     execution_action = "NO_ORDER"
     direction = "NONE"
     entry = 0
-    tp = 0
+    tp1 = 0
+    tp2 = 0
     sl = 0
-    position_size = POSITION_SIZE
+    position_size = round(POSITION_SIZE * size_multiplier, 6)
+    max_hold_seconds = 900
     reason = "No executable paper setup."
 
     if len(open_positions) > 0:
@@ -76,29 +79,33 @@ def build_execution_plan():
         execution_action = "PAPER_ENTRY_READY"
         direction = "LONG"
         entry = price
-        tp = round(price * 1.006, 6)
-        sl = round(price * 0.997, 6)
-        reason = "Paper long setup is ready."
+        tp1 = round(price * (1 + (0.003 * tp_multiplier)), 6)
+        tp2 = round(price * (1 + (0.006 * tp_multiplier)), 6)
+        sl = round(price * (1 - (0.003 * sl_multiplier)), 6)
+        reason = "Paper long scalp setup is ready."
 
     elif auto_allowed and action == "PAPER_SHORT" and price > 0:
         execution_action = "PAPER_ENTRY_READY"
         direction = "SHORT"
         entry = price
-        tp = round(price * 0.994, 6)
-        sl = round(price * 1.003, 6)
-        reason = "Paper short setup is ready."
+        tp1 = round(price * (1 - (0.003 * tp_multiplier)), 6)
+        tp2 = round(price * (1 - (0.006 * tp_multiplier)), 6)
+        sl = round(price * (1 + (0.003 * sl_multiplier)), 6)
+        reason = "Paper short scalp setup is ready."
 
     data = {
         "mode": MODE,
-        "engine": "ARGOS_EXECUTION_ENGINE_V3",
+        "engine": "ARGOS_EXECUTION_ENGINE_V12",
         "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "symbol": symbol,
         "execution_action": execution_action,
         "direction": direction,
         "entry": entry,
-        "tp": tp,
+        "tp1": tp1,
+        "tp2": tp2,
         "sl": sl,
         "position_size": position_size,
+        "max_hold_seconds": max_hold_seconds,
         "market_price": price,
         "market_action": market_action,
         "signal_score": signal_score,
@@ -122,7 +129,7 @@ if __name__ == "__main__":
     print("SYMBOL=" + result["symbol"])
     print("ACTION=" + result["execution_action"])
     print("DIRECTION=" + result["direction"])
+    print("TP1=" + str(result["tp1"]))
+    print("TP2=" + str(result["tp2"]))
+    print("SL=" + str(result["sl"]))
     print("POSITION_SIZE=" + str(result["position_size"]))
-    print("PAPER_ORDER_READY=" + str(result["paper_order_ready"]))
-    print("REAL_ORDER_ENABLED=" + str(result["real_order_enabled"]))
-    print("API_ORDER_ENABLED=" + str(result["api_order_enabled"]))

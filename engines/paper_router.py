@@ -36,6 +36,11 @@ def build_signal_from_execution(execution):
         "symbol": symbol,
         "action": direction,
         "price": entry,
+        "entry": entry,
+        "tp1": execution.get("tp1", 0),
+        "tp2": execution.get("tp2", 0),
+        "sl": execution.get("sl", 0),
+        "max_hold_seconds": execution.get("max_hold_seconds", 900),
         "signal_score": execution.get("signal_score", 0),
         "risk_score": execution.get("risk_score", 100),
         "position_size": execution.get("position_size", 1000.0)
