@@ -2,14 +2,15 @@ import json
 import os
 from datetime import datetime
 
+from engines.argos_config import (
+    MAX_POSITIONS,
+    POSITION_SIZE,
+    TP_PCT,
+    SL_PCT,
+)
+
 BASE_DIR = r"C:\ARGOS_AI"
 POSITIONS_FILE = os.path.join(BASE_DIR, "data", "open_positions.json")
-
-MAX_POSITIONS = 3
-POSITION_SIZE = 1000.0
-
-TP_PCT = 0.003
-SL_PCT = 0.002
 
 
 def ensure_position_file():

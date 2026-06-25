@@ -2,6 +2,14 @@ import json
 import os
 from datetime import datetime
 
+from engines.argos_config import (
+    POSITION_SIZE,
+    MODE,
+    REAL_ORDER_ENABLED,
+    API_ORDER_ENABLED,
+    AUTO_REAL_ORDER_ENABLED,
+)
+
 BASE_DIR = r"C:\ARGOS_AI"
 
 DECISION_FILE = os.path.join(BASE_DIR, "data", "decision", "decision_status.json")
@@ -10,8 +18,6 @@ POSITIONS_FILE = os.path.join(BASE_DIR, "data", "open_positions.json")
 
 EXECUTION_DIR = os.path.join(BASE_DIR, "data", "execution")
 EXECUTION_FILE = os.path.join(EXECUTION_DIR, "execution_status.json")
-
-POSITION_SIZE = 1000.0
 
 
 def load_json(path, default):
@@ -42,7 +48,6 @@ def build_execution_plan():
     market = load_json(MARKET_FILE, {})
     positions = load_json(POSITIONS_FILE, {})
 
-    mode = "PAPER_ONLY"
     symbol = decision.get("symbol", "NONE")
     action = decision.get("action", "NO_TRADE")
     auto_allowed = decision.get("auto_allowed", False)
@@ -84,8 +89,8 @@ def build_execution_plan():
         reason = "Paper short setup is ready."
 
     data = {
-        "mode": mode,
-        "engine": "ARGOS_EXECUTION_ENGINE_V2",
+        "mode": MODE,
+        "engine": "ARGOS_EXECUTION_ENGINE_V3",
         "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "symbol": symbol,
         "execution_action": execution_action,
@@ -100,9 +105,9 @@ def build_execution_plan():
         "risk_score": risk_score,
         "reason": reason,
         "paper_order_ready": execution_action == "PAPER_ENTRY_READY",
-        "real_order_enabled": False,
-        "api_order_enabled": False,
-        "auto_real_order_enabled": False
+        "real_order_enabled": REAL_ORDER_ENABLED,
+        "api_order_enabled": API_ORDER_ENABLED,
+        "auto_real_order_enabled": AUTO_REAL_ORDER_ENABLED
     }
 
     save_json(EXECUTION_FILE, data)
