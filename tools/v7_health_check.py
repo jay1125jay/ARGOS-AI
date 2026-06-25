@@ -1,11 +1,14 @@
 import csv
 import json
 import os
-
-from engines.portfolio_engine import calculate_portfolio
+import sys
 
 BASE_DIR = r"C:\ARGOS_AI"
 
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
+from engines.portfolio_engine import calculate_portfolio
 TRADES_FILE = os.path.join(BASE_DIR, "data", "trades", "paper_trades.csv")
 REPORT_FILE = os.path.join(BASE_DIR, "data", "reports", "report.csv")
 POSITIONS_FILE = os.path.join(BASE_DIR, "data", "open_positions.json")

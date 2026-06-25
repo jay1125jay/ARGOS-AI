@@ -17,6 +17,7 @@ from engines.macro_engine import update_macro_status
 from engines.decision_engine import build_decision
 from engines.execution_engine import build_execution_plan
 from engines.paper_router import route_paper_order
+from engines.operation_logger import append_operation_log
 
 
 BASE_DIR = r"C:\ARGOS_AI"
@@ -234,6 +235,8 @@ def main():
     print(f"WIN_RATE={report['win_rate']}%")
     print(f"TOTAL_PNL={report['total_pnl']}")
     print(f"CURRENT_BALANCE={portfolio['current_balance']}")
+    print(f"CURRENT_BALANCE={portfolio['current_balance']}")
+    append_operation_log()     
 
 
 if __name__ == "__main__":
