@@ -31,13 +31,18 @@ def ensure_files():
     ensure_report_files()
 
 
-def analyze_symbol(symbol):
-    url = f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=5m&limit=100"
+def fetch_candles(symbol, interval, limit=120):
+    url = f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit={limit}"
 
     with urllib.request.urlopen(url, timeout=10) as response:
-        candles = json.loads(response.read().decode("utf-8"))
+        return json.loads(response.read().decode("utf-8"))
 
-    return build_signal(symbol, candles)
+
+def analyze_symbol(symbol):
+    candles_5m = fetch_candles(symbol, "5m", 120)
+    candles_1m = fetch_candles(symbol, "1m", 120)
+
+    return build_signal(symbol, candles_5m, candles_1m)
 
 
 def signal_strength(item):
@@ -114,8 +119,11 @@ def print_market(results):
     for r in results:
         print(
             f"{r['symbol']} PRICE={r['price']} CHANGE={r['change_pct']}% "
-            f"RSI={r['rsi']} EMA9={r['ema9']} EMA21={r['ema21']} "
-            f"TREND={r['trend']} VOL={r['volume_ratio']} ATR={r['atr_pct']} "
+            f"5M_TREND={r.get('trend_5m')} "
+            f"1M_ENTRY={r.get('entry_signal_1m')} "
+            f"FINAL={r.get('final_action')} "
+            f"RSI1M={r.get('rsi_1m')} RSI5M={r.get('rsi_5m')} "
+            f"VOL={r['volume_ratio']} ATR={r['atr_pct']} "
             f"SIGNAL={r['signal_score']} RISK={r['risk_score']} ACTION={r['action']}"
         )
 

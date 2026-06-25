@@ -1,3 +1,28 @@
+import math
+
+
+def to_float(value, default=0.0):
+    try:
+        return float(value)
+    except Exception:
+        return default
+
+
+def extract_ohlcv(candles):
+    closes = []
+    highs = []
+    lows = []
+    volumes = []
+
+    for c in candles:
+        highs.append(to_float(c[2]))
+        lows.append(to_float(c[3]))
+        closes.append(to_float(c[4]))
+        volumes.append(to_float(c[5]))
+
+    return highs, lows, closes, volumes
+
+
 def ema(values, period):
     if not values:
         return 0
@@ -11,159 +36,187 @@ def ema(values, period):
     return round(result, 6)
 
 
-def calc_rsi(closes, period=14):
-    if len(closes) < period + 1:
-        return 50.0
+def rsi(values, period=14):
+    if len(values) < period + 1:
+        return 50
 
     gains = []
     losses = []
 
-    for i in range(-period, 0):
-        change = closes[i] - closes[i - 1]
-        if change >= 0:
-            gains.append(change)
+    recent = values[-(period + 1):]
+
+    for i in range(1, len(recent)):
+        diff = recent[i] - recent[i - 1]
+        if diff >= 0:
+            gains.append(diff)
             losses.append(0)
         else:
             gains.append(0)
-            losses.append(abs(change))
+            losses.append(abs(diff))
 
     avg_gain = sum(gains) / period
     avg_loss = sum(losses) / period
 
     if avg_loss == 0:
-        return 100.0
+        return 100
 
     rs = avg_gain / avg_loss
     return round(100 - (100 / (1 + rs)), 2)
 
 
-def calc_atr_pct(highs, lows, closes, period=14):
+def atr_pct(highs, lows, closes, period=14):
     if len(closes) < period + 1:
-        return 0.0
+        return 0
 
     trs = []
 
-    for i in range(-period, 0):
-        high = highs[i]
-        low = lows[i]
-        prev_close = closes[i - 1]
-
-        tr = max(high - low, abs(high - prev_close), abs(low - prev_close))
+    for i in range(1, len(closes)):
+        tr = max(
+            highs[i] - lows[i],
+            abs(highs[i] - closes[i - 1]),
+            abs(lows[i] - closes[i - 1])
+        )
         trs.append(tr)
 
-    atr = sum(trs) / period
-    return round((atr / closes[-1]) * 100, 4)
+    atr = sum(trs[-period:]) / period
+    price = closes[-1]
+
+    if price <= 0:
+        return 0
+
+    return round((atr / price) * 100, 4)
 
 
 def volume_ratio(volumes, period=20):
     if len(volumes) < period + 1:
-        return 1.0
+        return 0
 
-    avg_volume = sum(volumes[-period - 1:-1]) / period
+    avg_volume = sum(volumes[-(period + 1):-1]) / period
+    current_volume = volumes[-1]
 
-    if avg_volume == 0:
-        return 1.0
+    if avg_volume <= 0:
+        return 0
 
-    return round(volumes[-1] / avg_volume, 4)
+    return round(current_volume / avg_volume, 4)
 
 
-def build_signal(symbol, candles):
-    highs = [float(c[2]) for c in candles]
-    lows = [float(c[3]) for c in candles]
-    closes = [float(c[4]) for c in candles]
-    volumes = [float(c[5]) for c in candles]
+def detect_trend(ema9, ema21, rsi_value):
+    if ema9 > ema21 and rsi_value >= 50:
+        return "UP"
 
-    price = closes[-1]
-    prev_price = closes[-2]
-    change_pct = round(((price - prev_price) / prev_price) * 100, 4)
+    if ema9 < ema21 and rsi_value <= 50:
+        return "DOWN"
 
-    rsi = calc_rsi(closes)
-    ema9 = ema(closes[-30:], 9)
-    ema21 = ema(closes[-50:], 21)
-    atr_pct = calc_atr_pct(highs, lows, closes)
-    vol_ratio = volume_ratio(volumes)
+    return "FLAT"
 
-    trend = "UP" if ema9 > ema21 else "DOWN" if ema9 < ema21 else "FLAT"
 
-    signal_score = 50
+def detect_entry_1m(ema9, ema21, rsi_value, vol_ratio):
+    if ema9 > ema21 and rsi_value >= 52:
+        return "LONG"
 
-    if trend == "UP":
-        signal_score += 15
-    if trend == "DOWN":
-        signal_score -= 15
+    if ema9 < ema21 and rsi_value <= 48:
+        return "SHORT"
 
-    if change_pct > 0:
-        signal_score += 10
-    if change_pct < 0:
-        signal_score -= 10
+    return "WAIT"
 
-    if rsi >= 55:
-        signal_score += 10
-    if rsi <= 45:
-        signal_score -= 10
 
-    if vol_ratio >= 1.2:
-        if trend == "UP":
-            signal_score += 10
-        elif trend == "DOWN":
-            signal_score -= 10
+def build_risk_score(atr_value, vol_ratio):
+    risk = 20
 
-    signal_score = max(0, min(100, signal_score))
+    if atr_value >= 0.6:
+        risk += 30
+    elif atr_value >= 0.4:
+        risk += 20
+    elif atr_value >= 0.25:
+        risk += 10
 
-    risk_score = 20
+    if vol_ratio <= 0.05:
+        risk += 20
+    elif vol_ratio <= 0.15:
+        risk += 10
 
-    if atr_pct >= 1.0:
-        risk_score += 30
+    return min(risk, 100)
 
-    if rsi >= 80 or rsi <= 20:
-        risk_score += 30
 
-    if vol_ratio < 0.5:
-        risk_score += 10
+def build_signal_score(final_action, entry_signal_1m, trend_5m):
+    if final_action == "LONG":
+        return 85
 
-    risk_score = max(0, min(100, risk_score))
+    if final_action == "SHORT":
+        return 15
 
-    price_above_ema9 = price > ema9
-    price_below_ema9 = price < ema9
+    if entry_signal_1m == "LONG" and trend_5m == "UP":
+        return 65
 
-    long_ready = (
-        trend == "UP"
-        and signal_score >= 65
-        and rsi >= 55
-        and vol_ratio >= 0.0
-        and atr_pct >= 0.05
-        and price_above_ema9
-    )
+    if entry_signal_1m == "SHORT" and trend_5m == "DOWN":
+        return 35
 
-    short_ready = (
-        trend == "DOWN"
-        and signal_score <= 35
-        and rsi <= 45
-        and vol_ratio >= 0.0
-        and atr_pct >= 0.05
-        and price_below_ema9
-    )
+    return 50
 
-    if risk_score >= 70:
-        action = "WAIT"
-    elif long_ready:
-        action = "LONG"
-    elif short_ready:
-        action = "SHORT"
-    else:
-        action = "WAIT"
+
+def build_signal(symbol, candles_5m, candles_1m=None):
+    if candles_1m is None:
+        candles_1m = candles_5m
+
+    highs_5m, lows_5m, closes_5m, volumes_5m = extract_ohlcv(candles_5m)
+    highs_1m, lows_1m, closes_1m, volumes_1m = extract_ohlcv(candles_1m)
+
+    price = closes_1m[-1] if closes_1m else 0
+    prev_price = closes_1m[-2] if len(closes_1m) >= 2 else price
+
+    change_pct = 0
+    if prev_price:
+        change_pct = round(((price - prev_price) / prev_price) * 100, 4)
+
+    ema9_5m = ema(closes_5m[-50:], 9)
+    ema21_5m = ema(closes_5m[-80:], 21)
+    rsi_5m = rsi(closes_5m)
+
+    ema9_1m = ema(closes_1m[-50:], 9)
+    ema21_1m = ema(closes_1m[-80:], 21)
+    rsi_1m = rsi(closes_1m)
+
+    vol_ratio_1m = volume_ratio(volumes_1m)
+    atr_1m = atr_pct(highs_1m, lows_1m, closes_1m)
+
+    trend_5m = detect_trend(ema9_5m, ema21_5m, rsi_5m)
+    entry_signal_1m = detect_entry_1m(ema9_1m, ema21_1m, rsi_1m, vol_ratio_1m)
+
+    final_action = "WAIT"
+
+    if trend_5m == "UP" and entry_signal_1m == "LONG":
+        final_action = "LONG"
+
+    elif trend_5m == "DOWN" and entry_signal_1m == "SHORT":
+        final_action = "SHORT"
+
+    risk_score = build_risk_score(atr_1m, vol_ratio_1m)
+    signal_score = build_signal_score(final_action, entry_signal_1m, trend_5m)
 
     return {
         "symbol": symbol,
-        "price": price,
+        "price": round(price, 6),
         "change_pct": change_pct,
-        "rsi": rsi,
-        "ema9": ema9,
-        "ema21": ema21,
-        "trend": trend,
-        "volume_ratio": vol_ratio,
-        "atr_pct": atr_pct,
+
+        "rsi": rsi_1m,
+        "ema9": ema9_1m,
+        "ema21": ema21_1m,
+        "trend": trend_5m,
+        "volume_ratio": vol_ratio_1m,
+        "atr_pct": atr_1m,
+
+        "trend_5m": trend_5m,
+        "rsi_5m": rsi_5m,
+        "ema9_5m": ema9_5m,
+        "ema21_5m": ema21_5m,
+
+        "entry_signal_1m": entry_signal_1m,
+        "rsi_1m": rsi_1m,
+        "ema9_1m": ema9_1m,
+        "ema21_1m": ema21_1m,
+
+        "final_action": final_action,
         "signal_score": signal_score,
         "risk_score": risk_score,
-        "action": action,
+        "action": final_action
     }

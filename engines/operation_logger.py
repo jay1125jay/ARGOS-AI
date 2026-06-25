@@ -49,10 +49,17 @@ def append_operation_log():
 
     row = {
         "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+
         "best_symbol": best.get("symbol", "NONE"),
         "best_action": best.get("action", "WAIT"),
         "best_signal_score": best.get("signal_score", 0),
         "best_risk_score": best.get("risk_score", 100),
+
+        "trend_5m": best.get("trend_5m", "-"),
+        "entry_signal_1m": best.get("entry_signal_1m", "-"),
+        "final_action": best.get("final_action", "-"),
+        "rsi_1m": best.get("rsi_1m", 0),
+        "rsi_5m": best.get("rsi_5m", 0),
 
         "decision": decision.get("decision", "WAIT"),
         "decision_action": decision.get("action", "NO_TRADE"),
@@ -69,30 +76,34 @@ def append_operation_log():
         "report_total_pnl": report.get("total_pnl", 0)
     }
 
+    fieldnames = [
+        "time",
+        "best_symbol",
+        "best_action",
+        "best_signal_score",
+        "best_risk_score",
+        "trend_5m",
+        "entry_signal_1m",
+        "final_action",
+        "rsi_1m",
+        "rsi_5m",
+        "decision",
+        "decision_action",
+        "decision_reason",
+        "filter_action",
+        "context_tags",
+        "execution_action",
+        "router_status",
+        "router_reason",
+        "open_positions",
+        "report_total_trades",
+        "report_total_pnl",
+    ]
+
     file_exists = os.path.exists(LOG_FILE)
 
     with open(LOG_FILE, "a", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(
-            f,
-            fieldnames=[
-                "time",
-                "best_symbol",
-                "best_action",
-                "best_signal_score",
-                "best_risk_score",
-                "decision",
-                "decision_action",
-                "decision_reason",
-                "filter_action",
-                "context_tags",
-                "execution_action",
-                "router_status",
-                "router_reason",
-                "open_positions",
-                "report_total_trades",
-                "report_total_pnl",
-            ]
-        )
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
 
         if not file_exists:
             writer.writeheader()
