@@ -35,7 +35,6 @@ def save_positions(data):
 def has_symbol_position(symbol):
     data = load_positions()
     positions = data.get("positions", [])
-
     return any(p.get("symbol") == symbol for p in positions)
 
 
@@ -52,6 +51,17 @@ def can_open_position(symbol):
     return True
 
 
+def build_default_tp_sl(action, entry):
+    if action == "LONG":
+        tp = round(entry * (1 + TP_PCT), 6)
+        sl = round(entry * (1 - SL_PCT), 6)
+    else:
+        tp = round(entry * (1 - TP_PCT), 6)
+        sl = round(entry * (1 + SL_PCT), 6)
+
+    return tp, sl
+
+
 def open_position(signal):
     symbol = signal["symbol"]
     action = signal["action"]
@@ -63,14 +73,22 @@ def open_position(signal):
         return None
 
     data = load_positions()
-    entry = float(signal["price"])
 
-    if action == "LONG":
-        tp = round(entry * (1 + TP_PCT), 6)
-        sl = round(entry * (1 - SL_PCT), 6)
+    entry = float(signal.get("entry", signal.get("price", 0)) or 0)
+
+    if entry <= 0:
+        return None
+
+    position_size = float(signal.get("position_size", POSITION_SIZE) or POSITION_SIZE)
+
+    tp = signal.get("tp")
+    sl = signal.get("sl")
+
+    if tp is None or sl is None:
+        tp, sl = build_default_tp_sl(action, entry)
     else:
-        tp = round(entry * (1 - TP_PCT), 6)
-        sl = round(entry * (1 + SL_PCT), 6)
+        tp = float(tp)
+        sl = float(sl)
 
     position = {
         "opened_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -79,7 +97,9 @@ def open_position(signal):
         "entry": entry,
         "tp": tp,
         "sl": sl,
-        "position_size": POSITION_SIZE,
+        "position_size": position_size,
+        "signal_score": signal.get("signal_score", 0),
+        "risk_score": signal.get("risk_score", 100),
         "status": "OPEN"
     }
 
@@ -150,7 +170,8 @@ def check_exit_for_signal(current_signal):
             "exit": price,
             "pnl": pnl,
             "result": "WIN" if pnl > 0 else "LOSS",
-            "exit_reason": exit_reason
+            "exit_reason": exit_reason,
+            "position_size": position_size
         }
 
     data["positions"] = remaining
