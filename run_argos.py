@@ -9,7 +9,6 @@ from engines.technical_engine import build_signal
 from engines.report_engine import (
     ensure_report_files,
     save_trade,
-    get_latest_report,
     calculate_report,
     save_report,
 )
@@ -39,6 +38,46 @@ def analyze_symbol(symbol):
     return build_signal(symbol, candles)
 
 
+def signal_strength(item):
+    signal_score = float(item.get("signal_score", 50) or 50)
+    risk_score = float(item.get("risk_score", 100) or 100)
+    action = item.get("action", "WAIT")
+
+    direction_strength = abs(signal_score - 50)
+
+    action_bonus = 0
+    if action in ["LONG", "SHORT"]:
+        action_bonus = 100
+
+    return action_bonus + direction_strength - risk_score
+
+
+def select_best_signal(results):
+    if not results:
+        return {
+            "symbol": "NONE",
+            "price": 0,
+            "signal_score": 0,
+            "risk_score": 100,
+            "action": "WAIT",
+            "selection_reason": "NO_RESULTS"
+        }
+
+    actionable = [
+        item for item in results
+        if item.get("action") in ["LONG", "SHORT"]
+    ]
+
+    if actionable:
+        best = sorted(actionable, key=signal_strength, reverse=True)[0]
+        best["selection_reason"] = "ACTIONABLE_SIGNAL"
+        return best
+
+    best = sorted(results, key=signal_strength, reverse=True)[0]
+    best["selection_reason"] = "WATCHLIST_STRONGEST_SIGNAL"
+    return best
+
+
 def scan_market():
     results = []
 
@@ -62,11 +101,7 @@ def scan_market():
                 "error": str(e),
             })
 
-    best = sorted(
-        results,
-        key=lambda x: abs(x["signal_score"] - 50) - x["risk_score"],
-        reverse=True
-    )[0]
+    best = select_best_signal(results)
 
     with open(MARKET_FILE, "w", encoding="utf-8") as f:
         json.dump({
@@ -99,7 +134,8 @@ def print_positions():
     for p in positions:
         print(
             f"HOLDING {p['symbol']} {p['action']} "
-            f"ENTRY={p['entry']} TP={p['tp']} SL={p['sl']}"
+            f"ENTRY={p['entry']} TP={p['tp']} SL={p['sl']} "
+            f"SIZE={p.get('position_size')}"
         )
 
 
@@ -122,6 +158,7 @@ def main():
     print(f"BEST_ACTION={best['action']}")
     print(f"BEST_SIGNAL_SCORE={best['signal_score']}")
     print(f"BEST_RISK_SCORE={best['risk_score']}")
+    print(f"BEST_SELECTION_REASON={best.get('selection_reason', '-')}")
 
     closed_trades = check_all_exits(results)
 
@@ -152,6 +189,7 @@ def main():
     print("EXECUTION_SYMBOL=" + str(execution.get("symbol")))
     print("EXECUTION_DIRECTION=" + str(execution.get("direction")))
     print("PAPER_ORDER_READY=" + str(execution.get("paper_order_ready")))
+    print("POSITION_SIZE=" + str(execution.get("position_size")))
     print("REAL_ORDER_ENABLED=" + str(execution.get("real_order_enabled")))
     print("API_ORDER_ENABLED=" + str(execution.get("api_order_enabled")))
 
