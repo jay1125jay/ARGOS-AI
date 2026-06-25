@@ -11,6 +11,8 @@ POSITIONS_FILE = os.path.join(BASE_DIR, "data", "open_positions.json")
 EXECUTION_DIR = os.path.join(BASE_DIR, "data", "execution")
 EXECUTION_FILE = os.path.join(EXECUTION_DIR, "execution_status.json")
 
+POSITION_SIZE = 1000.0
+
 
 def load_json(path, default):
     if not os.path.exists(path):
@@ -46,16 +48,19 @@ def build_execution_plan():
     auto_allowed = decision.get("auto_allowed", False)
 
     open_positions = positions.get("positions", [])
-
     market_item = find_market_item(market, symbol)
+
     price = float(market_item.get("price", 0) or 0)
+    signal_score = market_item.get("signal_score", 0)
+    risk_score = market_item.get("risk_score", 100)
+    market_action = market_item.get("action", "WAIT")
 
     execution_action = "NO_ORDER"
     direction = "NONE"
     entry = 0
     tp = 0
     sl = 0
-    position_size = 1000.0
+    position_size = POSITION_SIZE
     reason = "No executable paper setup."
 
     if len(open_positions) > 0:
@@ -80,7 +85,7 @@ def build_execution_plan():
 
     data = {
         "mode": mode,
-        "engine": "ARGOS_EXECUTION_ENGINE_V1",
+        "engine": "ARGOS_EXECUTION_ENGINE_V2",
         "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "symbol": symbol,
         "execution_action": execution_action,
@@ -89,6 +94,10 @@ def build_execution_plan():
         "tp": tp,
         "sl": sl,
         "position_size": position_size,
+        "market_price": price,
+        "market_action": market_action,
+        "signal_score": signal_score,
+        "risk_score": risk_score,
         "reason": reason,
         "paper_order_ready": execution_action == "PAPER_ENTRY_READY",
         "real_order_enabled": False,
@@ -108,6 +117,7 @@ if __name__ == "__main__":
     print("SYMBOL=" + result["symbol"])
     print("ACTION=" + result["execution_action"])
     print("DIRECTION=" + result["direction"])
+    print("POSITION_SIZE=" + str(result["position_size"]))
     print("PAPER_ORDER_READY=" + str(result["paper_order_ready"]))
     print("REAL_ORDER_ENABLED=" + str(result["real_order_enabled"]))
     print("API_ORDER_ENABLED=" + str(result["api_order_enabled"]))

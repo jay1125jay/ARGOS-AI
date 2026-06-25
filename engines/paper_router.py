@@ -35,7 +35,10 @@ def build_signal_from_execution(execution):
         "market": execution.get("market", "CRYPTO"),
         "symbol": symbol,
         "action": direction,
-        "price": entry
+        "price": entry,
+        "signal_score": execution.get("signal_score", 0),
+        "risk_score": execution.get("risk_score", 100),
+        "position_size": execution.get("position_size", 1000.0)
     }
 
 
@@ -83,11 +86,14 @@ def route_paper_order():
 
     data = {
         "mode": "PAPER_ONLY",
-        "engine": "ARGOS_PAPER_ROUTER_V1",
+        "engine": "ARGOS_PAPER_ROUTER_V2",
         "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "status": status,
         "reason": reason,
+        "source_symbol": execution.get("symbol", "NONE"),
+        "source_direction": execution.get("direction", "NONE"),
         "source_execution_action": execution_action,
+        "source_position_size": execution.get("position_size", 0),
         "paper_order_ready": paper_order_ready,
         "real_order_enabled": False,
         "api_order_enabled": False,
@@ -107,6 +113,9 @@ if __name__ == "__main__":
     print("ENGINE=" + result["engine"])
     print("STATUS=" + result["status"])
     print("REASON=" + result["reason"])
+    print("SOURCE_SYMBOL=" + str(result["source_symbol"]))
+    print("SOURCE_DIRECTION=" + str(result["source_direction"]))
+    print("SOURCE_POSITION_SIZE=" + str(result["source_position_size"]))
     print("REAL_ORDER_ENABLED=" + str(result["real_order_enabled"]))
     print("API_ORDER_ENABLED=" + str(result["api_order_enabled"]))
     print("AUTO_REAL_ORDER_ENABLED=" + str(result["auto_real_order_enabled"]))
