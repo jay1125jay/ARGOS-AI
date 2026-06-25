@@ -1,7 +1,7 @@
 {
   "mode": "PAPER_ONLY",
   "engine": "ARGOS_EXECUTION_ENGINE_V12",
-  "updated_at": "2026-06-26 06:08:46",
+  "updated_at": "2026-06-26 06:29:23",
   "symbol": "BTCUSDT",
   "execution_action": "NO_ORDER",
   "direction": "NONE",
@@ -11,7 +11,7 @@
   "sl": 0,
   "position_size": 1000.0,
   "max_hold_seconds": 900,
-  "market_price": 59530.0,
+  "market_price": 59688.0,
   "market_action": "LONG",
   "signal_score": 85,
   "risk_score": 20,

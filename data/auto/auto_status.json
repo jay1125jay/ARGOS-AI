@@ -1,7 +1,7 @@
 {
   "engine": "ARGOS_AUTO_SELECTOR_V13",
   "mode": "PAPER_ONLY",
-  "updated_at": "2026-06-26 06:08:46",
+  "updated_at": "2026-06-26 06:29:23",
   "auto_start_ready": true,
   "real_order_enabled": false,
   "api_order_enabled": false,
@@ -31,8 +31,15 @@
       "action": "WAIT",
       "score": 0,
       "risk_score": 100,
-      "status": "PLACEHOLDER",
-      "source": "KR_STOCK_ENGINE_PENDING"
+      "status": "SKELETON",
+      "source": "KR_STOCK_CONTEXT_ENGINE_V14",
+      "watch_data": [
+        "disclosure",
+        "news_material",
+        "theme",
+        "trading_value",
+        "order_flow"
+      ]
     },
     {
       "market": "US_STOCK",
@@ -40,8 +47,16 @@
       "action": "WAIT",
       "score": 0,
       "risk_score": 100,
-      "status": "PLACEHOLDER",
-      "source": "US_STOCK_ENGINE_PENDING"
+      "status": "SKELETON",
+      "source": "US_STOCK_CONTEXT_ENGINE_V14",
+      "watch_data": [
+        "earnings",
+        "guidance",
+        "company_news",
+        "premarket",
+        "sector_flow",
+        "macro"
+      ]
     },
     {
       "market": "FUTURES",
@@ -49,8 +64,16 @@
       "action": "WAIT",
       "score": 0,
       "risk_score": 100,
-      "status": "PLACEHOLDER",
-      "source": "FUTURES_ENGINE_PENDING"
+      "status": "SKELETON",
+      "source": "FUTURES_CONTEXT_ENGINE_V14",
+      "watch_data": [
+        "macro_event",
+        "interest_rate",
+        "dxy",
+        "session_flow",
+        "index_trend",
+        "volatility"
+      ]
     }
   ]
 }
