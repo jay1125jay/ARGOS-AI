@@ -1,0 +1,7 @@
+{
+  "master_kill_switch": false,
+  "emergency_mode": false,
+  "force_paper_only": true,
+  "max_open_positions": 3,
+  "block_when_market_closed": false
+}

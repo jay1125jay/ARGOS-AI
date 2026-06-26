@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 
 from engines.order_router import route_order_by_mode
+from engines.kill_switch_engine import run_kill_switch
 
 BASE_DIR = r"C:\ARGOS_AI"
 
@@ -112,7 +113,15 @@ def run_execution_engine():
     decision = load_json(DECISION_FILE, {})
     market = load_json(MARKET_FILE, {})
 
+    kill_switch = run_kill_switch()
     order_plan = build_order_plan(decision, market)
+
+    if kill_switch.get("blocked"):
+        order_plan["execution_action"] = "NO_ORDER"
+        order_plan["direction"] = "NONE"
+        order_plan["paper_order_ready"] = False
+        order_plan["reason"] = "Blocked by kill switch: " + ",".join(kill_switch.get("tags", []))
+
     route = route_order_by_mode(order_plan, EXECUTION_MODE)
 
     status = {
@@ -139,6 +148,8 @@ def run_execution_engine():
         "paper_order_ready": order_plan.get("paper_order_ready", False),
         "real_order_enabled": False,
         "api_order_enabled": False,
+        "kill_switch_blocked": kill_switch.get("blocked", False),
+        "kill_switch_tags": kill_switch.get("tags", []),
         "auto_real_order_enabled": False
     }
 
