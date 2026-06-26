@@ -18,10 +18,15 @@ async function loadData() {
   const chart = data.chart || {};
   const homeSummary = data.home_summary || {};
   const settings = data.settings || {};
+  const session = data.session || {};
   const health = data.health || {};
   const positionsData = data.positions || { positions: [] };
   const positions = positionsData.positions || [];
   const results = data.market?.results || [];
+
+  setText("sessionLoops", session.loops ?? 0);
+  setText("sessionBlocked", session.decision_blocked ?? 0);
+  setText("sessionSignals", session.signals_detected ?? 0);
 
   setText("startBalance", portfolio.start_balance ?? 0);
   setText("currentBalance", formatNumber(portfolio.current_balance ?? 0));
@@ -108,6 +113,7 @@ function updateChartNumbers(chart) {
   setText("chartTp", chart.tp ?? 0);
   setText("chartSl", chart.sl ?? 0);
   setText("chartCurrent", chart.current ?? 0);
+ 
 }
 
 function setText(id, value) {

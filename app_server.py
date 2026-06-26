@@ -29,6 +29,7 @@ EXECUTION = os.path.join(ROOT, "data", "execution", "execution_status.json")
 PAPER_ROUTER = os.path.join(ROOT, "data", "execution", "paper_router_status.json")
 AUTO = os.path.join(ROOT, "data", "auto", "auto_status.json")
 SETTINGS = os.path.join(ROOT, "data", "config", "settings.json")
+SESSION = os.path.join(ROOT, "data", "reports", "paper_session.json")
 
 
 def read_csv(path):
@@ -130,8 +131,9 @@ class Handler(BaseHTTPRequestHandler):
             execution = read_json(EXECUTION)
             paper_router = read_json(PAPER_ROUTER)
             auto = read_json(AUTO)
-            settings = read_json(SETTINGS)            
-
+            session = read_json(SESSION) 
+            settings = read_json(SETTINGS)
+                      
             latest_report = {
                 "total_trades": 0,
                 "wins": 0,
@@ -187,6 +189,8 @@ class Handler(BaseHTTPRequestHandler):
                 "auto": auto,
                 "home_summary": home_summary,
                 "settings": settings,
+                "session": session,
+
             }).encode("utf-8")
 
             self.send_response(200)
