@@ -21,7 +21,14 @@ def build_argos_state(score, bias, permission, reasons):
     if permission == "BLOCK":
         return {
             "argos_state": "BLOCKED",
-            "argos_message": "Trading blocked by ARGOS risk control.",
+            "argos_message": "ARGOS hard blocked trading by extreme risk.",
+            "auto_ready": False
+        }
+
+    if permission == "DEFENSIVE":
+        return {
+            "argos_state": "CAUTION",
+            "argos_message": "ARGOS allows only defensive paper setups.",
             "auto_ready": False
         }
 
@@ -54,14 +61,14 @@ def update_ai_status():
     score = 50
     reasons = []
 
-    news_sentiment = news.get("market_sentiment", "NEUTRAL")
-    news_risk = news.get("risk_level", "NORMAL")
+    news_sentiment = str(news.get("market_sentiment", "NEUTRAL")).upper()
+    news_risk = str(news.get("risk_level", "NORMAL")).upper()
 
-    macro_regime = macro.get("market_regime", "NEUTRAL")
-    macro_risk = macro.get("event_risk", "NORMAL")
+    macro_regime = str(macro.get("market_regime", "NEUTRAL")).upper()
+    macro_risk = str(macro.get("event_risk", "NORMAL")).upper()
 
-    market_regime = regime.get("market_regime", "SIDEWAYS")
-    volatility = regime.get("volatility", "NORMAL")
+    market_regime = str(regime.get("market_regime", "SIDEWAYS")).upper()
+    volatility = str(regime.get("volatility", "NORMAL")).upper()
 
     if news_sentiment == "POSITIVE":
         score += 15
@@ -90,6 +97,9 @@ def update_ai_status():
     elif macro_risk == "WATCH":
         score -= 5
         reasons.append("MACRO_WATCH")
+    elif macro_risk == "EXTREME":
+        score -= 40
+        reasons.append("MACRO_EXTREME_RISK")
 
     if market_regime == "BULL":
         score += 15
@@ -104,17 +114,25 @@ def update_ai_status():
 
     score = max(0, min(100, score))
 
-    if score >= 70:
+    if score >= 65:
         bias = "BULLISH"
-    elif score <= 30:
+    elif score <= 35:
         bias = "BEARISH"
     else:
         bias = "NEUTRAL"
 
-    if score <= 30:
+    extreme_block = (
+        "MACRO_EXTREME_RISK" in reasons
+        or news_risk == "EXTREME"
+    )
+
+    if extreme_block:
         permission = "BLOCK"
+        risk_mode = "HARD_BLOCK"
+    elif score <= 35:
+        permission = "DEFENSIVE"
         risk_mode = "DEFENSIVE"
-    elif score >= 70:
+    elif score >= 65:
         permission = "ALLOW"
         risk_mode = "AGGRESSIVE"
     else:

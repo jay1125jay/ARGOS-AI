@@ -39,7 +39,7 @@ def build_order_plan(decision, market):
     risk_score = decision.get("risk_score", 100)
     price = find_market_price(symbol, market)
 
-    if decision.get("decision") != "ALLOW":
+    if not decision.get("auto_allowed", False):
         return {
             "symbol": symbol,
             "execution_action": "NO_ORDER",
@@ -90,7 +90,7 @@ def build_order_plan(decision, market):
 
     return {
         "symbol": symbol,
-        "execution_action": f"{action}_READY",
+        "execution_action": "PAPER_ENTRY_READY",
         "direction": action,
         "entry": entry,
         "tp1": tp1,
@@ -146,11 +146,11 @@ def run_execution_engine():
         "risk_score": order_plan.get("risk_score", 100),
         "reason": order_plan.get("reason", ""),
         "paper_order_ready": order_plan.get("paper_order_ready", False),
-        "real_order_enabled": False,
-        "api_order_enabled": False,
+        "real_order_enabled": settings.get("real_order_enabled", False),
+        "api_order_enabled": settings.get("api_order_enabled", False),
         "kill_switch_blocked": kill_switch.get("blocked", False),
         "kill_switch_tags": kill_switch.get("tags", []),
-        "auto_real_order_enabled": False
+        "auto_real_order_enabled": settings.get("auto_real_order_enabled", False),
     }
 
     save_json(EXECUTION_FILE, status)

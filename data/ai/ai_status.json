@@ -2,10 +2,10 @@
   "mode": "ARGOS_UNIFIED_AI_V2",
   "ai_bias": "BEARISH",
   "confidence": 0,
-  "trade_permission": "BLOCK",
+  "trade_permission": "DEFENSIVE",
   "risk_mode": "DEFENSIVE",
   "reason": "NEWS_NEGATIVE,NEWS_HIGH_RISK,MACRO_RISK_OFF,MACRO_HIGH_RISK,MARKET_BEAR",
-  "argos_state": "BLOCKED",
-  "argos_message": "Trading blocked by ARGOS risk control.",
+  "argos_state": "CAUTION",
+  "argos_message": "ARGOS allows only defensive paper setups.",
   "auto_ready": false
 }

@@ -32,12 +32,16 @@ def classify_event_filter():
     watchlist = False
     vol_boost = False
 
-    # 1) 진짜 위험한 경우만 HARD_BLOCK
-    if macro_event_risk == "HIGH":
+    # Only EXTREME blocks paper entry.
+    if macro_event_risk == "EXTREME":
         hard_block = True
+        tags.append("MACRO_EVENT_EXTREME")
+
+    # HIGH risks become CAUTION, not BLOCK.
+    if macro_event_risk == "HIGH":
+        caution = True
         tags.append("MACRO_EVENT_HIGH")
 
-    # 2) 일반 HIGH는 바로 차단하지 않고 CAUTION
     if news_risk == "HIGH":
         caution = True
         tags.append("NEWS_HIGH")
@@ -54,7 +58,6 @@ def classify_event_filter():
         caution = True
         tags.append("MACRO_WATCH")
 
-    # 3) 분위기성 정보
     if news_sentiment == "NEGATIVE":
         caution = True
         tags.append("NEWS_NEGATIVE")
