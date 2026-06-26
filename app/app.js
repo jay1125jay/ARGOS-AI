@@ -64,6 +64,7 @@ async function loadData() {
   setText("heroSide", homeSummary.side ?? "WAIT");
   setText("heroSize", formatHomeSize(homeSummary.size));
   setText("heroPnl", formatNumber(homeSummary.pnl ?? 0));
+  setText("heroAuto", `AUTO: ${homeSummary.auto_market ?? "-"} / ${homeSummary.auto_symbol ?? "-"} / ${homeSummary.auto_action ?? "WAIT"}`);
 
   if (!autoRunning) {
     setText("heroPermission", formatArgosState(ai));

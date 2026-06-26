@@ -1,14 +1,14 @@
 {
   "mode": "PAPER_ONLY",
   "engine": "ARGOS_DECISION_ENGINE_V10_SCALP",
-  "updated_at": "2026-06-26 09:53:09",
+  "updated_at": "2026-06-26 11:25:43",
   "symbol": "BTCUSDT",
   "argos_state": "BLOCKED",
   "risk_mode": "DEFENSIVE",
   "confidence": 0,
-  "market_action": "WAIT",
-  "signal_score": 50.0,
-  "risk_score": 40.0,
+  "market_action": "SHORT",
+  "signal_score": 15.0,
+  "risk_score": 30.0,
   "chart_signal": "WAIT",
   "filter_action": "HARD_BLOCK",
   "context_tags": [
