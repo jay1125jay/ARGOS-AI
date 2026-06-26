@@ -17,6 +17,7 @@ async function loadData() {
   const execution = data.execution || {};
   const chart = data.chart || {};
   const homeSummary = data.home_summary || {};
+  const settings = data.settings || {};
   const health = data.health || {};
   const positionsData = data.positions || { positions: [] };
   const positions = positionsData.positions || [];
@@ -54,6 +55,9 @@ async function loadData() {
   setText("aiBias", ai.ai_bias ?? "-");
   setText("aiConfidence", ai.confidence ?? "-");
 
+  setText("settingsVersion", "V25 PRODUCT UI");
+  setText("settingsBuild", "ARGOS_V25_UI_FINAL");
+
   if (!autoRunning) {
     setText("aiPermission", ai.trade_permission ?? "-");
   }
@@ -72,7 +76,7 @@ async function loadData() {
     setText("aiPermission", formatArgosState(ai));
   }
 
-  setText("settingsRiskMode", "PAPER ONLY");
+  setText("settingsRiskMode", settings.system_mode ?? "PAPER_ONLY");
 
   const strategy = (backtest.strategies || [])[0] || {};
   setText("backtestMode", backtest.mode ?? "-");
