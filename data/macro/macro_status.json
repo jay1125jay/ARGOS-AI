@@ -1,11 +1,15 @@
 {
   "mode": "LIVE_RSS",
-  "updated_at": "2026-06-26 09:10:13",
+  "updated_at": "2026-06-26 09:25:48",
   "market_regime": "RISK_OFF",
   "dxy_status": "RSS_ONLY",
   "rate_risk": "HIGH",
   "event_risk": "HIGH",
   "events": [
+    {
+      "title": "Why the Federal Reserve may raise interest rates this year - CBS News",
+      "link": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPVVpXcVM2UGZ5c2lsOG9qa05VNm1nemR2Z3hTNlNJc0dDM1RVZDNRbGhMeUZzRFExaHdpNXd3cjFRV3lQODJmaXFOSHFjbGhrWTBBRDNtdWRtQlhDaXUxOXdwOW9KajExQzRaMzhMenJyWWx5bUptZEdlaDV0aVphNm5wOVJDeUdVS3hrZHpn?oc=5"
+    },
     {
       "title": "The Fed may raise interest rates within months. Here's what it means for you. - ABC News - Breaking News, Latest News and Videos",
       "link": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNenUzMm5kWTJOUHEtcHhxdmdwbDBYb1dFME1RZ185dkxEcWRIanY3ZmRvUGs5WjZKbVJHLWxHdlNtUVV3Rm1lUE5EOVpjaGV5bVJHeUZhYm9HT29JY0JtSGdWdTkzeGxWMzJBeTBDYThUajFoaURnSG05ZnVpdnhxUHNkbi1uZGtsVFVXcEdB0gGTAUFVX3lxTE5RUERWVjBaZ1pSbEM1MEhPVzZWaWFEX3JOSGJlbmtDbnNwRzJuZ2hkckZ1dlJtbkJ6YjljeGhzdWVvZjhWMFp3TzhLSGM5Um9aSko2QV84cEVMNmtLa2hPNWR3Qnp2aUhHS0hhLWJqZG1HMi16aUc4cEtIdzV6emp3bFlQZ0UySmFpZVUyQWNYOGUwdw?oc=5"
@@ -21,10 +25,6 @@
     {
       "title": "BofA flips the script with bombshell Fed interest-rate outlook - thestreet.com",
       "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNdldKVHRRRjloNFRFOW1ManZoWFdxZGtYMDg4RDB0QlVmZXpwei10REhIMmVkeWkyMDBVQ2M2UXoxY2RBZzIxeVo3b3EtTlJIWXFOWVo4N0VSZ1cyOU9uM2JiWkRHdkFJcDQ0TzZxSFlRUVdVcE8tUUpUSHpIRkRfSU9peXZNRTBv?oc=5"
-    },
-    {
-      "title": "Will the Federal Reserve Raise or Lower Interest Rates in 2026? Here's What the Data Suggests. - Yahoo Finance",
-      "link": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPdkQ3eWxaQVBQdG5DMHg5Znk1UnE5NTM5MGt2cVNBNGVVUmI1el94SFZGdnVzbTZOcF9VX3l3Z290M0U1VW9TNjFxa2dLRHJ5MlpLd0c5S2JmRjFGUXduYy1NN2lJQjJFNHhpX0hTOUNpcWhNN0g1blFqYTQySExiUEVDd2g2UVYzWUdsQ3p4R091c0ZwWmdxYU9BM1NCZm1O?oc=5"
     },
     {
       "title": "June Monthly Exec Briefing: US consumer bruised by persistent inflation - rbc.com",

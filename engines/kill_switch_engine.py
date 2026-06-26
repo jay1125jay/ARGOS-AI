@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime
+from engines.settings_engine import load_settings
 
 BASE_DIR = r"C:\ARGOS_AI"
 
@@ -17,6 +18,7 @@ def load_json(path, default):
 
 def run_kill_switch():
     config = load_json(CONFIG_FILE, {})
+    settings = load_settings()
     positions = load_json(POSITIONS_FILE, {"positions": []})
     open_count = len(positions.get("positions", []))
 
@@ -35,7 +37,7 @@ def run_kill_switch():
         blocked = True
         tags.append("MAX_OPEN_POSITIONS")
 
-    if config.get("force_paper_only", True):
+    if settings.get("system_mode") == "PAPER_ONLY":
         tags.append("FORCE_PAPER_ONLY")
 
     return {

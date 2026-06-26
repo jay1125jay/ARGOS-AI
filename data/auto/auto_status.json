@@ -1,16 +1,16 @@
 {
   "engine": "ARGOS_AUTO_SELECTOR_V15",
   "mode": "PAPER_ONLY",
-  "updated_at": "2026-06-26 09:10:14",
+  "updated_at": "2026-06-26 09:25:50",
   "auto_start_ready": true,
   "real_order_enabled": false,
   "api_order_enabled": false,
   "auto_real_order_enabled": false,
   "selected": {
     "market": "CRYPTO",
-    "symbol": "XRPUSDT",
-    "action": "LONG",
-    "score": 85.0,
+    "symbol": "BTCUSDT",
+    "action": "SHORT",
+    "score": 15.0,
     "risk_score": 20.0,
     "priority": 90,
     "status": "ACTIVE",
@@ -20,9 +20,9 @@
   "candidates": [
     {
       "market": "CRYPTO",
-      "symbol": "XRPUSDT",
-      "action": "LONG",
-      "score": 85.0,
+      "symbol": "BTCUSDT",
+      "action": "SHORT",
+      "score": 15.0,
       "risk_score": 20.0,
       "priority": 90,
       "status": "ACTIVE",

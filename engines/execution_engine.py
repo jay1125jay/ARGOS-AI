@@ -4,15 +4,13 @@ from datetime import datetime
 
 from engines.order_router import route_order_by_mode
 from engines.kill_switch_engine import run_kill_switch
+from engines.settings_engine import load_settings
 
 BASE_DIR = r"C:\ARGOS_AI"
 
 DECISION_FILE = os.path.join(BASE_DIR, "data", "decision", "decision_status.json")
 MARKET_FILE = os.path.join(BASE_DIR, "data", "market", "market_status.json")
 EXECUTION_FILE = os.path.join(BASE_DIR, "data", "execution", "execution_status.json")
-
-EXECUTION_MODE = "PAPER"   # PAPER / LIVE_READY / LIVE
-
 
 def load_json(path, default):
     if not os.path.exists(path):
@@ -110,6 +108,7 @@ def build_order_plan(decision, market):
 
 
 def run_execution_engine():
+    settings = load_settings()
     decision = load_json(DECISION_FILE, {})
     market = load_json(MARKET_FILE, {})
 
@@ -122,13 +121,14 @@ def run_execution_engine():
         order_plan["paper_order_ready"] = False
         order_plan["reason"] = "Blocked by kill switch: " + ",".join(kill_switch.get("tags", []))
 
-    route = route_order_by_mode(order_plan, EXECUTION_MODE)
+    execution_mode = settings.get("execution_mode", "PAPER")
+    route = route_order_by_mode(order_plan, execution_mode)
 
     status = {
-        "mode": "PAPER_ONLY",
+        "mode": settings.get("system_mode", "PAPER_ONLY"),
         "engine": "ARGOS_EXECUTION_ENGINE_V18_LIVE_READY",
         "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "execution_mode": EXECUTION_MODE,
+        "execution_mode": settings.get("execution_mode", "PAPER"),
         "adapter_engine": route.get("adapter_engine", "-"),
         "route_target": route.get("route_target", "-"),
         "symbol": order_plan.get("symbol", "NONE"),

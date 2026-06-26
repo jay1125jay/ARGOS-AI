@@ -1,0 +1,8 @@
+{
+  "system_mode": "PAPER_ONLY",
+  "execution_mode": "PAPER",
+  "auto_start_enabled": true,
+  "real_order_enabled": false,
+  "api_order_enabled": false,
+  "auto_real_order_enabled": false
+}
