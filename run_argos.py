@@ -21,6 +21,7 @@ from engines.operation_logger import append_operation_log
 from engines.auto_selector import select_auto_candidate
 from engines.auto_start_engine import run_auto_start
 from engines.paper_session_engine import update_paper_session
+from engines.operation_report_engine import generate_operation_report
 
 
 BASE_DIR = r"C:\ARGOS_AI"
@@ -246,6 +247,7 @@ def main():
     print(f"WIN_RATE={report['win_rate']}%")
     print(f"TOTAL_PNL={report['total_pnl']}")
     print(f"CURRENT_BALANCE={portfolio['current_balance']}")
+    
     select_auto_candidate()
     run_auto_start()
     update_paper_session(
@@ -254,6 +256,7 @@ def main():
         execution=execution,
         router=router
     )
+    generate_operation_report()
     append_operation_log()     
 
 
