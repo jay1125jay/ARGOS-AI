@@ -68,7 +68,7 @@ def check():
 
     engine_ok = (
         decision.get("engine") == "ARGOS_DECISION_ENGINE_V10_SCALP"
-        and execution.get("engine") == "ARGOS_EXECUTION_ENGINE_V12"
+        and execution.get("engine") == "ARGOS_EXECUTION_ENGINE_V18_LIVE_READY"
         and router.get("engine") == "ARGOS_PAPER_ROUTER_V2"
     )
 
