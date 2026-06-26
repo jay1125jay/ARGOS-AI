@@ -19,6 +19,7 @@ from engines.execution_engine import build_execution_plan
 from engines.paper_router import route_paper_order
 from engines.operation_logger import append_operation_log
 from engines.auto_selector import select_auto_candidate
+from engines.auto_start_engine import run_auto_start
 
 
 BASE_DIR = r"C:\ARGOS_AI"
@@ -245,6 +246,7 @@ def main():
     print(f"TOTAL_PNL={report['total_pnl']}")
     print(f"CURRENT_BALANCE={portfolio['current_balance']}")
     select_auto_candidate()
+    run_auto_start()
     append_operation_log()     
 
 

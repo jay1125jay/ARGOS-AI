@@ -1,0 +1,17 @@
+{
+  "engine": "ARGOS_AUTO_START_ENGINE_V21",
+  "mode": "PAPER_ONLY",
+  "updated_at": "2026-06-26 09:53:09",
+  "auto_selector_engine": "ARGOS_AUTO_SELECTOR_V15",
+  "decision_engine": "ARGOS_DECISION_ENGINE_V10_SCALP",
+  "execution_engine": "ARGOS_EXECUTION_ENGINE_V18_LIVE_READY",
+  "router_engine": "ARGOS_PAPER_ROUTER_V2",
+  "selected_market": "NONE",
+  "selected_symbol": "NONE",
+  "selected_action": "WAIT",
+  "decision": "BLOCK",
+  "decision_action": "NO_TRADE",
+  "execution_action": "NO_ORDER",
+  "router_status": "WAIT",
+  "router_reason": "Execution engine has no paper-ready order."
+}
