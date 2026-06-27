@@ -73,6 +73,7 @@ def open_position(signal):
         "symbol": symbol,
         "action": action,
         "entry": entry,
+        "tp": tp1,
         "tp1": tp1,
         "tp2": tp2,
         "sl": sl,

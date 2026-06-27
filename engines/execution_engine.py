@@ -93,6 +93,7 @@ def build_order_plan(decision, market):
         "execution_action": "PAPER_ENTRY_READY",
         "direction": action,
         "entry": entry,
+        "tp" : tp1,
         "tp1": tp1,
         "tp2": tp2,
         "sl": sl,
