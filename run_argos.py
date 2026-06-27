@@ -258,14 +258,8 @@ def main():
         router=router
     )
     generate_operation_report()
-    update_runtime_status(health="GOOD", last_error="")
-    append_operation_log()
 
-    update_runtime_status(
-    loops=...,
-    health="GOOD"
-    )   
-
+    update_runtime_status(health="GOOD", last_error="")   
 
 if __name__ == "__main__":
     main()

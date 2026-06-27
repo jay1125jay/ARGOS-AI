@@ -1,33 +1,33 @@
 {
   "engine": "ARGOS_AUTO_SELECTOR_V15",
   "mode": "PAPER_ONLY",
-  "updated_at": "2026-06-26 15:13:54",
+  "updated_at": "2026-06-27 20:49:44",
   "auto_start_ready": true,
   "real_order_enabled": false,
   "api_order_enabled": false,
   "auto_real_order_enabled": false,
   "selected": {
-    "market": "CRYPTO",
-    "symbol": "ETHUSDT",
-    "action": "SHORT",
-    "score": 15.0,
-    "risk_score": 20.0,
-    "priority": 90,
-    "status": "ACTIVE",
-    "source": "CRYPTO_SCALP_ENGINE_V15",
-    "selection_score": 155.0
+    "market": "NONE",
+    "symbol": "NONE",
+    "action": "WAIT",
+    "score": 0,
+    "risk_score": 100,
+    "priority": 0,
+    "selection_score": -999,
+    "status": "NO_VALID_CANDIDATE",
+    "source": "AUTO_SELECTOR_V15"
   },
   "candidates": [
     {
       "market": "CRYPTO",
-      "symbol": "ETHUSDT",
-      "action": "SHORT",
-      "score": 15.0,
+      "symbol": "BTCUSDT",
+      "action": "WAIT",
+      "score": 50.0,
       "risk_score": 20.0,
-      "priority": 90,
+      "priority": 0,
       "status": "ACTIVE",
       "source": "CRYPTO_SCALP_ENGINE_V15",
-      "selection_score": 155.0
+      "selection_score": -100
     },
     {
       "market": "KR_STOCK",

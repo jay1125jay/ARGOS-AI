@@ -32,11 +32,12 @@ def runtime_text(seconds):
 
 
 def default_runtime():
+    now = now_text()
     return {
         "engine": "ARGOS_RUNTIME_MONITOR_V30",
         "status": "RUNNING",
-        "started_at": now_text(),
-        "last_update": now_text(),
+        "started_at": now,
+        "last_update": now,
         "runtime_seconds": 0,
         "runtime_text": "00:00:00",
         "loops": 0,
@@ -48,7 +49,9 @@ def default_runtime():
         "auto_real_order_enabled": False
     }
 
-    update_runtime_status(health="GOOD", last_error="")
+
+def update_runtime_status(loops=None, health="GOOD", last_error=""):
+    data = load_json(RUNTIME_FILE, default_runtime())
 
     if not data.get("started_at"):
         data["started_at"] = now_text()
@@ -79,3 +82,12 @@ def default_runtime():
 
     save_json(RUNTIME_FILE, data)
     return data
+
+
+if __name__ == "__main__":
+    data = update_runtime_status()
+    print("ARGOS_RUNTIME_MONITOR_OK")
+    print("ENGINE=" + data["engine"])
+    print("STATUS=" + data["status"])
+    print("RUNTIME=" + data["runtime_text"])
+    print("LOOPS=" + str(data["loops"]))
